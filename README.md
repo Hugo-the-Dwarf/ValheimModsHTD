@@ -2,6 +2,12 @@
 Adds 4.5 new Two Handed Weapons to Valheim. Customized to feel like they are practical with damage numbers to match a two-handed weapon
 These Weapons also have their own visual look while on Item Stands.
 
+Installation:
+It's recommended to create a folder for this mod in your '\Valheim\BepInEx\plugins' location, 
+as it comes with an external AssetBundle and the Mod.dll (This is just so if you wish to remove this at a later date, it's all packaged together)
+
+You can simply just drop the AssetBundle "twohandedweapons" and the Mod.dll "ValheimMoreTwoHanders.dll" in your '\Valheim\BepInEx\plugins' and it will still work.
+
 First Weapon: Silver Great Sword
 A very large silvered sword, average against most enemies with a bonus against undead.
 Damage:
