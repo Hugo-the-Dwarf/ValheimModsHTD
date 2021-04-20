@@ -11,10 +11,15 @@ You can simply just drop the AssetBundle "twohandedweapons" and the Mod.dll "Val
 Console/Cheats/Configs Item IDS:
 
 Silver Great Sword ::: SwordSilverGreat
+
 Great Core Mace ::: MaceCoreGreat
+
 Great Core Mace (Green) ::: MaceCoreGreatGreen
+
 Black Metal Great Sword ::: SwordBlackmetalGreat
+
 Moder's Sorrow ::: SwordObsidianGreat
+
 
 First Weapon: Silver Great Sword
 A very large silvered sword, average against most enemies with a bonus against undead.
