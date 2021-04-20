@@ -8,6 +8,14 @@ as it comes with an external AssetBundle and the Mod.dll (This is just so if you
 
 You can simply just drop the AssetBundle "twohandedweapons" and the Mod.dll "ValheimMoreTwoHanders.dll" in your '\Valheim\BepInEx\plugins' and it will still work.
 
+Console/Cheats/Configs Item IDS:
+
+Silver Great Sword ::: SwordSilverGreat
+Great Core Mace ::: MaceCoreGreat
+Great Core Mace (Green) ::: MaceCoreGreatGreen
+Black Metal Great Sword ::: SwordBlackmetalGreat
+Moder's Sorrow ::: SwordObsidianGreat
+
 First Weapon: Silver Great Sword
 A very large silvered sword, average against most enemies with a bonus against undead.
 Damage:
