@@ -19,6 +19,8 @@ namespace ValheimMoreTwoHanders
         public static Dictionary<string, CraftingStation> listOfCraftingStations = new Dictionary<string, CraftingStation>(); //For Recipes/Pieces extracted from valid Pieces
         public static Dictionary<string, GameObject> listOfEffects = new Dictionary<string, GameObject>(); //For weapons/Attacks extracted from valid items
 
+        public static Dictionary<string, Material> listOfMaterials = new Dictionary<string, Material>();
+
         //my custom lists 
         public static List<GameObject> myItemList = new List<GameObject>(); //Fixed Referenced Compiled Items
         public static List<Recipe> myRecipeList = new List<Recipe>(); // Fixed Referenced Compiled Recipes
@@ -29,7 +31,8 @@ namespace ValheimMoreTwoHanders
         public static Dictionary<string, MeshRenderer> targetPrefabMeshRenderers = new Dictionary<string, MeshRenderer>();
         public static Dictionary<string, MeshFilter> targetPrefabMeshFilters = new Dictionary<string, MeshFilter>();
 
-
+        //NewAttacks
+        public static Dictionary<string, Attack> listOfExtraAttacks = new Dictionary<string, Attack>();
 
         //List related methods
         //
@@ -47,6 +50,11 @@ namespace ValheimMoreTwoHanders
             if (!listOfItemPrefabs.ContainsKey(go.name)) listOfItemPrefabs.Add(go.name, go);
         }
 
+        public static void TryAddToAttackList(GameObject go,Attack atk)
+        {
+            if (!listOfExtraAttacks.ContainsKey(go.name)) listOfExtraAttacks.Add(go.name, atk);
+        }
+
         public static GameObject GetTargetPrefabNode(string prefabname, string nodeName)
         {
             try
@@ -60,6 +68,24 @@ namespace ValheimMoreTwoHanders
         public static void TryAddToTargetPrefabNodeList(GameObject go, string nodeName)
         {
             if (!targetPrefabNodes.ContainsKey(go.name + nodeName)) targetPrefabNodes.Add(go.name + nodeName, go);
+        }
+
+        public static void TryAddToMaterialList(Material mat)
+        {
+            if (!listOfMaterials.ContainsKey(mat.name))
+            {
+                listOfMaterials.Add(mat.name, mat);
+                //Plugin.Log.LogMessage($"material {mat.name} Added to List of Materials.");
+            }
+        }
+
+        public static void TryAddToMaterialList(Material mat, string keyName)
+        {
+            if (!listOfMaterials.ContainsKey(mat.name))
+            {
+                listOfMaterials.Add(keyName, mat);
+                //Plugin.Log.LogMessage($"material {mat.name} Added to List of Materials.");
+            }
         }
 
 

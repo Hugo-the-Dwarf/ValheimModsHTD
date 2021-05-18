@@ -43,8 +43,29 @@ namespace ValheimMoreTwoHanders
         List<EffectData> trailEffectsData = new List<EffectData>();
         public void ApplyEffects(GameObject gameObject)
         {
+            //Set item particle material
+            //try
+            //{
+            //    gameObject.GetComponent<ParticleSystemRenderer>().material = AssetReferences.listOfMaterials["item_particle"];
+            //}
+            //catch (Exception e)
+            //{
+            //    Plugin.Log.LogError($"Error getting item spark particle effect material from material list");
+            //    Plugin.Log.LogError($"Catch Exception details: {e.Message} --- {e.StackTrace}");
+            //}
             if (pendingEffects.Count > 0)
             {
+
+                //Set item attack trail material
+                //try
+                //{
+                //    PrefabNodeManager.RecursiveChildNodeFinder(gameObject.transform, "trail").gameObject.GetComponent<MeleeWeaponTrail>()._material = AssetReferences.listOfMaterials["club_trail"];
+                //}
+                //catch (Exception e)
+                //{
+                //    Plugin.Log.LogError($"Error getting weapon trail effect material from material list");
+                //    Plugin.Log.LogError($"Catch Exception details: {e.Message} --- {e.StackTrace}");
+                //}
                 foreach (PendingEffect pendingEffect in pendingEffects)
                 {
                     EffectData effectData = new EffectData();

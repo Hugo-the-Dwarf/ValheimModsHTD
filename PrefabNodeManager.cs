@@ -13,7 +13,7 @@ namespace ValheimMoreTwoHanders
             public string targetNode;
             public bool copyMesh;
             public bool copyMaterial;
-            //public bool copyParticles;
+            public bool copyParticles;
             public Color mainTextureColor;
             public Color emissionColor;
             public bool replaceColor = false;
@@ -50,7 +50,7 @@ namespace ValheimMoreTwoHanders
         Dictionary<string, MeshRenderer> targetMeshRenderers = new Dictionary<string, MeshRenderer>();
         Dictionary<string, MeshFilter> targetMeshFilters = new Dictionary<string, MeshFilter>();
         Dictionary<string, Material> newMaterials = new Dictionary<string, Material>();
-        // Dictionary<string, ParticleSystem> targetParticleSystems = new Dictionary<string, ParticleSystem>();
+        Dictionary<string, ParticleSystemRenderer> targetParticleSystemRenderers = new Dictionary<string, ParticleSystemRenderer>();
 
         public void StartNewNode()
         {
@@ -86,11 +86,11 @@ namespace ValheimMoreTwoHanders
             return this;
         }
 
-        //public PrefabNodeManager CopyTargetParticle()
-        //{
-        //    currentNode.copyParticles = true;
-        //    return this;
-        //}
+        public PrefabNodeManager CopyTargetParticle()
+        {
+            currentNode.copyParticles = true;
+            return this;
+        }
 
         public PrefabNodeManager ReplaceMainColor(Color newColor)
         {
@@ -184,6 +184,7 @@ namespace ValheimMoreTwoHanders
             targetMeshRenderers = null;
             pendingNodes = null;
             currentNode = null;
+            targetParticleSystemRenderers = null;
         }
 
         public void ApplyNodeChanges(GameObject gameObject)
@@ -196,8 +197,47 @@ namespace ValheimMoreTwoHanders
                 {
                     FixMeshReferences(gameObject, n);
                     FixMaterialReferences(gameObject, n);
+                    FixParticleSystemRendererReferences(gameObject, n);
                 }
                 WipeLists();
+            }
+        }
+
+        private void FixParticleSystemRendererReferences(GameObject gameObject, GameObjectNode node)
+        {
+            if (node.copyParticles)
+            {
+                ParticleSystemRenderer myPSR;
+                ParticleSystemRenderer targetPSR = null;
+
+                myPSR = RecursiveChildNodeFinder(gameObject.transform, node.myNode).gameObject.GetComponent<ParticleSystemRenderer>();
+
+                if (targetParticleSystemRenderers.ContainsKey(node.targetPrefab + node.targetNode))
+                {
+                    targetPSR = targetParticleSystemRenderers[node.targetPrefab + node.targetNode];
+                }
+                else
+                {
+                    GameObject targetedNode;
+                    if (targetPrefabNodes.ContainsKey(node.targetPrefab + node.targetNode))
+                    {
+                        targetedNode = targetPrefabNodes[node.targetPrefab + node.targetNode];
+                        targetPSR = targetedNode.GetComponent<ParticleSystemRenderer>();
+                        if (targetPSR != null) targetParticleSystemRenderers.Add(node.targetPrefab + node.targetNode, targetPSR);
+                    }
+                    else
+                    {
+                        var referencedGameObject = AssetReferences.listOfAllGameObjects[node.targetPrefab];
+                        targetedNode = RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
+                        if (targetedNode != null)
+                        {
+                            targetPrefabNodes.Add(node.targetPrefab + node.targetNode, targetedNode);
+                            targetPSR = targetedNode.GetComponent<ParticleSystemRenderer>();
+                        }
+                    }
+                }
+
+                myPSR.material = targetPSR.material;
             }
         }
 

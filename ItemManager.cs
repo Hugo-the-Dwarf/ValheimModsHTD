@@ -40,6 +40,25 @@ namespace ValheimMoreTwoHanders
             id.m_damages = SetDamageValues(Plugin.SwordSilverGreatDamages);
             id.m_damagesPerLevel = SetDamageValues(Plugin.SwordSilverGreatDamagesPerUpgrade);
 
+            Attack Attack3 = id.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Horizontal;
+            Attack3.m_attackAnimation = "battleaxe_secondary";
+            Attack3.m_attackStamina = 15f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.5f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 30f;
+            Attack3.m_damageMultiplier = 0.5f;
+            Attack3.m_forceMultiplier = 3f;
+            Attack3.m_staggerMultiplier = 4f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 30f;
+
+            AssetReferences.TryAddToAttackList(currentItem, Attack3);
+
+
+
             currentCustom = new CustomItem(currentItem, currentRecipeHelper);
 
             currentCustom.recipeEnabled = Plugin.EnabledWeaponRecipes[0].Value;
@@ -91,6 +110,23 @@ namespace ValheimMoreTwoHanders
             id.m_damages = SetDamageValues(Plugin.GreatCoreMaceDamages);
             id.m_damagesPerLevel = SetDamageValues(Plugin.GreatCoreMaceDamagesPerUpgrade);
 
+            Attack3 = id.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Horizontal;
+            Attack3.m_attackAnimation = "atgeir_secondary";
+            Attack3.m_attackStamina = 35f;
+            Attack3.m_speedFactor = 0.2f;
+            Attack3.m_speedFactorRotation = 0.2f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 30f;
+            Attack3.m_damageMultiplier = 1;
+            Attack3.m_forceMultiplier = 10f;
+            Attack3.m_staggerMultiplier = 6f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 360f;
+
+            AssetReferences.TryAddToAttackList(currentItem, Attack3);
+
             currentCustom = new CustomItem(currentItem, currentRecipeHelper);
 
             currentCustom.recipeEnabled = Plugin.EnabledWeaponRecipes[1].Value;
@@ -98,6 +134,10 @@ namespace ValheimMoreTwoHanders
             currentCustom.prefabNodeManager.SetNode("core1", "SurtlingCore", "core").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("core2", "SurtlingCore", "core").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("core3", "SurtlingCore", "core").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
+
+            //currentCustom.prefabNodeManager.SetNode("flames1", "Torch", "flames").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flames2", "Torch", "flames").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flames3", "Torch", "flames").CopyTargetParticle().StartNewNode();
 
             currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
@@ -141,6 +181,23 @@ namespace ValheimMoreTwoHanders
             id.m_damages = SetDamageValues(Plugin.GreatToxicMaceDamages);
             id.m_damagesPerLevel = SetDamageValues(Plugin.GreatToxicMaceDamagesPerUpgrade);
 
+            Attack3 = id.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Horizontal;
+            Attack3.m_attackAnimation = "atgeir_secondary";
+            Attack3.m_attackStamina = 35f;
+            Attack3.m_speedFactor = 0.2f;
+            Attack3.m_speedFactorRotation = 0.2f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 30f;
+            Attack3.m_damageMultiplier = 1;
+            Attack3.m_forceMultiplier = 10f;
+            Attack3.m_staggerMultiplier = 6f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 360f;
+
+            AssetReferences.TryAddToAttackList(currentItem, Attack3);
+
             currentCustom = new CustomItem(currentItem, currentRecipeHelper);
 
             currentCustom.recipeEnabled = Plugin.EnabledWeaponRecipes[2].Value;
@@ -148,6 +205,10 @@ namespace ValheimMoreTwoHanders
             currentCustom.prefabNodeManager.SetNode("guck1", "Guck", "model").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("guck2", "Guck", "model").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("guck3", "Guck", "model").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
+
+            //currentCustom.prefabNodeManager.SetNode("smoke_expl1", "DragonTear", "smoke_expl").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("smoke_expl2", "DragonTear", "smoke_expl").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("smoke_expl3", "DragonTear", "smoke_expl").CopyTargetParticle().StartNewNode();
 
             currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
@@ -161,6 +222,8 @@ namespace ValheimMoreTwoHanders
             currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
 
             AssetReferences.customItems.Add(currentCustom);
+
+
             //Blue
             currentItem = ExtractGameObjectFromBundle(assetBundle, "MaceCoreGreatBlue");
             RotatingElement = currentItem.transform.Find("attach/model1/rotator1");
@@ -188,6 +251,23 @@ namespace ValheimMoreTwoHanders
             id.m_damages = SetDamageValues(Plugin.GreatFrostMaceDamages);
             id.m_damagesPerLevel = SetDamageValues(Plugin.GreatFrostMaceDamagesPerUpgrade);
 
+            Attack3 = id.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Horizontal;
+            Attack3.m_attackAnimation = "atgeir_secondary";
+            Attack3.m_attackStamina = 35f;
+            Attack3.m_speedFactor = 0.2f;
+            Attack3.m_speedFactorRotation = 0.2f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 30f;
+            Attack3.m_damageMultiplier = 1;
+            Attack3.m_forceMultiplier = 10f;
+            Attack3.m_staggerMultiplier = 6f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 360f;
+
+            AssetReferences.TryAddToAttackList(currentItem, Attack3);
+
             currentCustom = new CustomItem(currentItem, currentRecipeHelper);
 
             currentCustom.recipeEnabled = Plugin.EnabledWeaponRecipes[3].Value;
@@ -198,6 +278,18 @@ namespace ValheimMoreTwoHanders
             currentCustom.prefabNodeManager.SetNode("innercystal2", "Crystal", "interior").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("outercrystal3", "Crystal", "Cube").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("innercystal3", "Crystal", "interior").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
+
+            //currentCustom.prefabNodeManager.SetNode("embers1", "Torch", "embers").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("embers2", "Torch", "embers").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("embers3", "Torch", "embers").CopyTargetParticle().StartNewNode();
+
+            //currentCustom.prefabNodeManager.SetNode("smoke_expl1", "DragonTear", "smoke_expl").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("smoke_expl2", "DragonTear", "smoke_expl").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("smoke_expl3", "DragonTear", "smoke_expl").CopyTargetParticle().StartNewNode();
+
+            //currentCustom.prefabNodeManager.SetNode("flare1", "DragonTear", "flare").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flare2", "DragonTear", "flare").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flare3", "DragonTear", "flare").CopyTargetParticle().StartNewNode();
 
             currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
@@ -223,6 +315,23 @@ namespace ValheimMoreTwoHanders
             id.m_maxQuality = Plugin.SwordBlackMetalGreatCraftingLevels[1].Value;
             id.m_damages = SetDamageValues(Plugin.SwordBlackMetalGreatDamages);
             id.m_damagesPerLevel = SetDamageValues(Plugin.SwordBlackMetalGreatDamagesPerUpgrade);
+
+            Attack3 = id.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Horizontal;
+            Attack3.m_attackAnimation = "battleaxe_secondary";
+            Attack3.m_attackStamina = 15f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.5f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 30f;
+            Attack3.m_damageMultiplier = 0.5f;
+            Attack3.m_forceMultiplier = 3f;
+            Attack3.m_staggerMultiplier = 4f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 30f;
+
+            AssetReferences.TryAddToAttackList(currentItem, Attack3);
 
             currentCustom = new CustomItem(currentItem, currentRecipeHelper);
 
@@ -282,6 +391,23 @@ namespace ValheimMoreTwoHanders
             id.m_damages = SetDamageValues(Plugin.SwordObsidianGreatDamages);
             id.m_damagesPerLevel = SetDamageValues(Plugin.SwordObsidianGreatDamagesPerUpgrade);
 
+            Attack3 = id.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "sword_secondary";
+            Attack3.m_attackStamina = 30f;
+            Attack3.m_speedFactor = 0.2f;
+            Attack3.m_speedFactorRotation = 0f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 30f;
+            Attack3.m_damageMultiplier = 3f;
+            Attack3.m_forceMultiplier = 1f;
+            Attack3.m_staggerMultiplier = 1f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 45f;
+
+            AssetReferences.TryAddToAttackList(currentItem, Attack3);
+
             currentCustom = new CustomItem(currentItem, currentRecipeHelper);
 
             currentCustom.recipeEnabled = Plugin.EnabledWeaponRecipes[5].Value;
@@ -299,6 +425,22 @@ namespace ValheimMoreTwoHanders
             currentCustom.prefabNodeManager.SetNode("inner1", "DragonTear", "inner").CopyTargetMaterial().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("inner2", "DragonTear", "inner").CopyTargetMaterial().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("inner3", "DragonTear", "inner").CopyTargetMaterial().StartNewNode();
+
+            currentCustom.prefabNodeManager.SetNode("hull1", "DragonTear", "hull").CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("hull2", "DragonTear", "hull").CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("hull3", "DragonTear", "hull").CopyTargetMaterial().StartNewNode();
+
+            //currentCustom.prefabNodeManager.SetNode("pixel_flakes1", "DragonTear", "pixel_flakes").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("pixel_flakes2", "DragonTear", "pixel_flakes").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("pixel_flakes3", "DragonTear", "pixel_flakes").CopyTargetParticle().StartNewNode();
+
+            //currentCustom.prefabNodeManager.SetNode("smoke_expl1", "DragonTear", "smoke_expl").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("smoke_expl2", "DragonTear", "smoke_expl").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("smoke_expl3", "DragonTear", "smoke_expl").CopyTargetParticle().StartNewNode();
+
+            //currentCustom.prefabNodeManager.SetNode("flare1", "DragonTear", "flare").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flare2", "DragonTear", "flare").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flare3", "DragonTear", "flare").CopyTargetParticle().StartNewNode();
 
             currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
             currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
@@ -321,6 +463,23 @@ namespace ValheimMoreTwoHanders
             id.m_damages = SetDamageValues(Plugin.SwordFlametalGreatDamages);
             id.m_damagesPerLevel = SetDamageValues(Plugin.SwordFlametalGreatDamagesPerUpgrade);
 
+            Attack3 = id.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "sword_secondary";
+            Attack3.m_attackStamina = 30f;
+            Attack3.m_speedFactor = 0.2f;
+            Attack3.m_speedFactorRotation = 0f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 30f;
+            Attack3.m_damageMultiplier = 3f;
+            Attack3.m_forceMultiplier = 1f;
+            Attack3.m_staggerMultiplier = 1f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 45f;
+
+            AssetReferences.TryAddToAttackList(currentItem, Attack3);
+
             currentCustom = new CustomItem(currentItem, currentRecipeHelper);
 
             currentCustom.recipeEnabled = Plugin.EnabledWeaponRecipes[6].Value;
@@ -328,6 +487,123 @@ namespace ValheimMoreTwoHanders
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+
+            //currentCustom.prefabNodeManager.SetNode("flames_rise1", "Torch", "flames").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flames_rise2", "Torch", "flames").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flames_rise3", "Torch", "flames").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flames_mid1", "Torch", "flames").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flames_mid2", "Torch", "flames").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flames_mid3", "Torch", "flames").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flames1", "Torch", "flames").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flames2", "Torch", "flames").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("flames3", "Torch", "flames").CopyTargetParticle().StartNewNode();
+
+            //currentCustom.prefabNodeManager.SetNode("embers1", "Torch", "embers").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("embers2", "Torch", "embers").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("embers3", "Torch", "embers").CopyTargetParticle().StartNewNode();
+
+            //currentCustom.prefabNodeManager.SetNode("smoke1", "Torch", "smoke (1)").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("smoke2", "Torch", "smoke (1)").CopyTargetParticle().StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("smoke3", "Torch", "smoke (1)").CopyTargetParticle().StartNewNode();
+
+            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            AssetReferences.customItems.Add(currentCustom);
+
+            //Axes
+            //Silver
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "AxeSilverBattle");
+
+            currentRecipeHelper = new RecipeHelper(currentItem, Plugin.AxeSilverBattleCraftingStation.Value, Plugin.AxeSilverBattleCraftingLevels[0].Value, 1);
+            currentRecipeHelper.AddResource("FineWood", 3, 0).AddResource("Silver", 60, 30).AddResource("LeatherScraps", 9, 3).AddResource("Iron", 10, 5);
+
+            id = currentItem.GetComponent<ItemDrop>().m_itemData.m_shared;
+            id.m_name = Plugin.AxeSilverBattleName.Value;
+            id.m_description = Plugin.AxeSilverBattleDescription.Value;
+            id.m_maxQuality = Plugin.AxeSilverBattleCraftingLevels[1].Value;
+            id.m_damages = SetDamageValues(Plugin.AxeSilverBattleDamages);
+            id.m_damagesPerLevel = SetDamageValues(Plugin.AxeSilverBattleDamagesPerUpgrade);
+
+            Attack3 = id.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_pickaxe";
+            Attack3.m_attackStamina = 25f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.3f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 40f;
+            Attack3.m_damageMultiplier = 1.75f;
+            Attack3.m_forceMultiplier = 0.75f;
+            Attack3.m_staggerMultiplier = 2f;
+            Attack3.m_attackRange = 2.5f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 120f;
+
+            AssetReferences.TryAddToAttackList(currentItem, Attack3);
+
+            currentCustom = new CustomItem(currentItem, currentRecipeHelper);
+
+            currentCustom.recipeEnabled = Plugin.EnabledWeaponRecipes[7].Value;
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_battleaxe_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_wood_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+
+            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            AssetReferences.customItems.Add(currentCustom);
+
+            //Black Metal
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "AxeBlackMetalBattle");
+
+            currentRecipeHelper = new RecipeHelper(currentItem, Plugin.AxeBlackMetalBattleCraftingStation.Value, Plugin.AxeBlackMetalBattleCraftingLevels[0].Value, 1);
+            currentRecipeHelper.AddResource("BlackMetal", 60, 30).AddResource("LinenThread", 9, 3);
+
+            id = currentItem.GetComponent<ItemDrop>().m_itemData.m_shared;
+            id.m_name = Plugin.AxeBlackMetalBattleName.Value;
+            id.m_description = Plugin.AxeBlackMetalBattleDescription.Value;
+            id.m_maxQuality = Plugin.AxeBlackMetalBattleCraftingLevels[1].Value;
+            id.m_damages = SetDamageValues(Plugin.AxeBlackMetalBattleDamages);
+            id.m_damagesPerLevel = SetDamageValues(Plugin.AxeBlackMetalBattleDamagesPerUpgrade);
+
+            Attack3 = id.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_pickaxe";
+            Attack3.m_attackStamina = 25f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.3f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 40f;
+            Attack3.m_damageMultiplier = 1.75f;
+            Attack3.m_forceMultiplier = 0.75f;
+            Attack3.m_staggerMultiplier = 2f;
+            Attack3.m_attackRange = 2.5f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 120f;
+
+            AssetReferences.TryAddToAttackList(currentItem, Attack3);
+
+            currentCustom = new CustomItem(currentItem, currentRecipeHelper);
+
+            currentCustom.recipeEnabled = Plugin.EnabledWeaponRecipes[8].Value;
+
+            currentCustom.prefabNodeManager.SetNode("model1", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("model2", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("model3", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_battleaxe_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_wood_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
             currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
             currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
 
