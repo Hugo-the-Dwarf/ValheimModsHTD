@@ -12,14 +12,17 @@ Can also set a Hotkey to use the weapon's 3rd attack, default is "mouse 3" which
 
 
 ChangeLog:
+V 3.0 => V 3.0.1:
+-Possibly Fixed Visual errors with Vulkan Mode, Those that like or have to run with Vulkan rejoice(maybe)
+-Fixed Critcal Issue with Great Maces, Secondary and Third Attacks were missing the setting to hit more than one enemy. Which resulted in either hitting the ground and doing nothing, or just one target (which makes no sense for AoE like attacks)
 V 2.0 => V 3.0:
-Added Silver Battleaxe
-Added Black Metal Battleaxe
-Updated All weapon textures
-Parry Multipiers on Two Handers are now 3.5 from 4
-Validated that Silver and Black Metal Sword is -10% mov speed, axes are -15%, and heavier ones are -20%
-Adjusted Damage numbers with some more math
-Implemented Hotkey, and Function for doing a 3rd attack for all 9 weapons.
+-Added Silver Battleaxe
+-Added Black Metal Battleaxe
+-Updated All weapon textures
+-Parry Multipiers on Two Handers are now 3.5 from 4
+-Validated that Silver and Black Metal Sword is -10% mov speed, axes are -15%, and heavier ones are -20%
+-Adjusted Damage numbers with some more math
+-Implemented Hotkey, and Function for doing a 3rd attack for all 9 weapons.
 
 
 Console/Cheats/Configs Item IDS:
