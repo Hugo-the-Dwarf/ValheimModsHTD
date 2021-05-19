@@ -36,6 +36,7 @@ Flametal Great Sword ::: SwordFlametalGreat
 Silver Battleaxe ::: AxeSilverBattle
 Black Metal Battleaxe ::: AxeBlackMetalBattle
 
+Code: https://github.com/Hugo-the-Dwarf/ValheimMoreTwoHanders
 
 First Weapon: Silver Great Sword
 A large silvered iron sword, favored for its range for cutting foes down, and for the silver to banish the undead.
