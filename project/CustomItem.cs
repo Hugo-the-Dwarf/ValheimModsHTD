@@ -4,8 +4,7 @@ namespace ValheimMoreTwoHanders
 {
     public class CustomItem
     {
-        public RecipeHelper recipe;
-        public bool recipeEnabled = true;
+        public RecipeHelper recipe;        
         public GameObject gameObject;
         public WeaponEffectsManager effectHandler = new WeaponEffectsManager();
         public PrefabNodeManager prefabNodeManager = new PrefabNodeManager();

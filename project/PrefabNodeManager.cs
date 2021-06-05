@@ -237,8 +237,16 @@ namespace ValheimMoreTwoHanders
                     }
                 }
 
+                if (node.copyShaderOnly)
+                {
+                    myPSR.material.shader = targetPSR.material.shader;
+                    return;
+                }
+
                 myPSR.material = targetPSR.material;
             }
+
+            
         }
 
         private void FixMeshReferences(GameObject gameObject, GameObjectNode node)
@@ -318,6 +326,12 @@ namespace ValheimMoreTwoHanders
                     }
                 }
 
+                if (node.copyShaderOnly)
+                {
+                    myRenderer.material.shader = targetRenderer.material.shader;
+                    return;
+                }
+
                 if (node.useMyTextures)
                 {
                     /* Valid Texture Names
@@ -373,12 +387,7 @@ namespace ValheimMoreTwoHanders
                     }
                     else
                         myRenderer.material = targetRenderer.material; //just use the reference 100%
-                }
-
-                if (node.copyShaderOnly)
-                {
-                    myRenderer.material.shader = targetRenderer.material.shader;
-                }
+                }               
 
             }
         }

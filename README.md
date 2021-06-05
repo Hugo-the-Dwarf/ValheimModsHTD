@@ -12,6 +12,8 @@ Can also set a Hotkey to use the weapon's 3rd attack, default is "mouse 3" which
 
 
 ChangeLog:
+V 3.0.1 => V 3.0.2:
+-Fixed issue of the weapons being indestructible. They will function like all weapons do now, using durability.
 V 3.0 => V 3.0.1:
 -Possibly Fixed Visual errors with Vulkan Mode, Those that like or have to run with Vulkan rejoice(maybe)
 -Fixed Critcal Issue with Great Maces, Secondary and Third Attacks were missing the setting to hit more than one enemy. Which resulted in either hitting the ground and doing nothing, or just one target (which makes no sense for AoE like attacks)

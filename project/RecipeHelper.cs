@@ -8,10 +8,13 @@ namespace ValheimMoreTwoHanders
         private List<ResourceElement> resources = new List<ResourceElement>();
         private Recipe myRecipe = ScriptableObject.CreateInstance<Recipe>(); //Unitiy will bitch if you don't init recipes this way
         private string myCraftingStation; //string name of the prefab, gets used to do a real lookup later
+        private string prefabName;
+        public bool recipeEnabled = true;
 
         public RecipeHelper(GameObject prefab, string craftingStationKey, int minCraftingStationLevel, int amount)
         {
-            myRecipe.name = prefab.name + "_recipe";
+            prefabName = prefab.name;
+            myRecipe.name = prefabName + "_recipe";
             myRecipe.m_item = prefab.GetComponent<ItemDrop>();
             myRecipe.m_amount = amount;
             myRecipe.m_enabled = true;
@@ -19,6 +22,26 @@ namespace ValheimMoreTwoHanders
             myRecipe.m_minStationLevel = minCraftingStationLevel;
             //myRecipe.m_repairStation = null; //Do I even need this for items, Unity has "None" which I'm assuming is NULL
             //myRecipe.m_resources = craftingRequirementList; //Piece.Requirement[] class
+        }
+
+        public string GetPrefabName()
+        {
+            return prefabName;
+        }
+
+        public string GetCraftingStation()
+        {
+            return myCraftingStation;
+        }
+
+        public Recipe GetRecipeInstance()
+        {
+            return myRecipe;
+        }
+
+        public ResourceElement[] GetResourceElements()
+        {
+            return resources.ToArray();
         }
 
         public RecipeHelper AddResource(string prefabItemName, int amount, int amountPerLevel)
