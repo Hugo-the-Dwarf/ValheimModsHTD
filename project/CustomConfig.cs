@@ -4,6 +4,9 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using BepInEx;
+using BepInEx.Configuration;
+using ServerSync;
 
 namespace ValheimMoreTwoHanders
 {
@@ -15,12 +18,45 @@ namespace ValheimMoreTwoHanders
         private List<ConfigItemData> itemConfigsToApply = new List<ConfigItemData>();
         private List<ConfigRecipeData> recipeConfigsToApply = new List<ConfigRecipeData>();
 
+        public CustomSyncedValue<string> syncedItemConfigsToApply = new CustomSyncedValue<string>(Plugin.configSync, "itemConfigs");
+        public CustomSyncedValue<string> syncedRecipeConfigsToApply = new CustomSyncedValue<string>(Plugin.configSync, "recipeConfigs");
+
         private bool itemConfigFound = false;
         private bool recipeConfigFound = false;
 
         private string itemConfigSuffix = "_itemdata";
         private string recipeConfigSuffix = "_recipeData";
         //string modConfigSuffix = "_main"; // not used for now, I'll just use BepinEx's Configmanager for the simple values
+
+        public CustomConfig()
+        {
+            syncedItemConfigsToApply.ValueChanged += ItemConfigsChanged;
+            syncedRecipeConfigsToApply.ValueChanged += RecipeConfigChanged;
+        }
+
+        private void ItemConfigsChanged()
+        {
+            itemConfigs.Clear();
+            itemConfigsToApply.Clear();
+            foreach (ConfigItemData itemData in DeserializeItemDataConfig(syncedItemConfigsToApply.Value))
+            {
+                itemConfigs.Add(itemData);
+                itemConfigsToApply.Add(itemData);
+            }
+            Plugin.RebuildCustomAssetLists();
+        }
+
+        private void RecipeConfigChanged()
+        {
+            recipeConfigs.Clear();
+            recipeConfigsToApply.Clear();
+            foreach (ConfigRecipeData recipeData in DeserializeRecipeDataConfig(syncedRecipeConfigsToApply.Value))
+            {
+                recipeConfigs.Add(recipeData);
+                recipeConfigsToApply.Add(recipeData);
+            }
+            Plugin.RebuildCustomAssetLists();
+        }
 
         public bool UsingDefaultItemConfig(GameObject go)
         {
@@ -88,72 +124,72 @@ namespace ValheimMoreTwoHanders
             return null;
         }
 
-        public void LoadConfigs(string bepinexConfigPath)
+        public IEnumerable<ConfigItemData> DeserializeItemDataConfig(string data)
         {
-            //using(StreamReader sr = new StreamReader(bepinexConfigPath + modConfigSuffix+".cfg"))
-            //{
-
-            //}
-
-            //item data
-            try
+            data = data.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
+            string[] splitData = data.Split('@');
+            foreach (string itemData in splitData)
             {
-                using (StreamReader sr = new StreamReader(bepinexConfigPath + itemConfigSuffix + ".cfg"))
+                yield return JsonUtility.FromJson<ConfigItemData>(itemData);
+            }
+        }
+
+        public IEnumerable<ConfigRecipeData> DeserializeRecipeDataConfig(string data)
+        {
+            data = data.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
+            string[] splitData = data.Split('@');
+            for (int i = 0; i < splitData.Length; i++)
+            {
+                string frontHalf = splitData[i].Substring(0, splitData[i].IndexOf("\"CraftingRequirements\":"));
+                string backHalf = splitData[i].Substring(splitData[i].IndexOf("\"CraftingRequirements\":"));
+                frontHalf += "\"CraftingRequirements\": \"\"}";
+                backHalf = backHalf.Substring(backHalf.IndexOf(":") + 1);
+                backHalf = backHalf.Remove(backHalf.Length - 1);
+                ConfigRecipeData itemData = JsonUtility.FromJson<ConfigRecipeData>(frontHalf);
+                string[] splitResourceData = backHalf.Split('#');
+                if (splitResourceData.Length > 0)
                 {
-                    string data = sr.ReadToEnd();
-                    data = data.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
-                    string[] splitData = data.Split('@');
-                    for(int i = 0; i <splitData.Length; i++)
+                    List<ConfigResource> res = new List<ConfigResource>();
+                    for (int j = 0; j < splitResourceData.Length; j++)
                     {
-                        ConfigItemData itemData = JsonUtility.FromJson<ConfigItemData>(splitData[i]);
-                        itemConfigs.Add(itemData);
-                        itemConfigsToApply.Add(itemData);
+                        res.Add(JsonUtility.FromJson<ConfigResource>(splitResourceData[j]));
                     }
-                    itemConfigFound = true;
+                    itemData.CraftingRequirementsArray = res.ToArray();
                 }
+                yield return itemData;
             }
-            catch (FileNotFoundException)
+        }
+
+        public void LoadInitialConfigs(string bepinexConfigPath)
+        {
+            bool Load(string fileSuffix, CustomSyncedValue<string> configValue)
             {
-                Plugin.Log.LogWarning($"Failed to find '{itemConfigSuffix}' in path '{bepinexConfigPath}' will create config of same name with default values.");
-            }
-            catch (IOException ioEx)
-            {
-                Plugin.Log.LogError($"An IO Exception was thrown. [{itemConfigSuffix}]");
-                Plugin.Log.LogError(ioEx.Message);
-                Plugin.Log.LogError(ioEx.StackTrace);
+                string path = bepinexConfigPath + fileSuffix + ".cfg";
+                void consumeConfigFileEvent(object sender, FileSystemEventArgs args) => LoadConfig(path, configValue);
+
+                FileSystemWatcher watcher = new FileSystemWatcher(Path.GetDirectoryName(path), Path.GetFileName(path));
+                watcher.Changed += consumeConfigFileEvent;
+                watcher.Created += consumeConfigFileEvent;
+                watcher.Renamed += consumeConfigFileEvent;
+                watcher.IncludeSubdirectories = true;
+                watcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
+                watcher.EnableRaisingEvents = true;
+
+                return LoadConfig(path, configValue);
             }
 
-            //recipes
+            itemConfigFound = Load(itemConfigSuffix, syncedItemConfigsToApply);
+            recipeConfigFound = Load(recipeConfigSuffix, syncedRecipeConfigsToApply);
+        }
+
+        public bool LoadConfig(string bepinexConfigPath, CustomSyncedValue<string> configValue)
+        {
             try
             {
-                using (StreamReader sr = new StreamReader(bepinexConfigPath + recipeConfigSuffix + ".cfg"))
+                using (StreamReader sr = new StreamReader(bepinexConfigPath))
                 {
-                    string data = sr.ReadToEnd();
-                    data = data.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
-                    string[] splitData = data.Split('@');
-                    for (int i = 0; i < splitData.Length; i++)
-                    {
-                        
-                        string frontHalf = splitData[i].Substring(0, splitData[i].IndexOf("\"CraftingRequirements\":"));
-                        string backHalf = splitData[i].Substring(splitData[i].IndexOf("\"CraftingRequirements\":"));
-                        frontHalf += "\"CraftingRequirements\": \"\"}";
-                        backHalf = backHalf.Substring(backHalf.IndexOf(":")+1);
-                        backHalf = backHalf.Remove(backHalf.Length - 1);
-                        ConfigRecipeData itemData = JsonUtility.FromJson<ConfigRecipeData>(frontHalf);
-                        string[] splitResourceData = backHalf.Split('#');
-                        if(splitResourceData.Length > 0)
-                        {
-                            List<ConfigResource> res = new List<ConfigResource>();
-                            for(int j = 0; j < splitResourceData.Length;j++)
-                            {
-                                res.Add(JsonUtility.FromJson<ConfigResource>(splitResourceData[j]));
-                            }
-                            itemData.CraftingRequirementsArray = res.ToArray();
-                        }
-                        recipeConfigs.Add(itemData);
-                        recipeConfigsToApply.Add(itemData);
-                    }
-                    recipeConfigFound = true;
+                    configValue.AssignLocalValue(sr.ReadToEnd());
+                    return true;
                 }
             }
             catch (FileNotFoundException)
@@ -167,6 +203,49 @@ namespace ValheimMoreTwoHanders
                 Plugin.Log.LogError(ioEx.StackTrace);
             }
 
+            return false;
+        }
+
+        public string SerializeItemDataConfig()
+        {
+            StringBuilder sbOutput = new StringBuilder();
+            foreach (ConfigItemData cid in itemConfigs)
+            {
+                if (sbOutput.Length > 0) sbOutput.Append("\r\n@\r\n");
+                sbOutput.Append(JsonUtility.ToJson(cid, true));
+            }
+
+            return sbOutput.ToString();
+        }
+
+        public string SerializeRecipeDataConfig()
+        {
+            StringBuilder sbOutput = new StringBuilder();
+            foreach (ConfigRecipeData crd in recipeConfigs)
+            {
+                if (sbOutput.Length > 0) sbOutput.Append("\r\n@\r\n");
+                if (crd.CraftingRequirementsArray.Length > 0)
+                {
+                    //crd.CraftingRequirements = "[";
+                    bool firstResourceDone = false;
+                    foreach (ConfigResource cr in crd.CraftingRequirementsArray)
+                    {
+                        if (firstResourceDone) crd.CraftingRequirements += "#";
+                        crd.CraftingRequirements += JsonUtility.ToJson(cr);
+                        firstResourceDone = true;
+                    }
+                    //crd.CraftingRequirements += "]";
+                }
+                string crdJSONString = JsonUtility.ToJson(crd, true);
+                crdJSONString = crdJSONString.Replace("\"{", "\r\n\t{\r\n\t\t");
+                crdJSONString = crdJSONString.Replace("}\"", "\r\n\t}");
+                crdJSONString = crdJSONString.Replace(",\\\"", ",\r\n\t\t\"");
+                crdJSONString = crdJSONString.Replace("\\\"", "\"");
+                crdJSONString = crdJSONString.Replace("}#{", "\r\n\t}\r\n\t#\r\n\t{\r\n\t\t");
+                sbOutput.Append(crdJSONString);
+            }
+
+            return sbOutput.ToString();
         }
 
         public void WriteConfigs(string bepinexConfigPath)
@@ -175,16 +254,7 @@ namespace ValheimMoreTwoHanders
             {
                 if (itemConfigs.Count > 0)
                 {
-                    using (StreamWriter sw = new StreamWriter(bepinexConfigPath + itemConfigSuffix + ".cfg"))
-                    {
-                        StringBuilder sbOutput = new StringBuilder();
-                        foreach (ConfigItemData cid in itemConfigs)
-                        {
-                            if (sbOutput.Length > 0) sbOutput.Append("\r\n@\r\n");
-                            sbOutput.Append(JsonUtility.ToJson(cid, true));
-                        }
-                        sw.Write(sbOutput.ToString());
-                    }
+                    using (StreamWriter sw = new StreamWriter(bepinexConfigPath + itemConfigSuffix + ".cfg")) sw.Write(SerializeItemDataConfig());
                 }
             }
             catch (IOException ioEx)
@@ -198,34 +268,7 @@ namespace ValheimMoreTwoHanders
             {
                 if (recipeConfigs.Count > 0)
                 {
-                    using (StreamWriter sw = new StreamWriter(bepinexConfigPath + recipeConfigSuffix + ".cfg"))
-                    {
-                        StringBuilder sbOutput = new StringBuilder();
-                        foreach (ConfigRecipeData crd in recipeConfigs)
-                        {
-                            if (sbOutput.Length > 0) sbOutput.Append("\r\n@\r\n");
-                            if (crd.CraftingRequirementsArray.Length > 0)
-                            {
-                                //crd.CraftingRequirements = "[";
-                                bool firstResourceDone = false;
-                                foreach (ConfigResource cr in crd.CraftingRequirementsArray)
-                                {
-                                    if (firstResourceDone) crd.CraftingRequirements += "#";
-                                    crd.CraftingRequirements += JsonUtility.ToJson(cr);
-                                    firstResourceDone = true;
-                                }
-                                //crd.CraftingRequirements += "]";
-                            }
-                            string crdJSONString = JsonUtility.ToJson(crd, true);
-                            crdJSONString=crdJSONString.Replace("\"{", "\r\n\t{\r\n\t\t");
-                            crdJSONString=crdJSONString.Replace("}\"", "\r\n\t}");
-                            crdJSONString=crdJSONString.Replace(",\\\"", ",\r\n\t\t\"");
-                            crdJSONString=crdJSONString.Replace("\\\"", "\"");
-                            crdJSONString = crdJSONString.Replace("}#{", "\r\n\t}\r\n\t#\r\n\t{\r\n\t\t");
-                            sbOutput.Append(crdJSONString);
-                        }
-                        sw.Write(sbOutput.ToString());
-                    }
+                    using (StreamWriter sw = new StreamWriter(bepinexConfigPath + recipeConfigSuffix + ".cfg")) sw.Write(SerializeRecipeDataConfig());
                 }
             }
             catch (IOException ioEx)

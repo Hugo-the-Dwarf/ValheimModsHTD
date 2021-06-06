@@ -18,6 +18,7 @@ namespace ValheimMoreTwoHanders
         public const string ModName = "More Two Handed Weapons";
         public const string GUID = "htd.moretwohanders";
         //public static readonly string MyDirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static ServerSync.ConfigSync configSync = new ServerSync.ConfigSync(GUID) { DisplayName = ModName, CurrentVersion = Version };
 
         Harmony _Harmony;
         public static ManualLogSource Log;
@@ -45,7 +46,7 @@ namespace ValheimMoreTwoHanders
             PlayerAttackInputPatch.attack3Hotkey = Config.Bind<string>("1Hotkeys", "hotkey_ThirdAttack", "mouse 3", "Customizable hotkey so you can use the third attack of the weapon. If you want to use a mouse key, include a space: mouse 3, for example. Valid inputs: https://docs.unity3d.com/ScriptReference/KeyCode.html");
 
 
-            cc.LoadConfigs(Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath),GUID));
+            cc.LoadInitialConfigs(Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath),GUID));
 
             //This Static Class just fills the ItemList and RecipeLists
             try
@@ -78,7 +79,6 @@ namespace ValheimMoreTwoHanders
             */
 
             _Harmony.PatchAll();
-
         }
 
         private void OnDestroy()
@@ -189,9 +189,25 @@ namespace ValheimMoreTwoHanders
             }
         }
 
+        public static void RebuildCustomAssetLists()
+        {
+            AssetReferences.customItems = new List<CustomItem>();
+            AssetReferences.myRecipeList = new List<Recipe>();
+            AssetReferences.myItemList = new List<GameObject>();
+            customItemsAssembled = false;
+            customRecipesAssembled = false;
+            ItemManager.BuildLists();
+
+            if (IsObjectDBValid())
+            {
+                GenerateReferenceLists();
+                AddNewItems();
+                AddNewRecipes();
+            }
+        }
 
         //Dick Justice's and RandyKnapp's hack for ensuring the ObjectDB has objects in it and it's ready
-        private static bool IsObjectDBValid()
+        public static bool IsObjectDBValid()
         {
             return ObjectDB.instance != null && ObjectDB.instance.m_items.Count != 0 && ObjectDB.instance.GetItemPrefab("Amber") != null;
         }
@@ -350,17 +366,17 @@ namespace ValheimMoreTwoHanders
         private static void AddRecipeToObjectDB(Recipe recipe)
         {
             //Sadly I'm not sure why this is here, but RandyKnapp had it
-            var removed = ObjectDB.instance.m_recipes.RemoveAll(x => x.name == recipe.name);
-            if (removed > 0)
-            {
-                Log.LogMessage($"Recipe ({recipe.name}): {removed} duplicated instance(s) removed.");
-            }
+            // It removes the old recipe and adds the new one. Randy has this to make sure that reloading the configuration while the game is running works.
+            ObjectDB.instance.m_recipes.RemoveAll(x => x.name == recipe.name);
             ObjectDB.instance.m_recipes.Add(recipe);
         }
 
         private static void WipeCustomItemList()
         {
-            if (customItemsAssembled && customRecipesAssembled) AssetReferences.customItems = null;
+            if (customItemsAssembled && customRecipesAssembled)
+            {
+                AssetReferences.customItems = new List<CustomItem>();
+            }
         }
     }
 }
