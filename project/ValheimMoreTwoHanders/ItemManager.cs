@@ -31,25 +31,21 @@ namespace ValheimMoreTwoHanders
             //Silver Great Sword    
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordSilverGreat");
             var id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
-            {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
+            //Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
+            //Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+
+            //currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
             {
                 currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("FineWood", 8, 0).AddResource("Silver", 60, 30).AddResource("LeatherScraps", 9, 3).AddResource("Iron", 10, 5);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            //AssetReferences.myItemHashList.Add(currentItem.name.GetStableHashCode(), currentItem.name);
 
             Attack Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Horizontal;
@@ -85,25 +81,16 @@ namespace ValheimMoreTwoHanders
             //Iron
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordIronGreat");
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
-            {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
             {
                 currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("FineWood", 8, 0).AddResource("Iron", 40, 20).AddResource("LeatherScraps", 9, 3);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Horizontal;
@@ -140,25 +127,16 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "AxeSilverBattle");
 
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
-            {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
             {
                 currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("ElderBark", 20, 0).AddResource("Silver", 60, 30).AddResource("LeatherScraps", 9, 3).AddResource("Iron", 10, 5);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -197,25 +175,16 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "MaceSilverGreat");
 
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
             {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
-            {
-                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);//forge
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("ElderBark", 20, 0).AddResource("Silver", 60, 30).AddResource("YmirRemains", 10, 0).AddResource("FreezeGland", 10, 0);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -276,25 +245,16 @@ namespace ValheimMoreTwoHanders
             cir.rotateZ = rotZ;
 
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
             {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 40, 15).AddResource("Iron", 35, 10).AddResource("LeatherScraps", 12, 8);
             }
-            else
-            {
-                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);//forge
-                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 40, 25).AddResource("Iron", 35, 10).AddResource("LeatherScraps", 12, 8);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
-            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -355,28 +315,18 @@ namespace ValheimMoreTwoHanders
             cir.rotateY = rotY;
             cir.rotateZ = rotZ;
 
-
-
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
+            //id.m_itemData.m_shared.m_name += " Green";
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
             {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 40, 15).AddResource("Iron", 35, 10).AddResource("LeatherScraps", 12, 8);
             }
-            else
-            {
-                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);//forge
-                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 40, 15).AddResource("Iron", 35, 25).AddResource("LeatherScraps", 8, 12);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
-            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -426,25 +376,16 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "MaceGraspUndying");
 
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
             {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
-            {
-                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);//forge
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("TrophyBonemass", 1, 0).AddResource("WitheredBone", 20, 10).AddResource("BoneFragments", 50, 25).AddResource("TrollHide", 30, 20);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -485,25 +426,16 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordBlackMetalGreat");
 
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
-            {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
             {
                 currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("BlackMetal", 60, 30).AddResource("LinenThread", 9, 3);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Horizontal;
@@ -569,25 +501,16 @@ namespace ValheimMoreTwoHanders
             cir.rotateZ = rotZ;
 
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
-            {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
             {
                 currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("DragonTear", 1, 0).AddResource("Obsidian", 25, 35).AddResource("FreezeGland", 30, 30).AddResource("Crystal", 20, 10);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -650,25 +573,16 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordFlametalGreat");
 
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
-            {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
             {
                 currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("Flametal", 35, 20).AddResource("Iron", 25, 15).AddResource("LeatherScraps", 10, 10).AddResource("SurtlingCore", 20, 10);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -716,24 +630,6 @@ namespace ValheimMoreTwoHanders
                 PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "smoke1").gameObject.SetActive(false);
                 PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "smoke2").gameObject.SetActive(false);
                 PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "smoke3").gameObject.SetActive(false);
-
-                //currentCustom.prefabNodeManager.SetNode("flames_rise1", "Torch", "flames").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("flames_rise2", "Torch", "flames").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("flames_rise3", "Torch", "flames").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("flames_mid1", "Torch", "flames").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("flames_mid2", "Torch", "flames").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("flames_mid3", "Torch", "flames").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("flames1", "Torch", "flames").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("flames2", "Torch", "flames").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("flames3", "Torch", "flames").CopyTargetParticle().CopyTargetShader().StartNewNode();
-
-                //currentCustom.prefabNodeManager.SetNode("embers1", "Torch", "embers").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("embers2", "Torch", "embers").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("embers3", "Torch", "embers").CopyTargetParticle().CopyTargetShader().StartNewNode();
-
-                //currentCustom.prefabNodeManager.SetNode("smoke1", "Torch", "smoke (1)").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("smoke2", "Torch", "smoke (1)").CopyTargetParticle().CopyTargetShader().StartNewNode();
-                //currentCustom.prefabNodeManager.SetNode("smoke3", "Torch", "smoke (1)").CopyTargetParticle().CopyTargetShader().StartNewNode();
             }
 
             currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
@@ -747,25 +643,16 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordFlametalGreatIron");
 
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
+            
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
-            {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
+            if (currentRecipeHelper == null)
             {
                 currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("TrophyDraugr", 1, 0).AddResource("Iron", 60, 25).AddResource("ElderBark", 10, 5).AddResource("LeatherScraps", 20, 10);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -806,25 +693,16 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "AxeBlackMetalBattle");
 
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
+            
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
-            {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
+            if (currentRecipeHelper == null)
             {
                 currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("BlackMetal", 60, 30).AddResource("LinenThread", 9, 3);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -866,25 +744,16 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordDragonSlayer");
 
             id = currentItem.GetComponent<ItemDrop>();
-            if (!Plugin.cc.UsingDefaultItemConfig(currentItem))
-            {
-                Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            }
-            else
-            {
-                Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-            }
+            
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
 
-            if (!Plugin.cc.UsingDefaultRecipeConfig(currentItem))
-            {
-                currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
-            }
-            else
+            if (currentRecipeHelper == null)
             {
                 currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
                 currentRecipeHelper.AddResource("TrophyDragonQueen", 1, 0).AddResource("TrophyDraugrElite", 1, 0).AddResource("Iron", 90, 45).AddResource("LinenThread", 20, 10);
-                Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -919,6 +788,64 @@ namespace ValheimMoreTwoHanders
             AssetReferences.customItems.Add(currentCustom);
 
             assetBundle.Unload(false);
+
+            //assetBundle = GetAssetBundleFromResources("blackdeath");
+
+            ////Fist Test
+            //currentItem = ExtractGameObjectFromBundle(assetBundle, "FistSpharai");
+
+            //try
+            //{
+            //    currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            //    if (currentRecipeHelper == null)
+            //    {
+            //        currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+            //        currentRecipeHelper.AddResource("Amber", 1, 0);
+            //    }
+            //}
+            //catch(Exception e)
+            //{
+            //    Plugin.Log.LogError("Problem with Setting up item prefabs. ItemManager. Fist Weapons");
+            //    Plugin.Log.LogError(e.Message);
+            //    Plugin.Log.LogError(e.StackTrace);
+            //}
+            //Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            //Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+
+            //AssetReferences.myItemHashList.Add(currentItem.name.GetStableHashCode(), currentItem.name);
+
+            //currentCustom = new CustomItem(currentItem, currentRecipeHelper);
+
+            //currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            //currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            //currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            //currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", WeaponEffectsManager.EffectList.START);
+            //currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
+            //currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", WeaponEffectsManager.EffectList.TRAIL);
+
+            //AssetReferences.customItems.Add(currentCustom);
+
+            //assetBundle.Unload(false);
+        }
+
+        public static RecipeHelper ApplyConfigChanges(ref GameObject item)
+        {
+            Plugin.cc.ApplyItemDataFromConfigRecord(ref item);
+            return Plugin.cc.ApplyRecipeHelperFromConfigRecord(item);
+        }
+
+        public static void ApplySyncedItemConfigData()
+        {
+            if (AssetReferences.myItemList.Count > 0)
+            {
+                for (int i = 0; i < AssetReferences.myItemList.Count; i++)
+                {
+                    GameObject itemReference = AssetReferences.myItemList[i];
+                    Plugin.cc.ApplyItemDataFromConfigRecord(ref itemReference);
+                    AssetReferences.myItemList[i] = itemReference;
+                }
+            }
         }
 
         //private static HitData.DamageTypes SetDamageValues(ConfigEntry<float>[] newDamageList)

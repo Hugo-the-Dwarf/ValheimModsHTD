@@ -97,8 +97,8 @@
     <Compile Include="ResourceElement.cs" />
     <Compile Include="Rotator.cs" />
     <Compile Include="UpgradeMods.cs" />
+    <Compile Include="VisEquipmentPatch.cs" />
     <Compile Include="WeaponEffectsManager.cs" />
-    <None Include="ILRepack.targets" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ServerSync.dll">
@@ -112,9 +112,6 @@
   <ItemGroup>
     <Content Include="ILRepack.targets" />
     <None Include="packages.config" />
-    <None Include="ServerSync.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" />

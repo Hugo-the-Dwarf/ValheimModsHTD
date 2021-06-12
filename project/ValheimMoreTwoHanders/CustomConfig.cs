@@ -15,8 +15,8 @@ namespace ValheimMoreTwoHanders
         public List<ConfigItemData> itemConfigs = new List<ConfigItemData>();
         public List<ConfigRecipeData> recipeConfigs = new List<ConfigRecipeData>();
 
-        private List<ConfigItemData> itemConfigsToApply = new List<ConfigItemData>();
-        private List<ConfigRecipeData> recipeConfigsToApply = new List<ConfigRecipeData>();
+        private Dictionary<string, ConfigItemData> itemConfigsToApply = new Dictionary<string, ConfigItemData>();
+        private Dictionary<string, ConfigRecipeData> recipeConfigsToApply = new Dictionary<string, ConfigRecipeData>();
 
         public CustomSyncedValue<string> syncedItemConfigsToApply = new CustomSyncedValue<string>(Plugin.configSync, "itemConfigs");
         public CustomSyncedValue<string> syncedRecipeConfigsToApply = new CustomSyncedValue<string>(Plugin.configSync, "recipeConfigs");
@@ -41,9 +41,11 @@ namespace ValheimMoreTwoHanders
             foreach (ConfigItemData itemData in DeserializeItemDataConfig(syncedItemConfigsToApply.Value))
             {
                 itemConfigs.Add(itemData);
-                itemConfigsToApply.Add(itemData);
+                if (!itemConfigsToApply.ContainsKey(itemData.ItemPrefab))
+                    itemConfigsToApply.Add(itemData.ItemPrefab, itemData);
             }
-            Plugin.RebuildCustomAssetLists();
+            ItemManager.ApplySyncedItemConfigData();
+            //Plugin.RebuildCustomAssetLists();
         }
 
         private void RecipeConfigChanged()
@@ -53,9 +55,11 @@ namespace ValheimMoreTwoHanders
             foreach (ConfigRecipeData recipeData in DeserializeRecipeDataConfig(syncedRecipeConfigsToApply.Value))
             {
                 recipeConfigs.Add(recipeData);
-                recipeConfigsToApply.Add(recipeData);
+                if (!recipeConfigsToApply.ContainsKey(recipeData.ItemPrefab))
+                    recipeConfigsToApply.Add(recipeData.ItemPrefab, recipeData);
             }
-            Plugin.RebuildCustomAssetLists();
+            Plugin.RebuildRecipes();
+            //Plugin.RebuildCustomAssetLists();
         }
 
         public bool UsingDefaultItemConfig(GameObject go)
@@ -73,90 +77,89 @@ namespace ValheimMoreTwoHanders
         {
             ConfigItemData newData = new ConfigItemData();
             newData.ReadConfigDataFromItem(go);
+            itemConfigs.RemoveAll(ic => ic.ItemPrefab == go.name);
             itemConfigs.Add(newData);
         }
 
         public void ApplyItemDataFromConfigRecord(ref GameObject go)
         {
-            if (itemConfigsToApply.Count > 0)
+            if (itemConfigsToApply.Count > 0 && itemConfigsToApply.ContainsKey(go.name))
             {
-                ConfigItemData extractedCID;
-                for (int i = 0; i < itemConfigsToApply.Count; i++)
-                {
-                    extractedCID = itemConfigsToApply[i];
-                    if (extractedCID.ItemPrefab == go.name)
-                    {
-                        ItemDrop id = go.GetComponent<ItemDrop>();
-                        extractedCID.WriteConfigDataToItem(ref id);
-                        itemConfigsToApply.RemoveAt(i);
-                        return;
-                    }
-                }
+                ItemDrop id = go.GetComponent<ItemDrop>();
+                itemConfigsToApply[go.name].WriteConfigDataToItem(ref id);
+                itemConfigsToApply.Remove(go.name);
             }
-            return;
-            //Plugin.cc.itemConfigsToApply.Where(ictp => ictp.PrefabName == currentItem.name).FirstOrDefault().WriteConfigDataToItem(ref id);
-            //Plugin.cc.itemConfigsToApply.RemoveAll(ictp => ictp.PrefabName == currentItem.name);
         }
 
         public void AddRecipeAsConfigRecord(RecipeHelper rh)
         {
             ConfigRecipeData newData = new ConfigRecipeData();
+            var existingRecord = recipeConfigs.Where(rc => rc.ItemPrefab == rh.GetPrefabName()).FirstOrDefault();
+            if (existingRecord != null)
+            {
+                newData.Enabled = existingRecord.Enabled;
+            }            
             newData.ReadConfigFromRecipeHelper(rh);
+            recipeConfigs.RemoveAll(rc => rc.ItemPrefab == rh.GetPrefabName());
             recipeConfigs.Add(newData);
         }
 
         public RecipeHelper ApplyRecipeHelperFromConfigRecord(GameObject go)
         {
-            if (recipeConfigsToApply.Count > 0)
+            if (recipeConfigsToApply.Count > 0 && recipeConfigsToApply.ContainsKey(go.name))
             {
-                ConfigRecipeData extractedCRD;
-                for (int i = 0; i < recipeConfigsToApply.Count; i++)
-                {
-                    extractedCRD = recipeConfigsToApply[i];
-                    if (extractedCRD.ItemPrefab == go.name)
-                    {
-                        RecipeHelper outputRH = extractedCRD.LoadConfigedRecipeHelper(go);
-                        recipeConfigsToApply.RemoveAt(i);
-                        return outputRH;
-                    }
-                }
+                RecipeHelper outputRH = recipeConfigsToApply[go.name].LoadConfigedRecipeHelper(go);
+                recipeConfigsToApply.Remove(go.name);
+                return outputRH;
             }
             return null;
         }
 
         public IEnumerable<ConfigItemData> DeserializeItemDataConfig(string data)
         {
-            data = data.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
-            string[] splitData = data.Split('@');
-            foreach (string itemData in splitData)
+            if (data.Trim().Length > 0)
             {
-                yield return JsonUtility.FromJson<ConfigItemData>(itemData);
+                data = data.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
+                string[] splitData = data.Split('@');
+                if (splitData.Length > 0)
+                {
+                    foreach (string itemData in splitData)
+                    {
+                        yield return JsonUtility.FromJson<ConfigItemData>(itemData);
+                    }
+                }
             }
         }
 
         public IEnumerable<ConfigRecipeData> DeserializeRecipeDataConfig(string data)
         {
             data = data.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
-            string[] splitData = data.Split('@');
-            for (int i = 0; i < splitData.Length; i++)
+            if (data.Trim().Length > 0)
             {
-                string frontHalf = splitData[i].Substring(0, splitData[i].IndexOf("\"CraftingRequirements\":"));
-                string backHalf = splitData[i].Substring(splitData[i].IndexOf("\"CraftingRequirements\":"));
-                frontHalf += "\"CraftingRequirements\": \"\"}";
-                backHalf = backHalf.Substring(backHalf.IndexOf(":") + 1);
-                backHalf = backHalf.Remove(backHalf.Length - 1);
-                ConfigRecipeData itemData = JsonUtility.FromJson<ConfigRecipeData>(frontHalf);
-                string[] splitResourceData = backHalf.Split('#');
-                if (splitResourceData.Length > 0)
+                string[] splitData = data.Split('@');
+                if (splitData.Length > 0)
                 {
-                    List<ConfigResource> res = new List<ConfigResource>();
-                    for (int j = 0; j < splitResourceData.Length; j++)
+                    for (int i = 0; i < splitData.Length; i++)
                     {
-                        res.Add(JsonUtility.FromJson<ConfigResource>(splitResourceData[j]));
+                        string frontHalf = splitData[i].Substring(0, splitData[i].IndexOf("\"CraftingRequirements\":"));
+                        string backHalf = splitData[i].Substring(splitData[i].IndexOf("\"CraftingRequirements\":"));
+                        frontHalf += "\"CraftingRequirements\": \"\"}";
+                        backHalf = backHalf.Substring(backHalf.IndexOf(":") + 1);
+                        backHalf = backHalf.Remove(backHalf.Length - 1);
+                        ConfigRecipeData itemData = JsonUtility.FromJson<ConfigRecipeData>(frontHalf);
+                        string[] splitResourceData = backHalf.Split('#');
+                        if (splitResourceData.Length > 0)
+                        {
+                            List<ConfigResource> res = new List<ConfigResource>();
+                            for (int j = 0; j < splitResourceData.Length; j++)
+                            {
+                                res.Add(JsonUtility.FromJson<ConfigResource>(splitResourceData[j]));
+                            }
+                            itemData.CraftingRequirementsArray = res.ToArray();
+                        }
+                        yield return itemData;
                     }
-                    itemData.CraftingRequirementsArray = res.ToArray();
                 }
-                yield return itemData;
             }
         }
 

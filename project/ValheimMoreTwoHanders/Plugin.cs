@@ -14,7 +14,7 @@ namespace ValheimMoreTwoHanders
     [BepInPlugin(Plugin.GUID, Plugin.ModName, Plugin.Version)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string Version = "4.0";
+        public const string Version = "4.1.0";
         public const string ModName = "More Two Handed Weapons";
         public const string GUID = "htd.moretwohanders";
         //public static readonly string MyDirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -46,14 +46,14 @@ namespace ValheimMoreTwoHanders
             PlayerAttackInputPatch.attack3Hotkey = Config.Bind<string>("1Hotkeys", "hotkey_ThirdAttack", "mouse 3", "Customizable hotkey so you can use the third attack of the weapon. If you want to use a mouse key, include a space: mouse 3, for example. Valid inputs: https://docs.unity3d.com/ScriptReference/KeyCode.html");
 
 
-            cc.LoadInitialConfigs(Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath),GUID));
+            cc.LoadInitialConfigs(Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), GUID));
 
             //This Static Class just fills the ItemList and RecipeLists
             try
             {
                 ItemManager.BuildLists();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.LogError("Problem with Setting up item prefabs. ItemManager.");
                 Log.LogError(e.Message);
@@ -86,26 +86,6 @@ namespace ValheimMoreTwoHanders
             if (_Harmony != null) _Harmony.UnpatchAll(GUID);
         }
 
-        //[HarmonyPatch(typeof(Localization), "SetupLanguage")]
-        //private static class Localization_SetupLanguage_Patch
-        //{
-        //    public static Dictionary<string, string> m_translations;
-        //    public static void Postfix(ref Dictionary<string, string> ___m_translations)
-        //    {
-        //        m_translations = ___m_translations;
-        //        foreach (KeyValuePair<string, string> kvp in locDictionary)
-        //        {
-        //            AddWord(kvp.Key, kvp.Value);
-        //        }
-        //    }
-
-        //    public static void AddWord(string key, string value)
-        //    {
-        //        m_translations.Remove(key);
-        //        m_translations.Add(key, value);
-        //    }
-        //}
-
         [HarmonyPatch(typeof(ZNetScene), "Awake")]
         private static class ZNetScene_Awake_Patch
         {
@@ -126,39 +106,6 @@ namespace ValheimMoreTwoHanders
                 }
                 else return;
             }
-
-            //    public static void Postfix(ZNetScene __instance)
-            //    {
-            //        if (__instance == null)
-            //        {
-            //            return;
-            //        }
-
-            //        var portalPrefab = __instance.m_prefabs.Where(p => p.name == "portal_wood").FirstOrDefault();
-            //        if (portalPrefab != null)
-            //        {
-            //            var pieceCom = portalPrefab.GetComponent<Piece>();
-            //            if (pieceCom != null) //this may not be needed but I like to check for nulls
-            //            {
-            //                List<Piece.Requirement> requirements = new List<Piece.Requirement>();
-
-            //                Piece.Requirement req1 = new Piece.Requirement();
-            //                req1.m_amount = 123;
-            //                req1.m_recover = true; //false means you won't get it on deconstruct
-            //                req1.m_resItem = __instance.m_prefabs.Where(p => p.name == "itemprefabnamehere").FirstOrDefault().GetComponent<ItemDrop>();
-            //                req1.m_amountPerLevel = 0; //for pieces (buildings) this doesn't matter
-
-            //                requirements.Add(req1);
-
-            //                pieceCom.m_resources = requirements.ToArray();
-            //            }
-            //        }
-
-            //        foreach (var prefab in __instance.m_prefabs)
-            //        {
-            //            Log.LogMessage($"Prefab in ZNetScene: {prefab.name}");
-            //        }
-            //    }
         }
 
         [HarmonyPatch(typeof(ObjectDB), "CopyOtherDB")]
@@ -170,7 +117,6 @@ namespace ValheimMoreTwoHanders
 
                 GenerateReferenceLists();
                 AddNewItems();
-                //AddStationExtension("DragonTear", "piece_artisanstation");
                 AddNewRecipes();
             }
         }
@@ -184,24 +130,39 @@ namespace ValheimMoreTwoHanders
 
                 GenerateReferenceLists();
                 AddNewItems();
-                //AddStationExtension("DragonTear", "piece_artisanstation");
                 AddNewRecipes();
+            }
+        }
+
+        public static void RebuildRecipes()
+        {
+            if (IsObjectDBValid())
+            {
+                foreach (var recipeToApply in cc.recipeConfigs)
+                {
+                    if (recipeToApply.Enabled)
+                    {
+                        GameObject go = AssetReferences.myItemList.Where(mil => mil.name == recipeToApply.ItemPrefab).FirstOrDefault();
+                        Recipe updatedRecipe = recipeToApply.LoadConfigedRecipeHelper(go).GetRecipe();
+                        AddRecipeToObjectDB(updatedRecipe);
+                    }
+                }
             }
         }
 
         public static void RebuildCustomAssetLists()
         {
-            AssetReferences.customItems = new List<CustomItem>();
+            //AssetReferences.customItems = new List<CustomItem>();
             AssetReferences.myRecipeList = new List<Recipe>();
             AssetReferences.myItemList = new List<GameObject>();
-            customItemsAssembled = false;
-            customRecipesAssembled = false;
-            ItemManager.BuildLists();
+            //customItemsAssembled = false;
+            //customRecipesAssembled = false;
+            //ItemManager.BuildLists();
 
             if (IsObjectDBValid())
             {
-                GenerateReferenceLists();
-                AddNewItems();
+                //GenerateReferenceLists();
+                //AddNewItems();
                 AddNewRecipes();
             }
         }
@@ -271,28 +232,6 @@ namespace ValheimMoreTwoHanders
             }
         }
 
-        //private static void AddStationExtension(string preFabName, string craftingStation)
-        //{
-        //    try
-        //    {
-        //        var prefab = AssetReferences.listOfItemPrefabs[preFabName];
-        //        if (prefab == null) prefab = ObjectDB.instance.GetItemPrefab(preFabName);
-        //        StationExtension se = prefab.GetComponent<StationExtension>();
-        //        if (se == null)
-        //        {
-        //            se = prefab.transform.Find("attach").gameObject.AddComponent<StationExtension>();
-        //            se.m_craftingStation = AssetReferences.listOfCraftingStations[craftingStation];
-        //            se.m_connectionPrefab = AssetReferences.listOfEffects["vfx_ExtensionConnection"];
-        //            Log.LogMessage($"Added Station Extension to {preFabName}'s 'attach' for crafting station {craftingStation}");
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Plugin.Log.LogError($"Error in adding StationExtension to {preFabName} for crafting station {craftingStation}");
-        //        Plugin.Log.LogError($"Catch Exception details: {e.Message} --- {e.StackTrace}");
-        //    }
-        //}
-
         private static void AddNewItems()
         {
 
@@ -326,7 +265,7 @@ namespace ValheimMoreTwoHanders
             {
                 if (ObjectDB.instance.GetItemPrefab(item.name.GetStableHashCode()) == null)
                 {
-                    ObjectDB.instance.m_items.Add(item);
+                    ObjectDB.instance.m_items.Add(item);                    
                     objectDBItemHash[item.name.GetStableHashCode()] = item;
                 }
             }

@@ -22,6 +22,7 @@ namespace ValheimMoreTwoHanders
         public static Dictionary<string, Material> listOfMaterials = new Dictionary<string, Material>();
 
         //my custom lists 
+        public static Dictionary<int,string> myItemHashList = new Dictionary<int, string>(); //Fixed Referenced Compiled Items
         public static List<GameObject> myItemList = new List<GameObject>(); //Fixed Referenced Compiled Items
         public static List<Recipe> myRecipeList = new List<Recipe>(); // Fixed Referenced Compiled Recipes
         public static List<CustomItem> customItems = new List<CustomItem>(); // Uncompiled Items+Recipes
