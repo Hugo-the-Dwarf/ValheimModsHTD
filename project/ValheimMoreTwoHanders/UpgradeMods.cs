@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class UpgradeMods : MonoBehaviour
 {
-    public int qualityLevel = 1;
+    bool persistPastLevel2 = true;
+    bool persistPastLevel3 = true;
 
     // Start is called before the first frame update
     void Start()
@@ -17,20 +18,21 @@ public class UpgradeMods : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.gameObject.name.Contains("Clone"))
-        {
-            TryApplyMods();
-        }
-        if (transform.parent.gameObject.name.Contains("Clone"))
-        {
-            TryApplyMods();
-        }
+        //if (transform.gameObject.name.Contains("Clone"))
+        //{
+        //    TryApplyMods();
+        //}
+        //if (transform.parent.gameObject.name.Contains("Clone"))
+        //{
+        //    TryApplyMods();
+        //}
     }
 
-    private void TryApplyMods()
+    private void TryApplyMods(ItemDrop itemInstance)
     {
-        if (qualityLevel > 1) transform.Find("levelmods/lvl1").gameObject.SetActive(true);
-        if (qualityLevel > 2) transform.Find("levelmods/lvl2").gameObject.SetActive(true);
-        if (qualityLevel > 3) transform.Find("levelmods/lvl3").gameObject.SetActive(true);
+        var id = itemInstance.m_itemData;
+        if ((id.m_quality == 2 && !persistPastLevel2) || (id.m_quality >= 2 && persistPastLevel2)) transform.Find("levelmods/lvl2").gameObject.SetActive(true);
+        if ((id.m_quality == 3 && !persistPastLevel3) || (id.m_quality >= 3 && persistPastLevel3)) transform.Find("levelmods/lvl3").gameObject.SetActive(true);
+        if (id.m_quality >= 4) transform.Find("levelmods/lvl4").gameObject.SetActive(true);
     }
 }

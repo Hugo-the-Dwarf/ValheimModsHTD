@@ -87,6 +87,7 @@
     <Compile Include="AssetReferences.cs" />
     <Compile Include="CustomConfig.cs" />
     <Compile Include="CustomItem.cs" />
+    <Compile Include="CustomLocalization.cs" />
     <Compile Include="ItemManager.cs" />
     <Compile Include="ItemStandPatch.cs" />
     <Compile Include="PlayerAttackInputPatch.cs" />
@@ -111,6 +112,7 @@
   </Target>
   <ItemGroup>
     <Content Include="ILRepack.targets" />
+    <EmbeddedResource Include="localization.tsv" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

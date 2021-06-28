@@ -45,6 +45,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
             //AssetReferences.myItemHashList.Add(currentItem.name.GetStableHashCode(), currentItem.name);
 
             Attack Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
@@ -91,6 +92,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Horizontal;
@@ -137,6 +139,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -185,6 +188,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -255,6 +259,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -327,6 +332,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -386,6 +392,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -436,6 +443,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Horizontal;
@@ -511,6 +519,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -583,6 +592,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -643,7 +653,7 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordFlametalGreatIron");
 
             id = currentItem.GetComponent<ItemDrop>();
-            
+
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
 
             if (currentRecipeHelper == null)
@@ -653,6 +663,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -693,7 +704,7 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "AxeBlackMetalBattle");
 
             id = currentItem.GetComponent<ItemDrop>();
-            
+
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
 
             if (currentRecipeHelper == null)
@@ -703,6 +714,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;
@@ -744,7 +756,7 @@ namespace ValheimMoreTwoHanders
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordDragonSlayer");
 
             id = currentItem.GetComponent<ItemDrop>();
-            
+
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
 
             if (currentRecipeHelper == null)
@@ -754,6 +766,7 @@ namespace ValheimMoreTwoHanders
             }
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Vertical;

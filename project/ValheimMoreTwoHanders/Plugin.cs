@@ -14,7 +14,7 @@ namespace ValheimMoreTwoHanders
     [BepInPlugin(Plugin.GUID, Plugin.ModName, Plugin.Version)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string Version = "4.1.0";
+        public const string Version = "4.2.2";
         public const string ModName = "More Two Handed Weapons";
         public const string GUID = "htd.moretwohanders";
         //public static readonly string MyDirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -26,6 +26,7 @@ namespace ValheimMoreTwoHanders
         public readonly Harmony harmony = new Harmony(GUID);
 
         public static CustomConfig cc = new CustomConfig();
+        public static CustomLocalization cl = new CustomLocalization();
         public static bool disableFlametalFlames = false;
 
         //If both of these are true, set customItems to null as it's no longer needed.
@@ -45,8 +46,9 @@ namespace ValheimMoreTwoHanders
             disableFlametalFlames = Config.Bind<bool>("2Options", "disable_FlametalSwordFlames", false, "Disable the fire and smoke effect from the Flametal Great Sword.").Value;
             PlayerAttackInputPatch.attack3Hotkey = Config.Bind<string>("1Hotkeys", "hotkey_ThirdAttack", "mouse 3", "Customizable hotkey so you can use the third attack of the weapon. If you want to use a mouse key, include a space: mouse 3, for example. Valid inputs: https://docs.unity3d.com/ScriptReference/KeyCode.html");
 
-
-            cc.LoadInitialConfigs(Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), GUID));
+            string path = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), GUID);
+            cc.LoadInitialConfigs(path);
+            cl.LoadLocalization(path);
 
             //This Static Class just fills the ItemList and RecipeLists
             try
@@ -60,7 +62,7 @@ namespace ValheimMoreTwoHanders
                 Log.LogError(e.StackTrace);
             }
 
-            cc.WriteConfigs(Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), GUID));
+            cc.WriteConfigs(path);
 
             // _Harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), GUID);
 

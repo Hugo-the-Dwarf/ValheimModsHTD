@@ -138,6 +138,28 @@ namespace ValheimMoreTwoHanders
             return null;
         }
 
+        public static void RecursiveAllChildNodeFinder(ref List<Transform> transforms, Transform target, string nodeName, bool absoluteScan = false)
+        {
+            if (target.childCount > 0)
+            {
+                foreach (Transform child in target)
+                {
+                    if (!absoluteScan && child.name.Contains(nodeName))
+                    {
+                        transforms.Add(child);
+                    }
+                    if (absoluteScan && child.name == nodeName)
+                    {
+                        transforms.Add(child);
+                    }
+                    if (child.childCount > 0)
+                    {
+                        RecursiveAllChildNodeFinder(ref transforms, child, nodeName, absoluteScan);
+                    }
+                }
+            }
+        }
+
         public static MeshRenderer RecursiveMeshRendererComponetFinder(GameObject target)
         {
             var foundComponet = target.GetComponent<MeshRenderer>();
@@ -159,24 +181,6 @@ namespace ValheimMoreTwoHanders
 
             return null;
         }
-
-        public static MeshRenderer RecursiveMeshRendererComponetFinderUsingNodeName(GameObject target, string nodeName)
-        {
-            var foundNode = RecursiveChildNodeFinder(target.transform, nodeName);
-            Debug.Log($"[{Plugin.GUID}] found transform {foundNode.name} recursion.");
-            if (foundNode != null)
-            {
-                var foundComponet = foundNode.gameObject.GetComponent<MeshRenderer>();
-                Debug.Log($"[{Plugin.GUID}] go in {foundNode.gameObject.name} recursion.");
-                Debug.Log($"[{Plugin.GUID}] component name {foundComponet.transform.name} recursion.");
-                if (foundComponet != null)
-                {
-                    return foundComponet;
-                }
-            }
-            return null;
-        }
-
 
         private void WipeLists()
         {
@@ -246,7 +250,7 @@ namespace ValheimMoreTwoHanders
                 myPSR.material = targetPSR.material;
             }
 
-            
+
         }
 
         private void FixMeshReferences(GameObject gameObject, GameObjectNode node)
@@ -382,52 +386,14 @@ namespace ValheimMoreTwoHanders
                             newMat.mainTextureScale = new Vector2(node.textureScaleX, node.textureScaleY);
                             newMat.mainTextureOffset = new Vector2(node.TextureOffsetX, node.TextureOffsetY);
                         }
-                        if (!newMaterials.ContainsKey(newMat.name)) newMaterials.Add(newMat.name,newMat);
+                        if (!newMaterials.ContainsKey(newMat.name)) newMaterials.Add(newMat.name, newMat);
                         myRenderer.material = newMat;
                     }
                     else
                         myRenderer.material = targetRenderer.material; //just use the reference 100%
-                }               
+                }
 
             }
         }
-
-        //private void FixParticleReferences(GameObject gameObject, GameObjectNode node)
-        //{
-        //    if (node.copyParticles)
-        //    {
-        //        ParticleSystem myParticles;
-        //        ParticleSystem targetParticles;
-
-        //        myParticles = ItemManager.RecursiveChildNodeFinder(gameObject.transform, node.myNode).gameObject.GetComponent<ParticleSystem>();
-
-        //        if (targetMeshFilters.ContainsKey(node.targetPrefab + node.targetNode))
-        //        {
-        //            targetFilter = targetMeshFilters[node.targetPrefab + node.targetNode];
-        //        }
-        //        else
-        //        {
-        //            GameObject targetedNode = null;
-        //            if (targetPrefabNodes.ContainsKey(node.targetPrefab + node.targetNode))
-        //            {
-        //                targetedNode = targetPrefabNodes[node.targetPrefab + node.targetNode];
-        //                targetFilter = targetedNode.GetComponent<MeshFilter>();
-        //                if (targetFilter != null) targetMeshFilters.Add(node.targetPrefab + node.targetNode, targetFilter);
-        //            }
-        //            else
-        //            {
-        //                var referencedGameObject = AssetReferences.listOfAllGameObjects[node.targetPrefab];
-        //                targetedNode = ItemManager.RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
-        //                if (targetedNode != null)
-        //                {
-        //                    targetPrefabNodes.Add(node.targetPrefab + node.targetNode, targetedNode);
-        //                    targetFilter = targetedNode.GetComponent<MeshFilter>();
-        //                }
-        //            }
-        //        }
-
-
-        //    }
-        //}
     }
 }
