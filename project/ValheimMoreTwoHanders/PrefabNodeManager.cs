@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace ValheimMoreTwoHanders
+namespace ValheimHTDArmory
 {
     public class PrefabNodeManager
     {
@@ -16,8 +17,10 @@ namespace ValheimMoreTwoHanders
             public bool copyParticles;
             public Color mainTextureColor;
             public Color emissionColor;
+            public Color metalColor;
             public bool replaceColor = false;
             public bool replaceEmissionColor = false;
+            public bool replaceMetalColor = false;
             public bool UpdateTextureScaleOffset = false;
             public bool useMyTextures = false;
             public bool copyShaderOnly = false;
@@ -25,6 +28,8 @@ namespace ValheimMoreTwoHanders
             public float textureScaleY = 1f;
             public float TextureOffsetX = 0f;
             public float TextureOffsetY = 0f;
+            public int myMaterialIndex = 0;
+            public int targetMaterialIndex = 0;
 
             public GameObjectNode()
             {
@@ -47,8 +52,9 @@ namespace ValheimMoreTwoHanders
 
         //Found Data
         Dictionary<string, GameObject> targetPrefabNodes = new Dictionary<string, GameObject>();
-        Dictionary<string, MeshRenderer> targetMeshRenderers = new Dictionary<string, MeshRenderer>();
+        Dictionary<string, Renderer> targetMeshRenderers = new Dictionary<string, Renderer>();
         Dictionary<string, MeshFilter> targetMeshFilters = new Dictionary<string, MeshFilter>();
+        Dictionary<string, Material> targetMaterials = new Dictionary<string, Material>();
         Dictionary<string, Material> newMaterials = new Dictionary<string, Material>();
         Dictionary<string, ParticleSystemRenderer> targetParticleSystemRenderers = new Dictionary<string, ParticleSystemRenderer>();
 
@@ -64,6 +70,18 @@ namespace ValheimMoreTwoHanders
             currentNode.myNode = myNode;
             currentNode.targetPrefab = targetPrefab;
             currentNode.targetNode = targetNode;
+            return this;
+        }
+
+        public PrefabNodeManager SetMyMateiralIndex(int index)
+        {
+            currentNode.myMaterialIndex = index;
+            return this;
+        }
+
+        public PrefabNodeManager SetTargetMateiralIndex(int index)
+        {
+            currentNode.targetMaterialIndex = index;
             return this;
         }
 
@@ -103,6 +121,13 @@ namespace ValheimMoreTwoHanders
         {
             currentNode.emissionColor = newColor;
             currentNode.replaceEmissionColor = true;
+            return this;
+        }
+
+        public PrefabNodeManager ReplaceMetalColor(Color newColor)
+        {
+            currentNode.metalColor = newColor;
+            currentNode.replaceMetalColor = true;
             return this;
         }
 
@@ -231,7 +256,7 @@ namespace ValheimMoreTwoHanders
                     }
                     else
                     {
-                        var referencedGameObject = AssetReferences.listOfAllGameObjects[node.targetPrefab];
+                        var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab];
                         targetedNode = RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
                         if (targetedNode != null)
                         {
@@ -277,7 +302,7 @@ namespace ValheimMoreTwoHanders
                     }
                     else
                     {
-                        var referencedGameObject = AssetReferences.listOfAllGameObjects[node.targetPrefab];
+                        var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab];
                         targetedNode = RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
                         if (targetedNode != null)
                         {
@@ -293,107 +318,214 @@ namespace ValheimMoreTwoHanders
 
         private void FixMaterialReferences(GameObject gameObject, GameObjectNode node)
         {
-            if (node.copyMaterial)
+            try
             {
-                MeshRenderer myRenderer;
-                MeshRenderer targetRenderer = null;
+                if (node.copyMaterial)
+                {
+                    //Plugin.Log.LogMessage($"Material to Fix for Prefab: {node.myNode}");
+                    //Plugin.Log.LogMessage($"Material to Fix for Prefab: {gameObject.name}");
 
-                myRenderer = RecursiveChildNodeFinder(gameObject.transform, node.myNode).gameObject.GetComponent<MeshRenderer>();
-                if (newMaterials.ContainsKey(gameObject.name + node.targetPrefab + "_newMat"))
-                {
-                    myRenderer.material = newMaterials[gameObject.name + node.targetPrefab + "_newMat"];
-                    return;
-                }
+                    Material myMaterialReference = null;
+                    Material targetMaterialReference = null;
+                    Material newMat = null;
+                    Material[] newMatArray = null;
+                    string mySavedNewMatName = gameObject.name + node.targetPrefab + "_newMat_" + node.myMaterialIndex;
+                    Transform myNode;
+                    Renderer myRenderer = null;
+                    Renderer targetRenderer = null;
+                    myNode = RecursiveChildNodeFinder(gameObject.transform, node.myNode);
 
-                if (targetMeshRenderers.ContainsKey(node.targetPrefab + node.targetNode))
-                {
-                    targetRenderer = targetMeshRenderers[node.targetPrefab + node.targetNode];
-                }
-                else
-                {
-                    GameObject targetedNode;
-                    if (targetPrefabNodes.ContainsKey(node.targetPrefab + node.targetNode))
+                    //If Material Exists Extract it
+                    if (newMaterials.ContainsKey(mySavedNewMatName))
                     {
-                        targetedNode = targetPrefabNodes[node.targetPrefab + node.targetNode];
-                        targetRenderer = targetedNode.GetComponent<MeshRenderer>();
-                        if (targetRenderer != null) targetMeshRenderers.Add(node.targetPrefab + node.targetNode, targetRenderer);
+                        //Plugin.Log.LogMessage($"Found saved material: {mySavedNewMatName}");
+                        newMat = newMaterials[mySavedNewMatName];
+                    }
+
+                    //Find the Mesh or Skinned Mesh Renderer, set newMat if it's not null
+                    //myRenderer = myNode.gameObject.GetComponent<MeshRenderer>();
+                    if (myNode.gameObject.GetComponent<MeshRenderer>() != null)
+                    //if (myRenderer != null)
+                    {
+                        //Plugin.Log.LogMessage($"Found Mesh Renderer");
+                        myRenderer = myNode.gameObject.GetComponent<MeshRenderer>();
+                        //Plugin.Log.LogMessage($"Number of Materials: {myRenderer.materials.Length}");
+                        if (newMat != null)
+                        {
+                            //Plugin.Log.LogMessage($"Using saved material MR");
+                            //myNode.gameObject.GetComponent<MeshRenderer>().materials[node.myMaterialIndex] = new Material[] { newMat };
+                            if (myRenderer.materials.Length == 1) myRenderer.material = newMat;
+                            else myRenderer.materials = AssembleNewMatArray(myRenderer.materials, node.myMaterialIndex, newMat);// new Material[] { newMat };
+                            return;
+                        }
+
+                        myMaterialReference = myRenderer.materials[node.myMaterialIndex];
+                    }
+                    else if (myNode.gameObject.GetComponent<SkinnedMeshRenderer>() != null)
+                    {
+                        //Plugin.Log.LogMessage($"Found Skinned Mesh Renderer");
+                        myRenderer = myNode.gameObject.GetComponent<SkinnedMeshRenderer>();
+                        //Plugin.Log.LogMessage($"Number of Materials: {myRenderer.materials.Length}");
+                        if (newMat != null)
+                        {
+                            //Plugin.Log.LogMessage($"Using saved material SMR");
+                            if (myRenderer.materials.Length == 1) myRenderer.material = newMat;
+                            else myRenderer.materials = AssembleNewMatArray(myRenderer.materials, node.myMaterialIndex, newMat);// new Material[] { newMat };
+                            return;
+                        }
+                        myMaterialReference = myRenderer.materials[node.myMaterialIndex];
+                    }
+
+                    //Start looking for the TargetMaterial
+                    string targetNodeName = node.targetPrefab + node.targetNode;
+                    string targetMaterialName = targetNodeName + "_" + node.targetMaterialIndex;
+
+                    //if (targetMaterials.ContainsKey(targetMaterialName))
+                    //{
+                    //    Plugin.Log.LogMessage($"Found saved target material: {targetMaterialName}");
+                    //    targetMaterialReference = targetMaterials[targetMaterialName];
+                    //}
+                    //else
+                    //{
+                    GameObject targetedNode;
+                    if (targetPrefabNodes.ContainsKey(targetNodeName))
+                    {
+                        //Plugin.Log.LogMessage($"Found saved target node: {targetNodeName}");
+                        targetedNode = targetPrefabNodes[targetNodeName];
+                        if (targetedNode.GetComponent<MeshRenderer>() != null)
+                        {
+                            //Plugin.Log.LogMessage($"Found Skinned Mesh Renderer");
+                            targetRenderer = targetedNode.GetComponent<MeshRenderer>();
+                            targetMaterialReference = targetRenderer.materials[node.targetMaterialIndex];
+                        }
+                        else if (targetedNode.GetComponent<SkinnedMeshRenderer>() != null)
+                        {
+                            //Plugin.Log.LogMessage($"Found Skinned Mesh Renderer");
+                            targetRenderer = targetedNode.GetComponent<SkinnedMeshRenderer>();
+                            targetMaterialReference = targetRenderer.materials[node.targetMaterialIndex];
+                        }
+                        if (!targetMaterials.ContainsKey(targetMaterialName))
+                            targetMaterials.Add(targetMaterialName, targetMaterialReference);
                     }
                     else
                     {
-                        var referencedGameObject = AssetReferences.listOfAllGameObjects[node.targetPrefab];
+                        //Plugin.Log.LogMessage($"Searching for target node: {targetNodeName}");
+                        var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab];
                         targetedNode = RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
                         if (targetedNode != null)
                         {
-                            targetPrefabNodes.Add(node.targetPrefab + node.targetNode, targetedNode);
-                            targetRenderer = targetedNode.GetComponent<MeshRenderer>();
+                            if (targetedNode.GetComponent<MeshRenderer>() != null)
+                            {
+                                //Plugin.Log.LogMessage($"Found Mesh Renderer");
+                                targetRenderer = targetedNode.GetComponent<MeshRenderer>();
+                                targetMaterialReference = targetRenderer.materials[node.targetMaterialIndex];
+                            }
+                            else if (targetedNode.GetComponent<SkinnedMeshRenderer>() != null)
+                            {
+                                //Plugin.Log.LogMessage($"Found Skinned Mesh Renderer");
+                                targetRenderer = targetedNode.GetComponent<SkinnedMeshRenderer>();
+                                targetMaterialReference = targetRenderer.materials[node.targetMaterialIndex];
+                            }
+                            if (!targetMaterials.ContainsKey(targetMaterialName))
+                                targetMaterials.Add(targetMaterialName, targetMaterialReference);
                         }
                     }
-                }
+                    // }
 
-                if (node.copyShaderOnly)
-                {
-                    myRenderer.material.shader = targetRenderer.material.shader;
-                    return;
-                }
 
-                if (node.useMyTextures)
-                {
-                    /* Valid Texture Names
-                     * _BumpMap (normals)
-                     * _DetailAlbedoMap
-                     * _DetailMask
-                     * _DetailNormalMap
-                     * _EmissionMap
-                     * _MainTex (diffuse,albedo)
-                     * _MetallicGlossMap
-                     * _OcclusionMap
-                     * _ParallaxMap
-                     */
-
-                    Material newMat = new Material(targetRenderer.material);
-                    newMat.name = gameObject.name + node.targetPrefab + "_newMat";
-                    newMat.SetTexture("_MainTex", myRenderer.material.GetTexture("_MainTex"));
-                    newMat.SetTexture("_MetallicGlossMap", myRenderer.material.GetTexture("_MetallicGlossMap"));
-                    newMat.SetTexture("_BumpMap", myRenderer.material.GetTexture("_BumpMap"));
-                    if (node.replaceColor)
-                        newMat.SetColor("_Color", node.mainTextureColor);
-                    if (node.replaceEmissionColor)
-                        newMat.SetColor("_EmissionColor", node.emissionColor);
-                    if (node.UpdateTextureScaleOffset)
+                    if (node.copyShaderOnly)
                     {
-                        newMat.mainTextureScale = new Vector2(node.textureScaleX, node.textureScaleY);
-                        newMat.mainTextureOffset = new Vector2(node.TextureOffsetX, node.TextureOffsetY);
+                        myMaterialReference.shader = targetMaterialReference.shader;
+                        return;
                     }
-                    if (!newMaterials.ContainsKey(newMat.name)) newMaterials.Add(newMat.name, newMat);
-                    myRenderer.material = newMat;
-                }
-                else
-                {
-                    if (node.replaceColor || node.replaceEmissionColor)
+
+
+                    if (node.useMyTextures || node.replaceColor || node.replaceEmissionColor || node.replaceMetalColor || node.UpdateTextureScaleOffset)
                     {
+                        /* Valid Texture Names
+                         * _BumpMap (normals)
+                         * _DetailAlbedoMap
+                         * _DetailMask
+                         * _DetailNormalMap
+                         * _EmissionMap
+                         * _MainTex (diffuse,albedo)
+                         * _MetallicGlossMap
+                         * _OcclusionMap
+                         * _ParallaxMap
+                         */
+
                         /* Valid Color Ids
                          * _Color
                          * _EmissionColor
+                         * _MetalColor *for 'Custom/Creature'
                          */
-                        Material newMat = new Material(targetRenderer.material);
-                        newMat.name = gameObject.name + node.targetPrefab + "_newMat";
+
+                        newMat = new Material(targetMaterialReference);
+                        newMat.name = mySavedNewMatName;
+                        if (node.useMyTextures)
+                        {
+                            newMat.SetTexture("_MainTex", myMaterialReference.GetTexture("_MainTex"));
+                            newMat.SetTexture("_MetallicGlossMap", myMaterialReference.GetTexture("_MetallicGlossMap"));
+                            newMat.SetTexture("_BumpMap", myMaterialReference.GetTexture("_BumpMap"));
+                        }
+
                         if (node.replaceColor)
                             newMat.SetColor("_Color", node.mainTextureColor);
                         if (node.replaceEmissionColor)
                             newMat.SetColor("_EmissionColor", node.emissionColor);
+                        if (node.replaceMetalColor)
+                            newMat.SetColor("_MetalColor", node.metalColor);
+
                         if (node.UpdateTextureScaleOffset)
                         {
                             newMat.mainTextureScale = new Vector2(node.textureScaleX, node.textureScaleY);
                             newMat.mainTextureOffset = new Vector2(node.TextureOffsetX, node.TextureOffsetY);
                         }
-                        if (!newMaterials.ContainsKey(newMat.name)) newMaterials.Add(newMat.name, newMat);
-                        myRenderer.material = newMat;
-                    }
-                    else
-                        myRenderer.material = targetRenderer.material; //just use the reference 100%
-                }
 
+                        if (!newMaterials.ContainsKey(mySavedNewMatName)) newMaterials.Add(mySavedNewMatName, newMat);
+
+                        //Plugin.Log.LogMessage($"Building newMat array");
+                        //RendererTest
+                        if (myRenderer.materials.Length > 1)
+                        {
+                            //Plugin.Log.LogMessage($"Setting material array with newMat array");
+                            myRenderer.materials = AssembleNewMatArray(myRenderer.materials, node.myMaterialIndex, newMat);// newMatArray;
+                        }
+                        else myRenderer.materials = new Material[] { newMat };
+                    }
+                    else //Just 100% use the same materials
+                    {
+                        //Will have to revist this, As I could have more options for say 3 material items.
+                        //Plugin.Log.LogMessage($"Setting material array with target material array");
+                        if(myRenderer.materials.Length > 1)
+                        {
+                            myRenderer.materials = AssembleNewMatArray(myRenderer.materials, node.myMaterialIndex, targetRenderer.materials[node.targetMaterialIndex]);
+                        }
+                        else myRenderer.materials = targetRenderer.materials;
+                    }
+                }
             }
+            catch (Exception e)
+            {
+                Plugin.Log.LogError($"Error trying to fix material reference for {gameObject.name}");
+                Plugin.Log.LogError(e.Message);
+                Plugin.Log.LogError(e.StackTrace);
+            }
+        }
+        private Material[] AssembleNewMatArray(Material[] myMaterialArray, int myIndex, Material newMat)
+        {
+            //Plugin.Log.LogMessage($"Number of Materials to sort through: {myMaterialArray.Length}");
+            List<Material> outputList = new List<Material>();
+            for (int index = 0; index < myMaterialArray.Length; index++)
+            {
+                //Plugin.Log.LogMessage($"Ordering material: {myMaterialArray[index]} as index {index} compared to {myIndex} against {newMat}");
+                if (index == myIndex) outputList.Add(newMat); 
+                else outputList.Add(myMaterialArray[index]);
+            }
+            //Plugin.Log.LogMessage($"Size of Ordered List material: {outputList.Count}");
+            //foreach(Material m in outputList)
+            //    Plugin.Log.LogMessage($"Ordered material: {m}");
+            return outputList.ToArray();
         }
     }
 }

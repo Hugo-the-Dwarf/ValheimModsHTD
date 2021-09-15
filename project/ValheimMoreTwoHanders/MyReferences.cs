@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using static EffectList;
 
-namespace ValheimMoreTwoHanders
+namespace ValheimHTDArmory
 {
     //This class is to hold all references (Base Game, and Mod) 
-    public static class AssetReferences
+    public static class MyReferences
     {
         //saved refrences to base game assets 
         public static Dictionary<string, GameObject> listOfAllGameObjects = new Dictionary<string, GameObject>(); // all base game items and pieces
@@ -22,10 +18,13 @@ namespace ValheimMoreTwoHanders
         public static Dictionary<string, Material> listOfMaterials = new Dictionary<string, Material>();
 
         //my custom lists 
-        public static Dictionary<int,string> myItemHashList = new Dictionary<int, string>(); //Fixed Referenced Compiled Items
+        public static List<int> listHashOfSMRWeapons = new List<int>(); //Fixed Referenced Compiled Items
+        public static Dictionary<int, Transform[]> dictionaryHashOfSMRReorders = new Dictionary<int, Transform[]>(); //Fixed Referenced Compiled Items
         public static List<GameObject> myItemList = new List<GameObject>(); //Fixed Referenced Compiled Items
         public static List<Recipe> myRecipeList = new List<Recipe>(); // Fixed Referenced Compiled Recipes
+        public static List<RecipeHelper> myRecipeHelperList = new List<RecipeHelper>(); // uncompiled recipes
         public static List<CustomItem> customItems = new List<CustomItem>(); // Uncompiled Items+Recipes
+        public static List<StatusEffect> myStatusEffects = new List<StatusEffect>();
 
         //Node data
         public static Dictionary<string, GameObject> targetPrefabNodes = new Dictionary<string, GameObject>(); //Names are PrefabNameNodeName "GameObject.name + node.name"
@@ -54,6 +53,11 @@ namespace ValheimMoreTwoHanders
         public static void TryAddToAttackList(GameObject go,Attack atk)
         {
             if (!listOfExtraAttacks.ContainsKey(go.name)) listOfExtraAttacks.Add(go.name, atk);
+        }
+
+        public static void TryAddToStatusEffectList(StatusEffect effect)
+        {
+            if (!myStatusEffects.Contains(effect)) myStatusEffects.Add(effect);
         }
 
         public static GameObject GetTargetPrefabNode(string prefabname, string nodeName)

@@ -5,10 +5,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using BepInEx;
-using BepInEx.Configuration;
 using ServerSync;
 
-namespace ValheimMoreTwoHanders
+namespace ValheimHTDArmory
 {
     public class CustomConfig
     {
@@ -98,7 +97,7 @@ namespace ValheimMoreTwoHanders
             if (existingRecord != null)
             {
                 newData.Enabled = existingRecord.Enabled;
-            }            
+            }
             newData.ReadConfigFromRecipeHelper(rh);
             recipeConfigs.RemoveAll(rc => rc.ItemPrefab == rh.GetPrefabName());
             recipeConfigs.Add(newData);
@@ -197,11 +196,11 @@ namespace ValheimMoreTwoHanders
             }
             catch (FileNotFoundException)
             {
-                Plugin.Log.LogWarning($"Failed to find '{recipeConfigSuffix}' in path '{bepinexConfigPath}' will create config of same name with default values.");
+                Plugin.Log.LogWarning($"Failed to find '{bepinexConfigPath}' will create config of same name with default values.");
             }
             catch (IOException ioEx)
             {
-                Plugin.Log.LogError($"An IO Exception was thrown. [{recipeConfigSuffix}]");
+                Plugin.Log.LogError($"An IO Exception was thrown. [{bepinexConfigPath}]");
                 Plugin.Log.LogError(ioEx.Message);
                 Plugin.Log.LogError(ioEx.StackTrace);
             }
@@ -286,48 +285,55 @@ namespace ValheimMoreTwoHanders
         public class ConfigItemData
         {
             public string ItemPrefab;
-            public int MaxQuality = 4;
-            public float BlockAmount = 0f;
-            public float BlockAmountPerLevel = 0f;
-            public float DeflectionForce = 0f;
-            public float DeflectionForcePerLevel = 0f;
-            public float ParryBonus = 3f;
-            public float Knockback_Power = 0f;
-            public float Backstab_Bonus = 3f;
-            public float DamageBlunt = 0f;
-            public float DamageSlash = 0f;
-            public float DamagePierce = 0f;
-            public float DamageChop = 0f;
-            public float DamagePickaxe = 0f;
-            public float DamageFire = 0f;
-            public float DamageFrost = 0f;
-            public float DamageLightning = 0f;
-            public float DamagePoison = 0f;
-            public float DamageSpirit = 0f;
-            public float DamageBluntPerLevel = 0f;
-            public float DamageSlashPerLevel = 0f;
-            public float DamagePiercePerLevel = 0f;
-            public float DamageChopPerLevel = 0f;
-            public float DamagePickaxePerLevel = 0f;
-            public float DamageFirePerLevel = 0f;
-            public float DamageFrostPerLevel = 0f;
-            public float DamageLightningPerLevel = 0f;
-            public float DamagePoisonPerLevel = 0f;
-            public float DamageSpiritPerLevel = 0f;
+            public int MaxQuality = -1;
+            public bool UseDurability = true;
+            public float MaxDurability = -1f;
+            public float DurabilityPerLevel = -1f;
+            public float MovementModifier = -1f;
+            public float BlockAmount = -1f;
+            public float BlockAmountPerLevel = -1f;
+            public float DeflectionForce = -1f;
+            public float DeflectionForcePerLevel = -1f;
+            public float ParryBonus = -1f;
+            public float Knockback_Power = -1f;
+            public float Backstab_Bonus = -1f;
+            public float DamageBlunt = -1f;
+            public float DamageSlash = -1f;
+            public float DamagePierce = -1f;
+            public float DamageChop = -1f;
+            public float DamagePickaxe = -1f;
+            public float DamageFire = -1f;
+            public float DamageFrost = -1f;
+            public float DamageLightning = -1f;
+            public float DamagePoison = -1f;
+            public float DamageSpirit = -1f;
+            public float DamageBluntPerLevel = -1f;
+            public float DamageSlashPerLevel = -1f;
+            public float DamagePiercePerLevel = -1f;
+            public float DamageChopPerLevel = -1f;
+            public float DamagePickaxePerLevel = -1f;
+            public float DamageFirePerLevel = -1f;
+            public float DamageFrostPerLevel = -1f;
+            public float DamageLightningPerLevel = -1f;
+            public float DamagePoisonPerLevel = -1f;
+            public float DamageSpiritPerLevel = -1f;
 
             public void WriteConfigDataToItem(ref ItemDrop item)
             {
                 var id = item.m_itemData.m_shared;
-                //id.m_name = Plugin.AxeBlackMetalBattleName.Value;
-                //id.m_description = Plugin.AxeBlackMetalBattleDescription.Value;
-                id.m_maxQuality = MaxQuality;
-                id.m_blockPower = BlockAmount;
-                id.m_blockPowerPerLevel = BlockAmountPerLevel;
-                id.m_deflectionForce = DeflectionForce;
-                id.m_deflectionForcePerLevel = DeflectionForcePerLevel;
-                id.m_timedBlockBonus = ParryBonus;
-                id.m_attackForce = Knockback_Power;
-                id.m_backstabBonus = Backstab_Bonus;
+                id.m_maxQuality = MaxQuality == -1 ? id.m_maxQuality : MaxQuality;
+                id.m_useDurability = UseDurability;
+                item.m_itemData.m_durability = MaxDurability == -1 ? id.m_maxDurability : MaxDurability;
+                id.m_maxDurability = MaxDurability == -1 ? id.m_maxDurability : MaxDurability;
+                id.m_durabilityPerLevel = DurabilityPerLevel == -1 ? id.m_durabilityPerLevel : DurabilityPerLevel;
+                id.m_movementModifier = MovementModifier == -1 ? id.m_movementModifier : MovementModifier;
+                id.m_blockPower = BlockAmount == -1 ? id.m_blockPower : BlockAmount;
+                id.m_blockPowerPerLevel = BlockAmountPerLevel == -1 ? id.m_blockPowerPerLevel : BlockAmountPerLevel;
+                id.m_deflectionForce = DeflectionForce == -1 ? id.m_deflectionForce : DeflectionForce;
+                id.m_deflectionForcePerLevel = DeflectionForcePerLevel == -1 ? id.m_deflectionForcePerLevel : DeflectionForcePerLevel;
+                id.m_timedBlockBonus = ParryBonus == -1 ? id.m_timedBlockBonus : ParryBonus;
+                id.m_attackForce = Knockback_Power == -1 ? id.m_attackForce : Knockback_Power;
+                id.m_backstabBonus = Backstab_Bonus == -1 ? id.m_backstabBonus : Backstab_Bonus;
                 id.m_damages = SetDamageValues();
                 id.m_damagesPerLevel = SetDamagePerLevelValues();
             }
@@ -336,7 +342,11 @@ namespace ValheimMoreTwoHanders
             {
                 var id = go.GetComponent<ItemDrop>().m_itemData.m_shared;
                 ItemPrefab = go.name;
+                UseDurability = id.m_useDurability;
                 MaxQuality = id.m_maxQuality;
+                MaxDurability = id.m_maxDurability;
+                DurabilityPerLevel = id.m_durabilityPerLevel;
+                MovementModifier = id.m_movementModifier;
                 BlockAmount = id.m_blockPower;
                 BlockAmountPerLevel = id.m_blockPowerPerLevel;
                 DeflectionForce = id.m_deflectionForce;

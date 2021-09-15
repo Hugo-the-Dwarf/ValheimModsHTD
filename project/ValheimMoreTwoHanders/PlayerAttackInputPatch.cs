@@ -3,7 +3,7 @@ using HarmonyLib;
 using System;
 using UnityEngine;
 
-namespace ValheimMoreTwoHanders
+namespace ValheimHTDArmory
 {
 
     [HarmonyPatch(typeof(Player), "PlayerAttackInput")]
@@ -24,7 +24,7 @@ namespace ValheimMoreTwoHanders
             string weaponName = __instance.m_visEquipment.m_rightItem;
             if (weaponName != null & weaponName.Trim() != "")
             {
-                if (AssetReferences.listOfExtraAttacks.ContainsKey(weaponName))
+                if (MyReferences.listOfExtraAttacks.ContainsKey(weaponName))
                 {
 
                     bool attack3Input = false;
@@ -63,7 +63,7 @@ namespace ValheimMoreTwoHanders
                         }
 
                         //ItemDrop.ItemData currentWeapon = __instance.m_unarmedWeapon.m_itemData;
-                        Attack attack = AssetReferences.listOfExtraAttacks[weaponName].Clone();
+                        Attack attack = MyReferences.listOfExtraAttacks[weaponName].Clone();
 
                         if (attack.Start(__instance, __instance.m_body, __instance.m_zanim, __instance.m_animEvent, __instance.m_visEquipment, __instance.GetCurrentWeapon(), __instance.m_previousAttack, __instance.m_timeSinceLastAttack, 0F))
                         {

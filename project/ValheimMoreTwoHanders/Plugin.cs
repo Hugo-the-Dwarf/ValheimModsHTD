@@ -5,18 +5,17 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using BepInEx.Configuration;
 using System.IO;
 using System;
 
-namespace ValheimMoreTwoHanders
+namespace ValheimHTDArmory
 {
     [BepInPlugin(Plugin.GUID, Plugin.ModName, Plugin.Version)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string Version = "4.2.2";
-        public const string ModName = "More Two Handed Weapons";
-        public const string GUID = "htd.moretwohanders";
+        public const string Version = "5.0.0";
+        public const string ModName = "Hugo's Armory";
+        public const string GUID = "htd.armory";
         //public static readonly string MyDirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static ServerSync.ConfigSync configSync = new ServerSync.ConfigSync(GUID) { DisplayName = ModName, CurrentVersion = Version };
 
@@ -98,9 +97,9 @@ namespace ValheimMoreTwoHanders
                     return;
                 }
 
-                if (AssetReferences.myItemList.Count > 0)
+                if (MyReferences.myItemList.Count > 0)
                 {
-                    foreach (GameObject gameObject in AssetReferences.myItemList)
+                    foreach (GameObject gameObject in MyReferences.myItemList)
                     {
                         if (!__instance.m_prefabs.Contains(gameObject))
                             __instance.m_prefabs.Add(gameObject);
@@ -120,6 +119,7 @@ namespace ValheimMoreTwoHanders
                 GenerateReferenceLists();
                 AddNewItems();
                 AddNewRecipes();
+                AddNewStatusEffects();
             }
         }
 
@@ -133,6 +133,7 @@ namespace ValheimMoreTwoHanders
                 GenerateReferenceLists();
                 AddNewItems();
                 AddNewRecipes();
+                AddNewStatusEffects();
             }
         }
 
@@ -144,7 +145,7 @@ namespace ValheimMoreTwoHanders
                 {
                     if (recipeToApply.Enabled)
                     {
-                        GameObject go = AssetReferences.myItemList.Where(mil => mil.name == recipeToApply.ItemPrefab).FirstOrDefault();
+                        GameObject go = MyReferences.myItemList.Where(mil => mil.name == recipeToApply.ItemPrefab).FirstOrDefault();
                         Recipe updatedRecipe = recipeToApply.LoadConfigedRecipeHelper(go).GetRecipe();
                         AddRecipeToObjectDB(updatedRecipe);
                     }
@@ -155,8 +156,8 @@ namespace ValheimMoreTwoHanders
         public static void RebuildCustomAssetLists()
         {
             //AssetReferences.customItems = new List<CustomItem>();
-            AssetReferences.myRecipeList = new List<Recipe>();
-            AssetReferences.myItemList = new List<GameObject>();
+            MyReferences.myRecipeList = new List<Recipe>();
+            MyReferences.myItemList = new List<GameObject>();
             //customItemsAssembled = false;
             //customRecipesAssembled = false;
             //ItemManager.BuildLists();
@@ -183,7 +184,7 @@ namespace ValheimMoreTwoHanders
             {
                 //Log.LogMessage($"Prefab in ObjectDB: {go.name}");
                 //Add to reference lists if not in their already
-                AssetReferences.TryAddToItemList(go);
+                MyReferences.TryAddToItemList(go);
 
                 //if (!AssetReferences.listOfMaterials.ContainsKey("item_particle"))
                 //{
@@ -211,7 +212,7 @@ namespace ValheimMoreTwoHanders
                         //        AssetReferences.TryAddToMaterialList(mwt._material, "club_trail");
                         //    }
                         //}
-                        AssetReferences.TryExtractEffectsFromItemDropShared(shared);
+                        MyReferences.TryExtractEffectsFromItemDropShared(shared);
                     }
 
                     //Check to see if item can also build things
@@ -222,11 +223,11 @@ namespace ValheimMoreTwoHanders
                         {
                             foreach (var pieceTableItem in pieceTable)
                             {
-                                AssetReferences.TryAddToPieceList(pieceTableItem);
+                                MyReferences.TryAddToPieceList(pieceTableItem);
                                 CraftingStation craftingStation = pieceTableItem.GetComponent<CraftingStation>();
-                                if (craftingStation != null && !AssetReferences.listOfCraftingStations.ContainsKey(pieceTableItem.name)) AssetReferences.listOfCraftingStations.Add(pieceTableItem.name, craftingStation);
+                                if (craftingStation != null && !MyReferences.listOfCraftingStations.ContainsKey(pieceTableItem.name)) MyReferences.listOfCraftingStations.Add(pieceTableItem.name, craftingStation);
                                 StationExtension stationExtension = pieceTableItem.GetComponent<StationExtension>();
-                                if (stationExtension != null && !AssetReferences.listOfEffects.ContainsKey(stationExtension.m_connectionPrefab.name)) AssetReferences.listOfEffects.Add(stationExtension.m_connectionPrefab.name, stationExtension.m_connectionPrefab);
+                                if (stationExtension != null && !MyReferences.listOfEffects.ContainsKey(stationExtension.m_connectionPrefab.name)) MyReferences.listOfEffects.Add(stationExtension.m_connectionPrefab.name, stationExtension.m_connectionPrefab);
                             }
                         }
                     }
@@ -239,20 +240,21 @@ namespace ValheimMoreTwoHanders
 
             Dictionary<int, GameObject> m_itemsByHash = (Dictionary<int, GameObject>)typeof(ObjectDB).GetField("m_itemByHash", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(ObjectDB.instance);
 
-            if (AssetReferences.myItemList.Count > 0)
+            if (MyReferences.myItemList.Count > 0)
             {
-                foreach (var item in AssetReferences.myItemList)
+                foreach (var item in MyReferences.myItemList)
                 {
                     AddItemToObjectDB(item, ref m_itemsByHash);
                 }
             }
-            else
+            
+            if(MyReferences.customItems.Count > 0)
             {
-                foreach (var customItem in AssetReferences.customItems)
+                foreach (var customItem in MyReferences.customItems)
                 {
                     customItem.FixReferences();
                     var itemGameObject = customItem.gameObject;
-                    if (!AssetReferences.myItemList.Contains(itemGameObject)) AssetReferences.myItemList.Add(itemGameObject);
+                    if (!MyReferences.myItemList.Contains(itemGameObject)) MyReferences.myItemList.Add(itemGameObject);
                     AddItemToObjectDB(itemGameObject, ref m_itemsByHash);
                 }
                 customItemsAssembled = true;
@@ -281,21 +283,22 @@ namespace ValheimMoreTwoHanders
         private static void AddNewRecipes()
         {
 
-            if (AssetReferences.myRecipeList.Count > 0)
+            if (MyReferences.myRecipeList.Count > 0)
             {
-                foreach (var recipe in AssetReferences.myRecipeList)
+                foreach (var recipe in MyReferences.myRecipeList)
                 {
                     AddRecipeToObjectDB(recipe);
                 }
             }
-            else
+            
+            if(MyReferences.myRecipeHelperList.Count > 0)
             {
-                foreach (var customItem in AssetReferences.customItems)
+                foreach (var recipeHelper in MyReferences.myRecipeHelperList)
                 {
-                    if (customItem.recipe.recipeEnabled)
+                    if (recipeHelper.recipeEnabled)
                     {
-                        var recipe = customItem.recipe.GetRecipe();
-                        if (!AssetReferences.myRecipeList.Contains(recipe)) AssetReferences.myRecipeList.Add(recipe);
+                        var recipe = recipeHelper.GetRecipe();
+                        if (!MyReferences.myRecipeList.Contains(recipe)) MyReferences.myRecipeList.Add(recipe);
                         AddRecipeToObjectDB(recipe);
                     }
                 }
@@ -312,11 +315,32 @@ namespace ValheimMoreTwoHanders
             ObjectDB.instance.m_recipes.Add(recipe);
         }
 
+        private static void AddNewStatusEffects()
+        {
+
+            if (MyReferences.myStatusEffects.Count > 0)
+            {
+                foreach (var effect in MyReferences.myStatusEffects)
+                {
+                    AddStatusEffectToObjectDB(effect);
+                }
+            }
+        }
+
+        private static void AddStatusEffectToObjectDB(StatusEffect effect)
+        {
+            //Sadly I'm not sure why this is here, but RandyKnapp had it
+            // It removes the old recipe and adds the new one. Randy has this to make sure that reloading the configuration while the game is running works.
+            ObjectDB.instance.m_StatusEffects.RemoveAll(x => x.name == effect.name);
+            ObjectDB.instance.m_StatusEffects.Add(effect);
+        }
+
         private static void WipeCustomItemList()
         {
             if (customItemsAssembled && customRecipesAssembled)
             {
-                AssetReferences.customItems = new List<CustomItem>();
+                MyReferences.customItems = new List<CustomItem>();
+                MyReferences.myRecipeHelperList = new List<RecipeHelper>();
             }
         }
     }

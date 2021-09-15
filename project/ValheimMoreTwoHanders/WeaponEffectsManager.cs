@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static EffectList;
 
-namespace ValheimMoreTwoHanders
+namespace ValheimHTDArmory
 {
     public class WeaponEffectsManager
     {
@@ -72,7 +72,7 @@ namespace ValheimMoreTwoHanders
                     effectData.m_enabled = true;
                     try
                     {
-                        effectData.m_prefab = AssetReferences.listOfEffects[pendingEffect.effectName];
+                        effectData.m_prefab = MyReferences.listOfEffects[pendingEffect.effectName];
                     }
                     catch (Exception e)
                     {

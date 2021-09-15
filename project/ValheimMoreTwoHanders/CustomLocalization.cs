@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ValheimMoreTwoHanders
+namespace ValheimHTDArmory
 {
     public class CustomLocalization
     {
@@ -74,27 +74,37 @@ namespace ValheimMoreTwoHanders
         {
             int languageIndex = -1;
             bool firstPass = true;
+            int currentLineIndex = 0;
             foreach (string dataString in localizationLines)
             {
-                string[] splitData = dataString.Split('\t');
-                if (firstPass)
+                try
                 {
-                    firstPass = false;
-                    for (int i = 1; i < splitData.Length; i++)//skip index 0 because that's blank anyways
+                    string[] splitData = dataString.Split('\t');
+                    if (firstPass)
                     {
-                        if (splitData[i] == currentLanguage)
+                        firstPass = false;
+                        for (int i = 1; i < splitData.Length; i++)//skip index 0 because that's blank anyways
                         {
-                            languageIndex = i;
-                            break;
+                            if (splitData[i] == currentLanguage)
+                            {
+                                languageIndex = i;
+                                break;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    if (languageIndex > -1)
+                    else
                     {
-                        FilterData(splitData, languageIndex);
+                        if (languageIndex > -1)
+                        {
+                            FilterData(splitData, languageIndex);
+                        }
                     }
+                    currentLineIndex++;
+                }
+                catch(Exception e)
+                {
+                    Plugin.Log.LogError($"Exception Thrown trying to localize line {currentLineIndex}: <{dataString}>");
+                    Plugin.Log.LogError($"Exception Message: <{e.Message}>");
                 }
             }
         }

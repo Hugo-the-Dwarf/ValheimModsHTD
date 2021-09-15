@@ -1,4 +1,4 @@
-﻿namespace ValheimMoreTwoHanders
+﻿namespace ValheimHTDArmory
 {
     public class ResourceElement
     {

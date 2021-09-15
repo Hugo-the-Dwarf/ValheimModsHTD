@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace ValheimMoreTwoHanders
+namespace ValheimHTDArmory
 {
     //Thanks to Sarcen, and Mixone for helping assemble this
     [HarmonyPatch]

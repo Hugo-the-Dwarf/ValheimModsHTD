@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace ValheimMoreTwoHanders
+namespace ValheimHTDArmory
 {
     public class RecipeHelper
     {
@@ -56,11 +56,11 @@ namespace ValheimMoreTwoHanders
             GameObject resourceGameObject = null;
             foreach (ResourceElement re in resources)
             {
-                if (AssetReferences.listOfItemPrefabs.ContainsKey(re.prefabItemName)) resourceGameObject = AssetReferences.listOfItemPrefabs[re.prefabItemName];
+                if (MyReferences.listOfItemPrefabs.ContainsKey(re.prefabItemName)) resourceGameObject = MyReferences.listOfItemPrefabs[re.prefabItemName];
                 else
                 {
                     resourceGameObject = ObjectDB.instance.GetItemPrefab(re.prefabItemName);
-                    if (resourceGameObject != null && !AssetReferences.listOfItemPrefabs.ContainsKey(re.prefabItemName)) AssetReferences.listOfItemPrefabs.Add(re.prefabItemName, resourceGameObject);
+                    if (resourceGameObject != null && !MyReferences.listOfItemPrefabs.ContainsKey(re.prefabItemName)) MyReferences.listOfItemPrefabs.Add(re.prefabItemName, resourceGameObject);
                 }
                 outPutArray.Add(new Piece.Requirement
                 {
@@ -80,9 +80,9 @@ namespace ValheimMoreTwoHanders
         public Recipe GetRecipe()
         {
             //Set the CraftingStation via the Global CraftingStation Dictonary that is looked up before this is called
-            if (AssetReferences.listOfCraftingStations.Count > 0 && AssetReferences.listOfCraftingStations.ContainsKey(myCraftingStation))
+            if (MyReferences.listOfCraftingStations.Count > 0 && MyReferences.listOfCraftingStations.ContainsKey(myCraftingStation))
             {
-                myRecipe.m_craftingStation = AssetReferences.listOfCraftingStations[myCraftingStation];
+                myRecipe.m_craftingStation = MyReferences.listOfCraftingStations[myCraftingStation];
             }
 
             //Compile the list of requirements which when this is called ObjectDB should be valid
