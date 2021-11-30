@@ -18,6 +18,28 @@ namespace ValheimHTDArmory
             TRAIL
         }
 
+        public enum StatusEffectTarget
+        {
+            SET,
+            EQUIP,
+            ATTACK,
+            ODB
+        }
+
+        private class PendingStatusEffect
+        {
+            public string prefabTarget;
+            public StatusEffectTarget targetFrom;
+            public StatusEffectTarget targetTo;
+
+            public PendingStatusEffect(string targetPrefabName, StatusEffectTarget targetFrom, StatusEffectTarget targetTo)
+            {
+                prefabTarget = targetPrefabName;
+                this.targetFrom = targetFrom;
+                this.targetTo = targetTo;
+            }
+        }
+
         private class PendingEffect
         {
             public string effectName;
@@ -33,6 +55,7 @@ namespace ValheimHTDArmory
         EffectList lastUsedEffectList = EffectList.HIT;
 
         List<PendingEffect> pendingEffects = new List<PendingEffect>();
+        List<PendingStatusEffect> pendingStatusEffects = new List<PendingStatusEffect>();
 
         List<EffectData> hitEffectsData = new List<EffectData>();
         List<EffectData> hitterrainEffectsData = new List<EffectData>();
@@ -53,6 +76,78 @@ namespace ValheimHTDArmory
             //    Plugin.Log.LogError($"Error getting item spark particle effect material from material list");
             //    Plugin.Log.LogError($"Catch Exception details: {e.Message} --- {e.StackTrace}");
             //}
+
+
+
+            ParticleSystemRenderer ps = gameObject.GetComponent<ParticleSystemRenderer>();
+            if (ps != null)
+            {
+                ps.material = MyReferences.listOfMaterials["item_particle"];
+            }
+
+            Transform trail = PrefabNodeManager.RecursiveChildNodeFinder(gameObject.transform, "trail");
+            if (trail != null)
+            {
+                MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
+                mwt._material = MyReferences.listOfMaterials["club_trail"];
+            }
+
+            var gameObjectShared = gameObject.GetComponent<ItemDrop>().m_itemData.m_shared;
+
+            if (pendingStatusEffects.Count > 0)
+            {
+                try
+                {
+                    foreach (PendingStatusEffect pendingStatusEffect in pendingStatusEffects)
+                    {
+                        StatusEffect EffectToApply = null;
+                        GameObject targetPrefab = null;
+                        if (pendingStatusEffect.targetFrom != StatusEffectTarget.ODB)
+                        {
+                            targetPrefab = MyReferences.listOfAllGameObjects[pendingStatusEffect.prefabTarget];
+                            if (targetPrefab == null)targetPrefab = ObjectDB.instance.GetItemPrefab(pendingStatusEffect.prefabTarget);                            
+                            if (targetPrefab == null) continue;
+                        }
+
+                        switch (pendingStatusEffect.targetFrom)
+                        {
+                            case StatusEffectTarget.ODB:
+                                EffectToApply = ObjectDB.instance.GetStatusEffect(pendingStatusEffect.prefabTarget);
+                                break;
+                            case StatusEffectTarget.SET:
+                                EffectToApply = targetPrefab.GetComponent<ItemDrop>().m_itemData.m_shared.m_setStatusEffect;
+                                break;
+                            case StatusEffectTarget.EQUIP:
+                                EffectToApply = targetPrefab.GetComponent<ItemDrop>().m_itemData.m_shared.m_equipStatusEffect;
+                                break;
+                            case StatusEffectTarget.ATTACK:
+                                EffectToApply = targetPrefab.GetComponent<ItemDrop>().m_itemData.m_shared.m_attackStatusEffect;
+                                break;
+                        }
+
+                        if (EffectToApply != null)
+                        {
+                            switch (pendingStatusEffect.targetTo)
+                            {
+                                case StatusEffectTarget.SET:
+                                    gameObjectShared.m_setStatusEffect = EffectToApply;
+                                    break;
+                                case StatusEffectTarget.EQUIP:
+                                    gameObjectShared.m_equipStatusEffect = EffectToApply;
+                                    break;
+                                case StatusEffectTarget.ATTACK:
+                                    gameObjectShared.m_attackStatusEffect = EffectToApply;
+                                    break;
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Plugin.Log.LogError($"Error Trying to fix status effect reference {e.Message}");
+                }
+            }
+
             if (pendingEffects.Count > 0)
             {
 
@@ -105,7 +200,7 @@ namespace ValheimHTDArmory
                     }
                 }
             }
-            var gameObjectShared = gameObject.GetComponent<ItemDrop>().m_itemData.m_shared;
+
             gameObjectShared.m_hitEffect.m_effectPrefabs = hitEffectsData.ToArray();
             gameObjectShared.m_hitTerrainEffect.m_effectPrefabs = hitterrainEffectsData.ToArray();
             gameObjectShared.m_blockEffect.m_effectPrefabs = blockEffectsData.ToArray();
@@ -130,9 +225,16 @@ namespace ValheimHTDArmory
             return this;
         }
 
+        public WeaponEffectsManager AddStatusEffect(string targetPrefabName, StatusEffectTarget targetFrom, StatusEffectTarget targetTo)
+        {
+            pendingStatusEffects.Add(new PendingStatusEffect(targetPrefabName, targetFrom, targetTo));
+            return this;
+        }
+
         private void WipeLists()
         {
             pendingEffects = null;
+            pendingStatusEffects = null;
             hitEffectsData = null;
             hitterrainEffectsData = null;
             blockEffectsData = null;

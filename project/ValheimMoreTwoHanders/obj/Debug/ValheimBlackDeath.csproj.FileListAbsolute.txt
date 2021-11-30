@@ -1,6 +1,0 @@
-C:\Users\edgar\source\repos\ValheimBlackDeath\ValheimBlackDeath\bin\Debug\ValheimBlackDeath.dll
-C:\Users\edgar\source\repos\ValheimBlackDeath\ValheimBlackDeath\bin\Debug\ValheimBlackDeath.pdb
-C:\Users\edgar\source\repos\ValheimBlackDeath\ValheimBlackDeath\obj\Debug\ValheimBlackDeath.csprojAssemblyReference.cache
-C:\Users\edgar\source\repos\ValheimBlackDeath\ValheimBlackDeath\obj\Debug\ValheimBlackDeath.csproj.CoreCompileInputs.cache
-C:\Users\edgar\source\repos\ValheimBlackDeath\ValheimBlackDeath\obj\Debug\ValheimBlackDeath.dll
-C:\Users\edgar\source\repos\ValheimBlackDeath\ValheimBlackDeath\obj\Debug\ValheimBlackDeath.pdb

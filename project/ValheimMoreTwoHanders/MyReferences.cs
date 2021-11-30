@@ -14,12 +14,10 @@ namespace ValheimHTDArmory
         public static Dictionary<string, GameObject> listOfPieces = new Dictionary<string, GameObject>(); //Sub-list of 'listOfAllGameObjects' for just Pieces
         public static Dictionary<string, CraftingStation> listOfCraftingStations = new Dictionary<string, CraftingStation>(); //For Recipes/Pieces extracted from valid Pieces
         public static Dictionary<string, GameObject> listOfEffects = new Dictionary<string, GameObject>(); //For weapons/Attacks extracted from valid items
-
         public static Dictionary<string, Material> listOfMaterials = new Dictionary<string, Material>();
 
         //my custom lists 
         public static List<int> listHashOfSMRWeapons = new List<int>(); //Fixed Referenced Compiled Items
-        public static Dictionary<int, Transform[]> dictionaryHashOfSMRReorders = new Dictionary<int, Transform[]>(); //Fixed Referenced Compiled Items
         public static List<GameObject> myItemList = new List<GameObject>(); //Fixed Referenced Compiled Items
         public static List<Recipe> myRecipeList = new List<Recipe>(); // Fixed Referenced Compiled Recipes
         public static List<RecipeHelper> myRecipeHelperList = new List<RecipeHelper>(); // uncompiled recipes
@@ -28,8 +26,9 @@ namespace ValheimHTDArmory
 
         //Node data
         public static Dictionary<string, GameObject> targetPrefabNodes = new Dictionary<string, GameObject>(); //Names are PrefabNameNodeName "GameObject.name + node.name"
-        public static Dictionary<string, MeshRenderer> targetPrefabMeshRenderers = new Dictionary<string, MeshRenderer>();
-        public static Dictionary<string, MeshFilter> targetPrefabMeshFilters = new Dictionary<string, MeshFilter>();
+        public static Dictionary<string, MeshFilter> targetMeshFilters = new Dictionary<string, MeshFilter>();
+        public static Dictionary<string, Material> newMaterials = new Dictionary<string, Material>();
+        public static Dictionary<string, ParticleSystemRenderer> targetParticleSystemRenderers = new Dictionary<string, ParticleSystemRenderer>();
 
         //NewAttacks
         public static Dictionary<string, Attack> listOfExtraAttacks = new Dictionary<string, Attack>();
@@ -77,6 +76,7 @@ namespace ValheimHTDArmory
 
         public static void TryAddToMaterialList(Material mat)
         {
+            //Plugin.Log.LogMessage($"Trying to add {mat.name} into MaterialList.");
             if (!listOfMaterials.ContainsKey(mat.name))
             {
                 listOfMaterials.Add(mat.name, mat);
@@ -86,6 +86,7 @@ namespace ValheimHTDArmory
 
         public static void TryAddToMaterialList(Material mat, string keyName)
         {
+            //Plugin.Log.LogMessage($"Trying to add {mat.name} into MaterialList using key {keyName}.");
             if (!listOfMaterials.ContainsKey(mat.name))
             {
                 listOfMaterials.Add(keyName, mat);

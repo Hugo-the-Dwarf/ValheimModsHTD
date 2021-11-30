@@ -4,6 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using System.IO;
 using BepInEx.Configuration;
+using System.Collections.Generic;
 
 namespace ValheimHTDArmory
 {
@@ -35,7 +36,7 @@ namespace ValheimHTDArmory
             Color iron = new Color(0.4f, 0.4f, 0.4f);
 
             //FistBronze
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "FistBronze");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BronzeFistsHTD");//FistBronze
             var id = currentItem.GetComponent<ItemDrop>();
 
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
@@ -70,7 +71,7 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("IronFistsMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(bronze).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("FistMetalKnucklesMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(bronze).StartNewNode();
             currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(bronze).StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
@@ -83,7 +84,7 @@ namespace ValheimHTDArmory
             MyReferences.customItems.Add(currentCustom);
 
             //FistIron
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "FistIron");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "IronFistsHTD");//FistIron
             id = currentItem.GetComponent<ItemDrop>();
 
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
@@ -118,7 +119,7 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("IronFistsMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(iron).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("FistMetalKnucklesMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(iron).StartNewNode();
             currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(iron).StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
@@ -131,7 +132,7 @@ namespace ValheimHTDArmory
             MyReferences.customItems.Add(currentCustom);
 
             //FistBuckAndDoe
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "FistBuckAndDoe");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "DeerFistsHTD");//FistBuckAndDoe
             id = currentItem.GetComponent<ItemDrop>();
 
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
@@ -166,9 +167,8 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("BuckAndDoeSkinnedMesh", "HardAntler", "model").CopyTargetMaterial().SetMyMateiralIndex(1).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("FistBuckAndDoeMesh", "HardAntler", "model").CopyTargetMaterial().SetMyMateiralIndex(1).StartNewNode();
             currentCustom.prefabNodeManager.SetNode("model", "HardAntler", "model").CopyTargetMaterial().SetMyMateiralIndex(1).StartNewNode();
-            //currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(iron).StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
@@ -180,13 +180,9 @@ namespace ValheimHTDArmory
             MyReferences.customItems.Add(currentCustom);
 
             //Silver Great Sword    
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordSilverGreat");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "SilverGreatSwordHTD");//SwordSilverGreat
             id = currentItem.GetComponent<ItemDrop>();
 
-            //Plugin.cc.ApplyItemDataFromConfigRecord(ref currentItem);
-            //Plugin.cc.AddItemDataAsConfigRecord(currentItem);
-
-            //currentRecipeHelper = Plugin.cc.ApplyRecipeHelperFromConfigRecord(currentItem);
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
 
             if (currentRecipeHelper == null)
@@ -197,7 +193,6 @@ namespace ValheimHTDArmory
             Plugin.cc.AddItemDataAsConfigRecord(currentItem);
             Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
             Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
-            //AssetReferences.myItemHashList.Add(currentItem.name.GetStableHashCode(), currentItem.name);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
             Attack3.m_attackType = Attack.AttackType.Horizontal;
@@ -219,10 +214,7 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
@@ -232,7 +224,7 @@ namespace ValheimHTDArmory
             MyReferences.customItems.Add(currentCustom);
 
             //Iron
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordIronGreat");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "IronGreatSwordHTD");//SwordIronGreat
             id = currentItem.GetComponent<ItemDrop>();
 
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
@@ -266,10 +258,7 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
@@ -279,7 +268,7 @@ namespace ValheimHTDArmory
             MyReferences.customItems.Add(currentCustom);
 
             //Silver Battle axe
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "AxeSilverBattle");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "SilverBattleaxeHTD");//AxeSilverBattle
 
             id = currentItem.GetComponent<ItemDrop>();
 
@@ -320,16 +309,13 @@ namespace ValheimHTDArmory
             currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
             currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             MyReferences.customItems.Add(currentCustom);
 
 
             //Mace Silver Great
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "MaceSilverGreat");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "SilverGreatMaceHTD");//MaceSilverGreat
 
             id = currentItem.GetComponent<ItemDrop>();
 
@@ -367,10 +353,7 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_sledge_hit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
@@ -380,28 +363,17 @@ namespace ValheimHTDArmory
 
             MyReferences.customItems.Add(currentCustom);
             //MaceCoreGreat
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "MaceCoreGreat");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceHTD");//MaceCoreGreat
 
-            float rotX = 0;
-            float rotY = 45f;
-            float rotZ = 0;
-            Transform RotatingElement = currentItem.transform.Find("attach/EffectHolder1/rotator1");
-            Rotator cir = RotatingElement.gameObject.AddComponent<Rotator>();
-            cir.rotateX = rotX;
-            cir.rotateY = rotY;
-            cir.rotateZ = rotZ;
-
-            RotatingElement = currentItem.transform.Find("stand/v/EffectHolder2/rotator2");
-            cir = RotatingElement.gameObject.AddComponent<Rotator>();
-            cir.rotateX = rotX;
-            cir.rotateY = rotY;
-            cir.rotateZ = rotZ;
-
-            RotatingElement = currentItem.transform.Find("stand/h/EffectHolder3/rotator3");
-            cir = RotatingElement.gameObject.AddComponent<Rotator>();
-            cir.rotateX = rotX;
-            cir.rotateY = rotY;
-            cir.rotateZ = rotZ;
+            List<Transform> rotators = new List<Transform>();
+            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            foreach (Transform rotator in rotators)
+            {
+                Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
+                rotatorComponent.rotateX = 0f;
+                rotatorComponent.rotateY = 45f;
+                rotatorComponent.rotateZ = 0f;
+            }
 
             id = currentItem.GetComponent<ItemDrop>();
 
@@ -439,14 +411,7 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("core1", "SurtlingCore", "core").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("core2", "SurtlingCore", "core").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("core3", "SurtlingCore", "core").CopyTargetMaterial().CopyTargetMesh().StartNewNode();
-
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_sledge_hit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
@@ -456,25 +421,76 @@ namespace ValheimHTDArmory
 
             MyReferences.customItems.Add(currentCustom);
             //Green
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "MaceCoreGreatGreen");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceGreenHTD");//MaceCoreGreatGreen
 
-            RotatingElement = currentItem.transform.Find("attach/EffectHolder1/rotator1");
-            cir = RotatingElement.gameObject.AddComponent<Rotator>();
-            cir.rotateX = rotX;
-            cir.rotateY = rotY;
-            cir.rotateZ = rotZ;
+            rotators = new List<Transform>();
+            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            foreach (Transform rotator in rotators)
+            {
+                Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
+                rotatorComponent.rotateX = 0f;
+                rotatorComponent.rotateY = 45f;
+                rotatorComponent.rotateZ = 0f;
+            }
 
-            RotatingElement = currentItem.transform.Find("stand/v/EffectHolder2/rotator2");
-            cir = RotatingElement.gameObject.AddComponent<Rotator>();
-            cir.rotateX = rotX;
-            cir.rotateY = rotY;
-            cir.rotateZ = rotZ;
+            id = currentItem.GetComponent<ItemDrop>();
 
-            RotatingElement = currentItem.transform.Find("stand/h/EffectHolder3/rotator3");
-            cir = RotatingElement.gameObject.AddComponent<Rotator>();
-            cir.rotateX = rotX;
-            cir.rotateY = rotY;
-            cir.rotateZ = rotZ;
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 40, 15).AddResource("Iron", 35, 10).AddResource("LeatherScraps", 12, 8);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_sledge";
+            Attack3.m_attackStamina = 35f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.4f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 60f;
+            Attack3.m_damageMultiplier = 1.5f;
+            Attack3.m_forceMultiplier = 1f;
+            Attack3.m_staggerMultiplier = 2f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 90f;
+            Attack3.m_attackRayWidth = 4f;
+            Attack3.m_maxYAngle = 45f;
+            Attack3.m_hitThroughWalls = true;
+
+            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+
+            MyReferences.customItems.Add(currentCustom);
+
+            //Blue
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceBlueHTD");
+
+            rotators = new List<Transform>();
+            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            foreach (Transform rotator in rotators)
+            {
+                Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
+                rotatorComponent.rotateX = 0f;
+                rotatorComponent.rotateY = 45f;
+                rotatorComponent.rotateZ = 0f;
+            }
 
             id = currentItem.GetComponent<ItemDrop>();
             //id.m_itemData.m_shared.m_name += " Green";
@@ -513,19 +529,7 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            Color greenEmission = new Color(0f, 1.4f, 0.13f);
-            float sX = 0.6f;
-            float sY = 0.75f;
-            float oX = .1f;
-            float oY = .06f;
-            currentCustom.prefabNodeManager.SetNode("core1", "SurtlingCore", "core").CopyTargetMaterial().CopyTargetMesh().ReplaceEmissionColor(greenEmission).ChangeTextureScaleOffset(sX, sY, oX, oY).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("core2", "SurtlingCore", "core").CopyTargetMaterial().CopyTargetMesh().ReplaceEmissionColor(greenEmission).ChangeTextureScaleOffset(sX, sY, oX, oY).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("core3", "SurtlingCore", "core").CopyTargetMaterial().CopyTargetMesh().ReplaceEmissionColor(greenEmission).ChangeTextureScaleOffset(sX, sY, oX, oY).StartNewNode();
-
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_sledge_hit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
@@ -536,9 +540,12 @@ namespace ValheimHTDArmory
             MyReferences.customItems.Add(currentCustom);
 
             //Grasp
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "MaceGraspUndying");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BoneGreatMaceHTD");//MaceGraspUndying
 
             id = currentItem.GetComponent<ItemDrop>();
+
+            //var shared = id.m_itemData.m_shared;
+            ////shared.m_attackStatusEffect = 
 
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
 
@@ -574,11 +581,9 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
+            currentCustom.effectHandler.AddStatusEffect("Tared",WeaponEffectsManager.StatusEffectTarget.ODB,WeaponEffectsManager.StatusEffectTarget.ATTACK);
             currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_sledge_hit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
@@ -588,7 +593,7 @@ namespace ValheimHTDArmory
             MyReferences.customItems.Add(currentCustom);
 
             //SwordBlackmetalGreat
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordBlackMetalGreat");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BlackMetalGreatSwordHTD");//SwordBlackMetalGreat
 
             id = currentItem.GetComponent<ItemDrop>();
 
@@ -623,14 +628,9 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("model1", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("model2", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("model3", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default", 3).CopyTargetMaterial(true).StartNewNode();
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
@@ -642,7 +642,7 @@ namespace ValheimHTDArmory
             MyReferences.customItems.Add(currentCustom);
 
             //Iron but as Black Metal
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordIronGreatBlack");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BlackMetalGreatSwordAltHTD");//SwordIronGreatBlack
             id = currentItem.GetComponent<ItemDrop>();
 
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
@@ -677,14 +677,9 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("model1", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("model2", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("model3", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default", 3).CopyTargetMaterial(true).StartNewNode();
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
@@ -695,29 +690,17 @@ namespace ValheimHTDArmory
 
 
             //SwordObsidianGreat
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordObsidianGreat");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "ObsidianGreatSwordHTD");//SwordObsidianGreat
 
-            rotX = 13f;
-            rotY = -15.75f;
-            rotZ = 9.25f;
-
-            RotatingElement = currentItem.transform.Find("attach/rotator1");
-            cir = RotatingElement.gameObject.AddComponent<Rotator>();
-            cir.rotateX = rotX;
-            cir.rotateY = rotY;
-            cir.rotateZ = rotZ;
-
-            RotatingElement = currentItem.transform.Find("stand/v/rotator2");
-            cir = RotatingElement.gameObject.AddComponent<Rotator>();
-            cir.rotateX = rotX;
-            cir.rotateY = rotY;
-            cir.rotateZ = rotZ;
-
-            RotatingElement = currentItem.transform.Find("stand/h/rotator3");
-            cir = RotatingElement.gameObject.AddComponent<Rotator>();
-            cir.rotateX = rotX;
-            cir.rotateY = rotY;
-            cir.rotateZ = rotZ;
+            rotators = new List<Transform>();
+            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            foreach (Transform rotator in rotators)
+            {
+                Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
+                rotatorComponent.rotateX = 13f;
+                rotatorComponent.rotateY = -15.75f;
+                rotatorComponent.rotateZ = 9.25f;
+            }
 
             id = currentItem.GetComponent<ItemDrop>();
 
@@ -758,40 +741,73 @@ namespace ValheimHTDArmory
             currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
             currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
 
-            currentCustom.prefabNodeManager.SetNode("wrap1", "LinenThread", "model").CopyTargetMaterial(false).ReplaceMainColor(new Color(0.3647f, .2431f, .145f)).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("wrap2", "LinenThread", "model").CopyTargetMaterial(false).ReplaceMainColor(new Color(0.3647f, .2431f, .145f)).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("wrap3", "LinenThread", "model").CopyTargetMaterial(false).ReplaceMainColor(new Color(0.3647f, .2431f, .145f)).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("wrap", "LinenThread", "model", 3).CopyTargetMaterial().ReplaceMainColor(new Color(0.3647f, .2431f, .145f)).StartNewNode();
 
-            currentCustom.prefabNodeManager.SetNode("inner1", "DragonTear", "inner").CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("inner2", "DragonTear", "inner").CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("inner3", "DragonTear", "inner").CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.prefabNodeManager.SetNode("hull1", "DragonTear", "hull").CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("hull2", "DragonTear", "hull").CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("hull3", "DragonTear", "hull").CopyTargetMaterial().StartNewNode();
+            MyReferences.customItems.Add(currentCustom);
 
-            currentCustom.prefabNodeManager.SetNode("pixel_flakes1", "DragonTear", "pixel_flakes").CopyTargetParticle().CopyTargetShader().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("pixel_flakes2", "DragonTear", "pixel_flakes").CopyTargetParticle().CopyTargetShader().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("pixel_flakes3", "DragonTear", "pixel_flakes").CopyTargetParticle().CopyTargetShader().StartNewNode();
+            //SwordObsidianGreat Red
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "ObsidianGreatSwordRedHTD");//SwordObsidianGreat
 
-            currentCustom.prefabNodeManager.SetNode("smoke_expl1", "DragonTear", "smoke_expl").CopyTargetParticle().CopyTargetShader().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("smoke_expl2", "DragonTear", "smoke_expl").CopyTargetParticle().CopyTargetShader().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("smoke_expl3", "DragonTear", "smoke_expl").CopyTargetParticle().CopyTargetShader().StartNewNode();
+            rotators = new List<Transform>();
+            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            foreach (Transform rotator in rotators)
+            {
+                Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
+                rotatorComponent.rotateX = 13f;
+                rotatorComponent.rotateY = -15.75f;
+                rotatorComponent.rotateZ = 9.25f;
+            }
 
-            currentCustom.prefabNodeManager.SetNode("flare1", "DragonTear", "flare").CopyTargetParticle().CopyTargetShader().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("flare2", "DragonTear", "flare").CopyTargetParticle().CopyTargetShader().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("flare3", "DragonTear", "flare").CopyTargetParticle().CopyTargetShader().StartNewNode();
+            id = currentItem.GetComponent<ItemDrop>();
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("DragonTear", 1, 0).AddResource("Obsidian", 25, 35).AddResource("FreezeGland", 30, 30).AddResource("Crystal", 20, 10);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "sword_secondary";
+            Attack3.m_attackStamina = 30f;
+            Attack3.m_speedFactor = 0.2f;
+            Attack3.m_speedFactorRotation = 0f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 30f;
+            Attack3.m_damageMultiplier = 3f;
+            Attack3.m_forceMultiplier = 1f;
+            Attack3.m_staggerMultiplier = 1f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 45f;
+
+            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+
+            currentCustom.prefabNodeManager.SetNode("wrap", "LinenThread", "model", 3).CopyTargetMaterial().ReplaceMainColor(new Color(0.3647f, .2431f, .145f)).StartNewNode();
+
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             MyReferences.customItems.Add(currentCustom);
 
 
             //SwordFlametalGreat
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordFlametalGreat");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "FlametalGreatSwordHTD");//SwordFlametalGreat
 
             id = currentItem.GetComponent<ItemDrop>();
 
@@ -834,36 +850,28 @@ namespace ValheimHTDArmory
 
             if (Plugin.disableFlametalFlames)
             {
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "flames_rise1").gameObject.SetActive(false);
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "flames_rise2").gameObject.SetActive(false);
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "flames_rise3").gameObject.SetActive(false);
+                currentItem.transform.Find("attach/content/particles/vfx_flames").gameObject.SetActive(false);
+                currentItem.transform.Find("attach/content/particles/vfx_smoke").gameObject.SetActive(false);
+                currentItem.transform.Find("attach/content/particles/vfx_fire").gameObject.SetActive(false);
+                currentItem.transform.Find("attach/content/particles/vfx_embers").gameObject.SetActive(false);
 
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "flames_mid1").gameObject.SetActive(false);
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "flames_mid2").gameObject.SetActive(false);
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "flames_mid3").gameObject.SetActive(false);
+                currentItem.transform.Find("attach_stand/v/content/particles/vfx_flames").gameObject.SetActive(false);
+                currentItem.transform.Find("attach_stand/v/content/particles/vfx_smoke").gameObject.SetActive(false);
+                currentItem.transform.Find("attach_stand/v/content/particles/vfx_fire").gameObject.SetActive(false);
+                currentItem.transform.Find("attach_stand/v/content/particles/vfx_embers").gameObject.SetActive(false);
 
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "flames1").gameObject.SetActive(false);
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "flames2").gameObject.SetActive(false);
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "flames3").gameObject.SetActive(false);
-
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "embers1").gameObject.SetActive(false);
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "embers2").gameObject.SetActive(false);
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "embers3").gameObject.SetActive(false);
-
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "smoke1").gameObject.SetActive(false);
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "smoke2").gameObject.SetActive(false);
-                PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "smoke3").gameObject.SetActive(false);
+                currentItem.transform.Find("attach_stand/h/content/particles/vfx_flames").gameObject.SetActive(false);
+                currentItem.transform.Find("attach_stand/h/content/particles/vfx_smoke").gameObject.SetActive(false);
+                currentItem.transform.Find("attach_stand/h/content/particles/vfx_fire").gameObject.SetActive(false);
+                currentItem.transform.Find("attach_stand/h/content/particles/vfx_embers").gameObject.SetActive(false);
             }
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             MyReferences.customItems.Add(currentCustom);
 
             //Variant
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordFlametalGreatIron");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "IronHeavyGreatSwordHTD");//SwordFlametalGreatIron
 
             id = currentItem.GetComponent<ItemDrop>();
 
@@ -904,10 +912,7 @@ namespace ValheimHTDArmory
             currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
             currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             MyReferences.customItems.Add(currentCustom);
 
@@ -915,7 +920,7 @@ namespace ValheimHTDArmory
 
 
             //Black Metal
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "AxeBlackMetalBattle");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BlackMetalBattleaxeHTD");//AxeBlackMetalBattle
 
             id = currentItem.GetComponent<ItemDrop>();
 
@@ -950,9 +955,7 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("model1", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("model2", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("model3", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default", 3).CopyTargetMaterial(true).StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_battleaxe_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
@@ -960,15 +963,12 @@ namespace ValheimHTDArmory
             currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
             currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             MyReferences.customItems.Add(currentCustom);
 
             //DragonSlayer
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordDragonSlayer");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "DragonSlayerSwordHTD");//SwordDragonSlayer
 
             id = currentItem.GetComponent<ItemDrop>();
 
@@ -1009,15 +1009,12 @@ namespace ValheimHTDArmory
             currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
             currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
             MyReferences.customItems.Add(currentCustom);
 
             //Bone Sword
-            currentItem = ExtractGameObjectFromBundle(assetBundle, "SwordBoneGreat");
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BoneGreatSwordHTD");//SwordBoneGreat
 
             id = currentItem.GetComponent<ItemDrop>();
 
@@ -1055,10 +1052,9 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("stand1mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand1mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh1", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("stand2mesh2", "wood_wall_roof_top", "top").CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            currentCustom.effectHandler.AddStatusEffect("Spirit", WeaponEffectsManager.StatusEffectTarget.ODB, WeaponEffectsManager.StatusEffectTarget.ATTACK);
 
             currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
@@ -1089,46 +1085,6 @@ namespace ValheimHTDArmory
                 }
             }
         }
-
-        //private static HitData.DamageTypes SetDamageValues(ConfigEntry<float>[] newDamageList)
-        //{
-        //    HitData.DamageTypes newDamage = new HitData.DamageTypes();
-        //    newDamage.m_blunt = newDamageList[0].Value;
-        //    newDamage.m_slash = newDamageList[1].Value;
-        //    newDamage.m_pierce = newDamageList[2].Value;
-        //    newDamage.m_chop = newDamageList[3].Value;
-        //    newDamage.m_pickaxe = newDamageList[4].Value;
-        //    newDamage.m_fire = newDamageList[5].Value;
-        //    newDamage.m_frost = newDamageList[6].Value;
-        //    newDamage.m_lightning = newDamageList[7].Value;
-        //    newDamage.m_poison = newDamageList[8].Value;
-        //    newDamage.m_spirit = newDamageList[9].Value;
-
-        //    return newDamage;
-        //}
-
-        //private static AssetBundle GetAssetBundleFromFile(string fileName)
-        //{
-        //    AssetBundle LoadedAssetBundle = null;
-        //    string dllPath = "NO PATH SET";
-        //    try
-        //    {
-        //        dllPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        //        LoadedAssetBundle = AssetBundle.LoadFromFile(Path.Combine(dllPath, fileName));
-
-        //        if (LoadedAssetBundle == null)
-        //        {
-        //            Debug.Log("Failed to load AssetBundle!");
-        //            return null;
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Plugin.Log.LogError($"Error Trying to load asset bundle {fileName} in location: {dllPath}");
-        //        Plugin.Log.LogError($"Catch Exception details: {e.Message} --- {e.StackTrace}");
-        //    }
-        //    return LoadedAssetBundle;
-        //}
 
         private static AssetBundle GetAssetBundleFromResources(string fileName)
         {

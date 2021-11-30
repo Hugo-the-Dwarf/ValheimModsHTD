@@ -11,7 +11,7 @@ namespace ValheimHTDArmory
         [HarmonyPrefix]
         private static bool GetAttachPrefab(ItemStand __instance, GameObject item, ref GameObject __result)
         {
-            Transform attach_stand = item.transform.Find("stand");
+            Transform attach_stand = item.transform.Find("attach_stand");
             if (attach_stand)
             {
                 Transform newAttach = attach_stand;

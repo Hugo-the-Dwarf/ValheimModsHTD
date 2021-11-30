@@ -37,7 +37,7 @@ namespace ValheimHTDArmory
                     Transform child = itemPrefab.transform.GetChild(i);
                     if (child.gameObject.name == "attach_skin")
                     {
-                        Plugin.Log.LogMessage("Found attach_skin, Fist Weapon");
+                        //Plugin.Log.LogMessage("Found attach_skin, Fist Weapon");
                         gameObject = child.gameObject;
                         break;
                     }

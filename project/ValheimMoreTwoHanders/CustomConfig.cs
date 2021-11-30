@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using BepInEx;
-using ServerSync;
+//using ServerSync;
 
 namespace ValheimHTDArmory
 {
@@ -17,8 +17,8 @@ namespace ValheimHTDArmory
         private Dictionary<string, ConfigItemData> itemConfigsToApply = new Dictionary<string, ConfigItemData>();
         private Dictionary<string, ConfigRecipeData> recipeConfigsToApply = new Dictionary<string, ConfigRecipeData>();
 
-        public CustomSyncedValue<string> syncedItemConfigsToApply = new CustomSyncedValue<string>(Plugin.configSync, "itemConfigs");
-        public CustomSyncedValue<string> syncedRecipeConfigsToApply = new CustomSyncedValue<string>(Plugin.configSync, "recipeConfigs");
+        public ServerSync.CustomSyncedValue<string> syncedItemConfigsToApply = new ServerSync.CustomSyncedValue<string>(Plugin.configSync, "itemConfigs");
+        public ServerSync.CustomSyncedValue<string> syncedRecipeConfigsToApply = new ServerSync.CustomSyncedValue<string>(Plugin.configSync, "recipeConfigs");
 
         private bool itemConfigFound = false;
         private bool recipeConfigFound = false;
@@ -164,7 +164,7 @@ namespace ValheimHTDArmory
 
         public void LoadInitialConfigs(string bepinexConfigPath)
         {
-            bool Load(string fileSuffix, CustomSyncedValue<string> configValue)
+            bool Load(string fileSuffix, ServerSync.CustomSyncedValue<string> configValue)
             {
                 string path = bepinexConfigPath + fileSuffix + ".cfg";
                 void consumeConfigFileEvent(object sender, FileSystemEventArgs args) => LoadConfig(path, configValue);
@@ -184,7 +184,7 @@ namespace ValheimHTDArmory
             recipeConfigFound = Load(recipeConfigSuffix, syncedRecipeConfigsToApply);
         }
 
-        public bool LoadConfig(string bepinexConfigPath, CustomSyncedValue<string> configValue)
+        public bool LoadConfig(string bepinexConfigPath, ServerSync.CustomSyncedValue<string> configValue)
         {
             try
             {

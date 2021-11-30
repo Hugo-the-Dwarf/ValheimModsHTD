@@ -13,7 +13,7 @@ namespace ValheimHTDArmory
     [BepInPlugin(Plugin.GUID, Plugin.ModName, Plugin.Version)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string Version = "5.0.0";
+        public const string Version = "5.0.3";
         public const string ModName = "Hugo's Armory";
         public const string GUID = "htd.armory";
         //public static readonly string MyDirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -87,6 +87,11 @@ namespace ValheimHTDArmory
             if (_Harmony != null) _Harmony.UnpatchAll(GUID);
         }
 
+        private void Start()
+        {
+            //AddNewRecipes();
+        }
+
         [HarmonyPatch(typeof(ZNetScene), "Awake")]
         private static class ZNetScene_Awake_Patch
         {
@@ -137,6 +142,15 @@ namespace ValheimHTDArmory
             }
         }
 
+        //[HarmonyPatch(typeof(FejdStartup), "OnJoinStart")]
+        //private static class FejdStartup_OnJoinStart_Patch
+        //{
+        //    public static void PreFix()
+        //    {
+        //        AddNewRecipes();
+        //    }
+        //}
+
         public static void RebuildRecipes()
         {
             if (IsObjectDBValid())
@@ -146,8 +160,13 @@ namespace ValheimHTDArmory
                     if (recipeToApply.Enabled)
                     {
                         GameObject go = MyReferences.myItemList.Where(mil => mil.name == recipeToApply.ItemPrefab).FirstOrDefault();
+                        if (go == null) continue;
                         Recipe updatedRecipe = recipeToApply.LoadConfigedRecipeHelper(go).GetRecipe();
-                        AddRecipeToObjectDB(updatedRecipe);
+                        if (updatedRecipe != null)
+                        {
+                            AddRecipeToObjectDB(updatedRecipe);
+                            continue;
+                        }
                     }
                 }
             }
@@ -198,20 +217,33 @@ namespace ValheimHTDArmory
                 ItemDrop id = go.GetComponent<ItemDrop>();
                 if (id != null)
                 {
+                    ParticleSystemRenderer ps = go.GetComponent<ParticleSystemRenderer>();
+                    if (ps != null)
+                    {
+                        //Log.LogMessage($"ParticleSystemRenderer in {go.name} Found.");
+                        if (!MyReferences.listOfMaterials.ContainsKey("item_particle"))
+                        {
+                            //Log.LogMessage($"ParticleSystemRenderer material in {go.name}, {ps.material.name} Found.");
+                            MyReferences.TryAddToMaterialList(ps.material, "item_particle");
+                        }
+                    }
+
                     var shared = id.m_itemData.m_shared;
                     //Start looking for weapon effects (fx, sfx, vfx)
-                    if (shared.m_itemType == ItemDrop.ItemData.ItemType.OneHandedWeapon || shared.m_itemType == ItemDrop.ItemData.ItemType.TwoHandedWeapon || shared.m_itemType == ItemDrop.ItemData.ItemType.Bow)
+                    if (shared.m_itemType == ItemDrop.ItemData.ItemType.OneHandedWeapon
+                        || shared.m_itemType == ItemDrop.ItemData.ItemType.TwoHandedWeapon
+                        || shared.m_itemType == ItemDrop.ItemData.ItemType.Bow)
                     {
-                        //if (!AssetReferences.listOfMaterials.ContainsKey("club_trail"))
-                        //{
-                        //    Log.LogMessage($"ParticleSystemRenderer in {go.name} Found.");
-                        //    Transform trail = PrefabNodeManager.RecursiveChildNodeFinder(go.transform, "trail");
-                        //    if (trail != null)
-                        //    {
-                        //        MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
-                        //        AssetReferences.TryAddToMaterialList(mwt._material, "club_trail");
-                        //    }
-                        //}
+                        if (!MyReferences.listOfMaterials.ContainsKey("club_trail"))
+                        {
+                            //Log.LogMessage($"MeleeWeaponTrail in {go.name} Found.");
+                            Transform trail = PrefabNodeManager.RecursiveChildNodeFinder(go.transform, "trail");
+                            if (trail != null)
+                            {
+                                MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
+                                MyReferences.TryAddToMaterialList(mwt._material, "club_trail");
+                            }
+                        }
                         MyReferences.TryExtractEffectsFromItemDropShared(shared);
                     }
 
@@ -247,8 +279,8 @@ namespace ValheimHTDArmory
                     AddItemToObjectDB(item, ref m_itemsByHash);
                 }
             }
-            
-            if(MyReferences.customItems.Count > 0)
+
+            if (MyReferences.customItems.Count > 0)
             {
                 foreach (var customItem in MyReferences.customItems)
                 {
@@ -269,7 +301,7 @@ namespace ValheimHTDArmory
             {
                 if (ObjectDB.instance.GetItemPrefab(item.name.GetStableHashCode()) == null)
                 {
-                    ObjectDB.instance.m_items.Add(item);                    
+                    ObjectDB.instance.m_items.Add(item);
                     objectDBItemHash[item.name.GetStableHashCode()] = item;
                 }
             }
@@ -290,8 +322,8 @@ namespace ValheimHTDArmory
                     AddRecipeToObjectDB(recipe);
                 }
             }
-            
-            if(MyReferences.myRecipeHelperList.Count > 0)
+
+            if (MyReferences.myRecipeHelperList.Count > 0)
             {
                 foreach (var recipeHelper in MyReferences.myRecipeHelperList)
                 {
