@@ -3,23 +3,19 @@
 namespace ValheimHTDArmory
 {
     public class CustomItem
-    {
-        //public RecipeHelper recipe;        
+    { 
         public GameObject gameObject;
-        public WeaponEffectsManager effectHandler = new WeaponEffectsManager();
+        public EffectsManager effectHandler = new EffectsManager();
         public PrefabNodeManager prefabNodeManager = new PrefabNodeManager();
-        //public MaterialManager materialManager = new MaterialManager();
 
-        public CustomItem(GameObject gameObject)//, RecipeHelper recipe)
+        public CustomItem(GameObject gameObject)
         {
             this.gameObject = gameObject;
-            //this.recipe = recipe;
         }
         public void FixReferences()
         {
             effectHandler.ApplyEffects(gameObject);
             prefabNodeManager.ApplyNodeChanges(gameObject);
-            //materialManager.ApplyMaterial(gameObject);
         }
     }
 }

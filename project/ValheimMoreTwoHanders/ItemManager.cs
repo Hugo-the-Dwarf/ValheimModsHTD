@@ -35,6 +35,43 @@ namespace ValheimHTDArmory
             Color bronze = new Color(0.783f, 0.4329f, 0.1588f);
             Color iron = new Color(0.4f, 0.4f, 0.4f);
 
+
+
+
+            /*
+                       currentItem = ExtractGameObjectFromBundle(assetBundle, "GSSwordBleedingEyes");
+                       var tid = currentItem.GetComponent<ItemDrop>();
+
+                       currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+                       if (currentRecipeHelper == null)
+                       {
+                           currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                           currentRecipeHelper.AddResource("Wood", 4, 0);
+                       }
+                       Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+                       Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+                       //Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+                       MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+
+                       currentCustom = new CustomItem(currentItem);
+
+                       currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+                       currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+                       currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
+                       currentCustom.effectHandler.AddEffect("sfx_sword_swing", WeaponEffectsManager.EffectList.TRAIL);
+
+                       MyReferences.customItems.Add(currentCustom);
+
+                       */
+
+
+
+
+
+
+
             //FistBronze
             currentItem = ExtractGameObjectFromBundle(assetBundle, "BronzeFistsHTD");//FistBronze
             var id = currentItem.GetComponent<ItemDrop>();
@@ -66,22 +103,22 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 30f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            //MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
             currentCustom.prefabNodeManager.SetNode("FistMetalKnucklesMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(bronze).StartNewNode();
             currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(bronze).StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", WeaponEffectsManager.EffectList.START);
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", EffectsManager.EffectList.START);
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //FistIron
             currentItem = ExtractGameObjectFromBundle(assetBundle, "IronFistsHTD");//FistIron
@@ -114,26 +151,27 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 30f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            //MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
             currentCustom.prefabNodeManager.SetNode("FistMetalKnucklesMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(iron).StartNewNode();
             currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(iron).StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", WeaponEffectsManager.EffectList.START);
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", EffectsManager.EffectList.START);
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //FistBuckAndDoe
             currentItem = ExtractGameObjectFromBundle(assetBundle, "DeerFistsHTD");//FistBuckAndDoe
             id = currentItem.GetComponent<ItemDrop>();
+            //MyReferences.prefabsThatUpgradeAtLevelOneAlways.Add(id.name.GetStableHashCode());
 
             currentRecipeHelper = ApplyConfigChanges(ref currentItem);
 
@@ -162,22 +200,114 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 30f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            //MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
             currentCustom.prefabNodeManager.SetNode("FistBuckAndDoeMesh", "HardAntler", "model").CopyTargetMaterial().SetMyMateiralIndex(1).StartNewNode();
             currentCustom.prefabNodeManager.SetNode("model", "HardAntler", "model").CopyTargetMaterial().SetMyMateiralIndex(1).StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", WeaponEffectsManager.EffectList.START);
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", EffectsManager.EffectList.START);
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
+
+            //Silver Fist
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "SilverFistsHTD");//SilverFistsHTD
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("WolfPelt", 8, 4).AddResource("Silver", 25, 10).AddResource("LeatherScraps", 9, 3).AddResource("Iron", 10, 5);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Horizontal;
+            Attack3.m_attackAnimation = "knife_secondary";
+            Attack3.m_attackStamina = 40f;
+            Attack3.m_speedFactor = 0f;
+            Attack3.m_speedFactorRotation = 0f;
+            Attack3.m_attackStartNoise = 2f;
+            Attack3.m_attackHitNoise = 5f;
+            Attack3.m_damageMultiplier = 1.5f;
+            Attack3.m_forceMultiplier = 1f;
+            Attack3.m_staggerMultiplier = 2f;
+            Attack3.m_attackRange = 1.5f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 30f;
+
+            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            //MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("SilverGlovesSMR", "ArmorWolfChest", "SilverWolfArmor").CopyTargetMaterial().SetMyMateiralIndex(3).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("model", "ArmorWolfChest", "SilverWolfArmor").CopyTargetMaterial().SetMyMateiralIndex(3).StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", EffectsManager.EffectList.START);
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+
+            //Bronze Crowbill   
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BronzeCrowbillHTD");
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("Wood", 4, 0).AddResource("Bronze", 8, 3).AddResource("LeatherScraps", 2, 2);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            //Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            //Attack3.m_attackType = Attack.AttackType.Horizontal;
+            //Attack3.m_attackAnimation = "battleaxe_secondary";
+            //Attack3.m_attackStamina = 15f;
+            //Attack3.m_speedFactor = 0.1f;
+            //Attack3.m_speedFactorRotation = 0.5f;
+            //Attack3.m_attackStartNoise = 10f;
+            //Attack3.m_attackHitNoise = 30f;
+            //Attack3.m_damageMultiplier = 0.5f;
+            //Attack3.m_forceMultiplier = 3f;
+            //Attack3.m_staggerMultiplier = 4f;
+            //Attack3.m_attackRange = 3f;
+            //Attack3.m_attackHeight = 1f;
+            //Attack3.m_attackAngle = 30f;
+
+            //MyReferences.TryAddToAttackList(currentItem, Attack3);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_sword_swing", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
 
             //Silver Great Sword    
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SilverGreatSwordHTD");//SwordSilverGreat
@@ -195,33 +325,79 @@ namespace ValheimHTDArmory
             Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
-            Attack3.m_attackType = Attack.AttackType.Horizontal;
-            Attack3.m_attackAnimation = "battleaxe_secondary";
-            Attack3.m_attackStamina = 15f;
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_pickaxe";
+            Attack3.m_attackStamina = 25f;
             Attack3.m_speedFactor = 0.1f;
-            Attack3.m_speedFactorRotation = 0.5f;
+            Attack3.m_speedFactorRotation = 0.3f;
             Attack3.m_attackStartNoise = 10f;
-            Attack3.m_attackHitNoise = 30f;
-            Attack3.m_damageMultiplier = 0.5f;
-            Attack3.m_forceMultiplier = 3f;
-            Attack3.m_staggerMultiplier = 4f;
+            Attack3.m_attackHitNoise = 40f;
+            Attack3.m_damageMultiplier = 1.75f;
+            Attack3.m_forceMultiplier = 0.75f;
+            Attack3.m_staggerMultiplier = 2f;
             Attack3.m_attackRange = 3f;
             Attack3.m_attackHeight = 1f;
-            Attack3.m_attackAngle = 30f;
+            Attack3.m_attackAngle = 120f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_sword_swing", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_sword_swing", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
+
+            //Bronze Great Sword    
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BronzeGreatSwordHTD");//SwordSilverGreat
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("Wood", 5, 0).AddResource("Bronze", 45, 20).AddResource("LeatherScraps", 4, 2);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_pickaxe";
+            Attack3.m_attackStamina = 25f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.3f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 40f;
+            Attack3.m_damageMultiplier = 1.75f;
+            Attack3.m_forceMultiplier = 0.75f;
+            Attack3.m_staggerMultiplier = 2f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 120f;
+
+            //id.m_itemData.m_shared.m_animationState = ItemDrop.ItemData.AnimationState.TwoHandedAxe;
+
+            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_sword_swing", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
 
             //Iron
             currentItem = ExtractGameObjectFromBundle(assetBundle, "IronGreatSwordHTD");//SwordIronGreat
@@ -239,33 +415,79 @@ namespace ValheimHTDArmory
             Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
-            Attack3.m_attackType = Attack.AttackType.Horizontal;
-            Attack3.m_attackAnimation = "battleaxe_secondary";
-            Attack3.m_attackStamina = 15f;
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_pickaxe";
+            Attack3.m_attackStamina = 25f;
             Attack3.m_speedFactor = 0.1f;
-            Attack3.m_speedFactorRotation = 0.5f;
+            Attack3.m_speedFactorRotation = 0.3f;
             Attack3.m_attackStartNoise = 10f;
-            Attack3.m_attackHitNoise = 30f;
-            Attack3.m_damageMultiplier = 0.5f;
-            Attack3.m_forceMultiplier = 3f;
-            Attack3.m_staggerMultiplier = 4f;
+            Attack3.m_attackHitNoise = 40f;
+            Attack3.m_damageMultiplier = 1.75f;
+            Attack3.m_forceMultiplier = 0.75f;
+            Attack3.m_staggerMultiplier = 2f;
             Attack3.m_attackRange = 3f;
             Attack3.m_attackHeight = 1f;
-            Attack3.m_attackAngle = 30f;
+            Attack3.m_attackAngle = 120f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_sword_swing", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_sword_swing", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
+
+            //Bronze Battle axe
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BronzeBattleaxeHTD");//AxeSilverBattle
+
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("Wood", 10, 0).AddResource("Bronze", 35, 15).AddResource("LeatherScraps", 5, 3);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_pickaxe";
+            Attack3.m_attackStamina = 25f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.3f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 40f;
+            Attack3.m_damageMultiplier = 1.75f;
+            Attack3.m_forceMultiplier = 0.75f;
+            Attack3.m_staggerMultiplier = 2f;
+            Attack3.m_attackRange = 2.5f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 120f;
+
+            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_battleaxe_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_wood_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
+
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            Plugin.customItems.Add(currentCustom);
 
             //Silver Battle axe
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SilverBattleaxeHTD");//AxeSilverBattle
@@ -299,20 +521,85 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 120f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_battleaxe_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_wood_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_battleaxe_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_wood_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
+
+            if(Plugin.disableSilverBattleaxeLights)
+            {
+                List<Transform> particleTransforms = new List<Transform>();
+                PrefabNodeManager.RecursiveChildNodesFinder(id.transform, "vfx_sparks",9,ref particleTransforms);
+                if(particleTransforms.Count > 0)
+                {
+                    foreach(var pt in particleTransforms)
+                    {
+                        ParticleSystem ptps = pt.GetComponent<ParticleSystem>();
+                        if(ptps != null)
+                        {
+                            var light = ptps.lights;
+                            light.enabled = false;
+                        }
+                    }
+                }
+            }
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
+
+            //Bronze Hammer
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BronzeHammerHTD");//AxeSilverBattle
+
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("Wood", 10, 0).AddResource("Bronze", 35, 15).AddResource("LeatherScraps", 5, 3);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Horizontal;
+            Attack3.m_attackAnimation = "battleaxe_secondary";
+            Attack3.m_hitTerrain = false;
+            Attack3.m_attackStamina = 15f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.5f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 30f;
+            Attack3.m_damageMultiplier = 0.5f;
+            Attack3.m_forceMultiplier = 3f;
+            Attack3.m_staggerMultiplier = 4f;
+            Attack3.m_attackRange = 2f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 30f;
+
+            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_battleaxe_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_wood_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
+
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            Plugin.customItems.Add(currentCustom);
 
             //Mace Silver Great
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SilverGreatMaceHTD");//MaceSilverGreat
@@ -342,26 +629,27 @@ namespace ValheimHTDArmory
             Attack3.m_forceMultiplier = 1f;
             Attack3.m_staggerMultiplier = 2f;
             Attack3.m_attackRange = 3f;
-            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackHeight = 0f;
             Attack3.m_attackAngle = 90f;
             Attack3.m_attackRayWidth = 4f;
-            Attack3.m_maxYAngle = 45f;
+            Attack3.m_maxYAngle = 0f;
             Attack3.m_hitThroughWalls = true;
+            Attack3.m_hitTerrain = true;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
             //MaceCoreGreat
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceHTD");//MaceCoreGreat
 
@@ -400,26 +688,28 @@ namespace ValheimHTDArmory
             Attack3.m_forceMultiplier = 1f;
             Attack3.m_staggerMultiplier = 2f;
             Attack3.m_attackRange = 3f;
-            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackHeight = 0f;
             Attack3.m_attackAngle = 90f;
             Attack3.m_attackRayWidth = 4f;
-            Attack3.m_maxYAngle = 45f;
+            Attack3.m_maxYAngle = 0f;
             Attack3.m_hitThroughWalls = true;
+            Attack3.m_hitTerrain = true;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core", 3).CopyTargetMesh().ChangeMeshScale(0.0034f).StartNewNode();
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
             //Green
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceGreenHTD");//MaceCoreGreatGreen
 
@@ -458,26 +748,28 @@ namespace ValheimHTDArmory
             Attack3.m_forceMultiplier = 1f;
             Attack3.m_staggerMultiplier = 2f;
             Attack3.m_attackRange = 3f;
-            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackHeight = 0f;
             Attack3.m_attackAngle = 90f;
             Attack3.m_attackRayWidth = 4f;
-            Attack3.m_maxYAngle = 45f;
+            Attack3.m_maxYAngle = 0f;
             Attack3.m_hitThroughWalls = true;
+            Attack3.m_hitTerrain = true;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core", 3).CopyTargetMesh().ChangeMeshScale(0.0034f).StartNewNode();
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //Blue
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceBlueHTD");
@@ -518,26 +810,28 @@ namespace ValheimHTDArmory
             Attack3.m_forceMultiplier = 1f;
             Attack3.m_staggerMultiplier = 2f;
             Attack3.m_attackRange = 3f;
-            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackHeight = 0f;
             Attack3.m_attackAngle = 90f;
             Attack3.m_attackRayWidth = 4f;
-            Attack3.m_maxYAngle = 45f;
+            Attack3.m_maxYAngle = 0f;
             Attack3.m_hitThroughWalls = true;
+            Attack3.m_hitTerrain = true;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core", 3).CopyTargetMesh().ChangeMeshScale(0.0034f).StartNewNode();
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //Grasp
             currentItem = ExtractGameObjectFromBundle(assetBundle, "BoneGreatMaceHTD");//MaceGraspUndying
@@ -570,27 +864,28 @@ namespace ValheimHTDArmory
             Attack3.m_forceMultiplier = 1f;
             Attack3.m_staggerMultiplier = 2f;
             Attack3.m_attackRange = 3f;
-            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackHeight = 0f;
             Attack3.m_attackAngle = 90f;
             Attack3.m_attackRayWidth = 4f;
-            Attack3.m_maxYAngle = 45f;
+            Attack3.m_maxYAngle = 0f;
             Attack3.m_hitThroughWalls = true;
+            Attack3.m_hitTerrain = true;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.effectHandler.AddStatusEffect("Tared",WeaponEffectsManager.StatusEffectTarget.ODB,WeaponEffectsManager.StatusEffectTarget.ATTACK);
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddStatusEffect("Tared", EffectsManager.StatusEffectTarget.ODB, EffectsManager.StatusEffectTarget.ATTACK);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //SwordBlackmetalGreat
             currentItem = ExtractGameObjectFromBundle(assetBundle, "BlackMetalGreatSwordHTD");//SwordBlackMetalGreat
@@ -624,7 +919,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 30f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
@@ -632,14 +927,14 @@ namespace ValheimHTDArmory
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_sword_swing", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_sword_swing", EffectsManager.EffectList.TRAIL);
 
             //currentCustom.materialManager.SetCloneTargetSwapTextures("SwordBlackmetal");
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //Iron but as Black Metal
             currentItem = ExtractGameObjectFromBundle(assetBundle, "BlackMetalGreatSwordAltHTD");//SwordIronGreatBlack
@@ -658,22 +953,22 @@ namespace ValheimHTDArmory
             Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
 
             Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
-            Attack3.m_attackType = Attack.AttackType.Horizontal;
-            Attack3.m_attackAnimation = "battleaxe_secondary";
-            Attack3.m_attackStamina = 15f;
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_pickaxe";
+            Attack3.m_attackStamina = 25f;
             Attack3.m_speedFactor = 0.1f;
-            Attack3.m_speedFactorRotation = 0.5f;
+            Attack3.m_speedFactorRotation = 0.3f;
             Attack3.m_attackStartNoise = 10f;
-            Attack3.m_attackHitNoise = 30f;
-            Attack3.m_damageMultiplier = 0.5f;
-            Attack3.m_forceMultiplier = 3f;
-            Attack3.m_staggerMultiplier = 4f;
+            Attack3.m_attackHitNoise = 40f;
+            Attack3.m_damageMultiplier = 1.75f;
+            Attack3.m_forceMultiplier = 0.75f;
+            Attack3.m_staggerMultiplier = 2f;
             Attack3.m_attackRange = 3f;
             Attack3.m_attackHeight = 1f;
-            Attack3.m_attackAngle = 30f;
+            Attack3.m_attackAngle = 120f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
@@ -681,12 +976,12 @@ namespace ValheimHTDArmory
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_sword_swing", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_sword_swing", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
 
             //SwordObsidianGreat
@@ -731,21 +1026,21 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 45f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
             currentCustom.prefabNodeManager.SetNode("wrap", "LinenThread", "model", 3).CopyTargetMaterial().ReplaceMainColor(new Color(0.3647f, .2431f, .145f)).StartNewNode();
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //SwordObsidianGreat Red
             currentItem = ExtractGameObjectFromBundle(assetBundle, "ObsidianGreatSwordRedHTD");//SwordObsidianGreat
@@ -789,21 +1084,21 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 45f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
             currentCustom.prefabNodeManager.SetNode("wrap", "LinenThread", "model", 3).CopyTargetMaterial().ReplaceMainColor(new Color(0.3647f, .2431f, .145f)).StartNewNode();
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
 
             //SwordFlametalGreat
@@ -838,15 +1133,15 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 45f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
             if (Plugin.disableFlametalFlames)
             {
@@ -868,7 +1163,7 @@ namespace ValheimHTDArmory
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //Variant
             currentItem = ExtractGameObjectFromBundle(assetBundle, "IronHeavyGreatSwordHTD");//SwordFlametalGreatIron
@@ -902,19 +1197,19 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 45f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //Axes
 
@@ -951,21 +1246,21 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 120f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
             currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default", 3).CopyTargetMaterial(true).StartNewNode();
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_battleaxe_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_wood_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_battleaxe_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_wood_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //DragonSlayer
             currentItem = ExtractGameObjectFromBundle(assetBundle, "DragonSlayerSwordHTD");//SwordDragonSlayer
@@ -999,19 +1294,19 @@ namespace ValheimHTDArmory
             Attack3.m_attackAngle = 45f;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_HitSparks", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             //Bone Sword
             currentItem = ExtractGameObjectFromBundle(assetBundle, "BoneGreatSwordHTD");//SwordBoneGreat
@@ -1041,31 +1336,31 @@ namespace ValheimHTDArmory
             Attack3.m_forceMultiplier = 1f;
             Attack3.m_staggerMultiplier = 2f;
             Attack3.m_attackRange = 3f;
-            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackHeight = 0f;
             Attack3.m_attackAngle = 90f;
             Attack3.m_attackRayWidth = 4f;
-            Attack3.m_maxYAngle = 45f;
+            Attack3.m_maxYAngle = 0f;
             Attack3.m_hitThroughWalls = true;
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
-            MyReferences.myRecipeHelperList.Add(currentRecipeHelper);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
-            currentCustom.effectHandler.AddStatusEffect("Spirit", WeaponEffectsManager.StatusEffectTarget.ODB, WeaponEffectsManager.StatusEffectTarget.ATTACK);
+            currentCustom.effectHandler.AddStatusEffect("Spirit", EffectsManager.StatusEffectTarget.ODB, EffectsManager.StatusEffectTarget.ATTACK);
 
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("vfx_clubhit", WeaponEffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
-            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", WeaponEffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
-            currentCustom.effectHandler.AddEffect("fx_swing_camshake", WeaponEffectsManager.EffectList.TRIGGER);
-            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", WeaponEffectsManager.EffectList.TRAIL);
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
-            MyReferences.customItems.Add(currentCustom);
+            Plugin.customItems.Add(currentCustom);
 
             assetBundle.Unload(false);
-        }
+        }                
 
         public static RecipeHelper ApplyConfigChanges(ref GameObject item)
         {
@@ -1075,13 +1370,13 @@ namespace ValheimHTDArmory
 
         public static void ApplySyncedItemConfigData()
         {
-            if (MyReferences.myItemList.Count > 0)
+            if (Plugin.myItemList.Count > 0)
             {
-                for (int i = 0; i < MyReferences.myItemList.Count; i++)
+                for (int i = 0; i < Plugin.myItemList.Count; i++)
                 {
-                    GameObject itemReference = MyReferences.myItemList[i];
+                    GameObject itemReference = Plugin.myItemList[i];
                     Plugin.cc.ApplyItemDataFromConfigRecord(ref itemReference);
-                    MyReferences.myItemList[i] = itemReference;
+                    Plugin.myItemList[i] = itemReference;
                 }
             }
         }

@@ -13,10 +13,9 @@ namespace ValheimHTDArmory
     [BepInPlugin(Plugin.GUID, Plugin.ModName, Plugin.Version)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string Version = "5.0.3";
+        public const string Version = "6.2.0";
         public const string ModName = "Hugo's Armory";
         public const string GUID = "htd.armory";
-        //public static readonly string MyDirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static ServerSync.ConfigSync configSync = new ServerSync.ConfigSync(GUID) { DisplayName = ModName, CurrentVersion = Version };
 
         Harmony _Harmony;
@@ -26,13 +25,19 @@ namespace ValheimHTDArmory
 
         public static CustomConfig cc = new CustomConfig();
         public static CustomLocalization cl = new CustomLocalization();
+        public static List<GameObject> myItemList = new List<GameObject>(); //Fixed Referenced Compiled Items
+        public static List<CustomItem> customItems = new List<CustomItem>(); // Uncompiled Items
+        public static List<Recipe> myRecipeList = new List<Recipe>(); // Fixed Referenced Compiled Recipes
+        public static List<RecipeHelper> myRecipeHelperList = new List<RecipeHelper>(); // uncompiled recipes
+        public static List<CustomPiece> customPieces = new List<CustomPiece>();
+        //public static List<Piece> myPieces = new List<Piece>();
+        public static List<CookingRecipe> myCookingRecipes = new List<CookingRecipe>();
+
+
         public static bool disableFlametalFlames = false;
+        public static bool disableSilverBattleaxeLights = false;
 
-        //If both of these are true, set customItems to null as it's no longer needed.
-        private static bool customRecipesAssembled = false;
-        private static bool customItemsAssembled = false;
-
-        //public static Dictionary<string, string> locDictionary = new Dictionary<string, string>();
+        private static bool fixedReferences = false;
 
         private void Awake()
         {
@@ -43,6 +48,7 @@ namespace ValheimHTDArmory
             Log = new ManualLogSource(null);
 #endif
             disableFlametalFlames = Config.Bind<bool>("2Options", "disable_FlametalSwordFlames", false, "Disable the fire and smoke effect from the Flametal Great Sword.").Value;
+            disableSilverBattleaxeLights = Config.Bind<bool>("2Options", "disable_SilverBattleaxeLights", false, "Disable the flickering lights from the Silver Battleaxe.").Value;
             PlayerAttackInputPatch.attack3Hotkey = Config.Bind<string>("1Hotkeys", "hotkey_ThirdAttack", "mouse 3", "Customizable hotkey so you can use the third attack of the weapon. If you want to use a mouse key, include a space: mouse 3, for example. Valid inputs: https://docs.unity3d.com/ScriptReference/KeyCode.html");
 
             string path = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), GUID);
@@ -87,9 +93,18 @@ namespace ValheimHTDArmory
             if (_Harmony != null) _Harmony.UnpatchAll(GUID);
         }
 
-        private void Start()
+        private void Update()
         {
-            //AddNewRecipes();
+            if (fixedReferences) return;
+            if (!IsObjectDBValid()) return;
+            GenerateReferenceLists();
+            FixReferences();
+            AddNewItems();
+            AddNewRecipes();
+            AddNewStatusEffects();
+            FixAndAddNewPieces();
+            WipeReferenceLists();
+            fixedReferences = true;
         }
 
         [HarmonyPatch(typeof(ZNetScene), "Awake")]
@@ -102,15 +117,24 @@ namespace ValheimHTDArmory
                     return;
                 }
 
-                if (MyReferences.myItemList.Count > 0)
+                if (customItems.Count > 0)
                 {
-                    foreach (GameObject gameObject in MyReferences.myItemList)
+                    foreach (var gameObject in customItems)
                     {
-                        if (!__instance.m_prefabs.Contains(gameObject))
-                            __instance.m_prefabs.Add(gameObject);
+                        __instance.m_prefabs.RemoveAll(i => i.name == gameObject.gameObject.name);
+                        __instance.m_prefabs.Add(gameObject.gameObject);
                     }
                 }
-                else return;
+
+                if (myItemList.Count > 0)
+                {
+                    foreach (GameObject gameObject in myItemList)
+                    {
+                        __instance.m_prefabs.RemoveAll(i => i.name == gameObject.name);
+                        __instance.m_prefabs.Add(gameObject);
+                    }
+                }
+
             }
         }
 
@@ -121,7 +145,8 @@ namespace ValheimHTDArmory
             {
                 if (!IsObjectDBValid()) return;
 
-                GenerateReferenceLists();
+                //GenerateReferenceLists();
+                //FixReferences();
                 AddNewItems();
                 AddNewRecipes();
                 AddNewStatusEffects();
@@ -135,21 +160,33 @@ namespace ValheimHTDArmory
             {
                 if (!IsObjectDBValid()) return;
 
-                GenerateReferenceLists();
+                //GenerateReferenceLists();
+                //FixReferences();
                 AddNewItems();
                 AddNewRecipes();
                 AddNewStatusEffects();
             }
         }
 
-        //[HarmonyPatch(typeof(FejdStartup), "OnJoinStart")]
-        //private static class FejdStartup_OnJoinStart_Patch
-        //{
-        //    public static void PreFix()
-        //    {
-        //        AddNewRecipes();
-        //    }
-        //}
+        public static void WipeReferenceLists()
+        {
+            MyReferences.listOfAllGameObjects = null;
+            MyReferences.listOfCookingStations = null;
+            MyReferences.listOfCraftingStations = null;
+            MyReferences.listOfEffects = null;
+            MyReferences.listOfItemPrefabs = null;
+            MyReferences.listOfMaterials = null;
+            MyReferences.listOfPieces = null;
+        }
+
+        public static void RebuildItems()
+        {
+            if (IsObjectDBValid())
+            {
+                ItemManager.ApplySyncedItemConfigData();
+                AddNewItems();
+            }
+        }
 
         public static void RebuildRecipes()
         {
@@ -159,7 +196,7 @@ namespace ValheimHTDArmory
                 {
                     if (recipeToApply.Enabled)
                     {
-                        GameObject go = MyReferences.myItemList.Where(mil => mil.name == recipeToApply.ItemPrefab).FirstOrDefault();
+                        GameObject go = myItemList.Where(mil => mil.name == recipeToApply.ItemPrefab).FirstOrDefault();
                         if (go == null) continue;
                         Recipe updatedRecipe = recipeToApply.LoadConfigedRecipeHelper(go).GetRecipe();
                         if (updatedRecipe != null)
@@ -174,9 +211,9 @@ namespace ValheimHTDArmory
 
         public static void RebuildCustomAssetLists()
         {
-            //AssetReferences.customItems = new List<CustomItem>();
-            MyReferences.myRecipeList = new List<Recipe>();
-            MyReferences.myItemList = new List<GameObject>();
+            //MyReferences.customItems = new List<CustomItem>();
+            myRecipeList = new List<Recipe>();
+            myItemList = new List<GameObject>();
             //customItemsAssembled = false;
             //customRecipesAssembled = false;
             //ItemManager.BuildLists();
@@ -184,7 +221,7 @@ namespace ValheimHTDArmory
             if (IsObjectDBValid())
             {
                 //GenerateReferenceLists();
-                //AddNewItems();
+                AddNewItems();
                 AddNewRecipes();
             }
         }
@@ -192,27 +229,16 @@ namespace ValheimHTDArmory
         //Dick Justice's and RandyKnapp's hack for ensuring the ObjectDB has objects in it and it's ready
         public static bool IsObjectDBValid()
         {
-            return ObjectDB.instance != null && ObjectDB.instance.m_items.Count != 0 && ObjectDB.instance.GetItemPrefab("Amber") != null;
+            return ObjectDB.instance != null && ObjectDB.instance.m_items.Count != 0 && ObjectDB.instance.GetItemPrefab("Wood") != null;
         }
 
         private static void GenerateReferenceLists()
         {
-
             //Start surfing through all items
             foreach (GameObject go in ObjectDB.instance.m_items)
             {
-                //Log.LogMessage($"Prefab in ObjectDB: {go.name}");
                 //Add to reference lists if not in their already
                 MyReferences.TryAddToItemList(go);
-
-                //if (!AssetReferences.listOfMaterials.ContainsKey("item_particle"))
-                //{
-                //    Log.LogMessage($"Searching for ParticleSystemRenderer in {go.name}");                    
-                //    ParticleSystemRenderer psr = go.GetComponent<ParticleSystemRenderer>();
-                //    Log.LogMessage($"ParticleSystemRenderer in {go.name} Found.");
-                //    AssetReferences.TryAddToMaterialList(psr.material, "item_particle");
-                //    Log.LogMessage($"PSR material {psr.material.name} Found.");
-                //}
 
                 ItemDrop id = go.GetComponent<ItemDrop>();
                 if (id != null)
@@ -220,10 +246,8 @@ namespace ValheimHTDArmory
                     ParticleSystemRenderer ps = go.GetComponent<ParticleSystemRenderer>();
                     if (ps != null)
                     {
-                        //Log.LogMessage($"ParticleSystemRenderer in {go.name} Found.");
-                        if (!MyReferences.listOfMaterials.ContainsKey("item_particle"))
+                        if (!MyReferences.listOfMaterials.ContainsKey("item_particle".GetStableHashCode()))
                         {
-                            //Log.LogMessage($"ParticleSystemRenderer material in {go.name}, {ps.material.name} Found.");
                             MyReferences.TryAddToMaterialList(ps.material, "item_particle");
                         }
                     }
@@ -234,9 +258,8 @@ namespace ValheimHTDArmory
                         || shared.m_itemType == ItemDrop.ItemData.ItemType.TwoHandedWeapon
                         || shared.m_itemType == ItemDrop.ItemData.ItemType.Bow)
                     {
-                        if (!MyReferences.listOfMaterials.ContainsKey("club_trail"))
+                        if (!MyReferences.listOfMaterials.ContainsKey("club_trail".GetStableHashCode()))
                         {
-                            //Log.LogMessage($"MeleeWeaponTrail in {go.name} Found.");
                             Transform trail = PrefabNodeManager.RecursiveChildNodeFinder(go.transform, "trail");
                             if (trail != null)
                             {
@@ -256,12 +279,133 @@ namespace ValheimHTDArmory
                             foreach (var pieceTableItem in pieceTable)
                             {
                                 MyReferences.TryAddToPieceList(pieceTableItem);
-                                CraftingStation craftingStation = pieceTableItem.GetComponent<CraftingStation>();
-                                if (craftingStation != null && !MyReferences.listOfCraftingStations.ContainsKey(pieceTableItem.name)) MyReferences.listOfCraftingStations.Add(pieceTableItem.name, craftingStation);
+
+                                //One off capture of a station extension's line effect
                                 StationExtension stationExtension = pieceTableItem.GetComponent<StationExtension>();
-                                if (stationExtension != null && !MyReferences.listOfEffects.ContainsKey(stationExtension.m_connectionPrefab.name)) MyReferences.listOfEffects.Add(stationExtension.m_connectionPrefab.name, stationExtension.m_connectionPrefab);
+                                if (stationExtension != null && !MyReferences.listOfEffects.ContainsKey(stationExtension.m_connectionPrefab.name.GetStableHashCode()))
+                                    MyReferences.listOfEffects.Add(stationExtension.m_connectionPrefab.name.GetStableHashCode(), stationExtension.m_connectionPrefab);
+
+                                //Collect this for items and pieces, for proper referencing
+                                CraftingStation craftingStation = pieceTableItem.GetComponent<CraftingStation>();
+                                if (craftingStation != null && !MyReferences.listOfCraftingStations.ContainsKey(pieceTableItem.name.GetStableHashCode()))
+                                    MyReferences.listOfCraftingStations.Add(pieceTableItem.name.GetStableHashCode(), craftingStation);
+
+                                CookingStation cookingStation = pieceTableItem.GetComponent<CookingStation>();
+                                if (cookingStation != null && !MyReferences.listOfCookingStations.ContainsKey(pieceTableItem.name.GetStableHashCode()))
+                                    MyReferences.listOfCookingStations.Add(pieceTableItem.name.GetStableHashCode(), cookingStation);
+
+
+                                //Extracting any Piece Placement Effects
+                                var PieceScript = pieceTableItem.GetComponent<Piece>();
+                                if (PieceScript != null)
+                                {
+                                    ExtractEffectsFromPiece(PieceScript.m_placeEffect);
+                                }
+
+                                //Extracting WearNTear effects
+                                var WearNTearScript = pieceTableItem.GetComponent<WearNTear>();
+                                if (WearNTearScript != null)
+                                {
+                                    ExtractEffectsFromPiece(WearNTearScript.m_destroyedEffect);
+                                    ExtractEffectsFromPiece(WearNTearScript.m_hitEffect);
+                                    ExtractEffectsFromPiece(WearNTearScript.m_switchEffect);
+                                }
+
                             }
                         }
+                    }
+
+                }
+            }
+        }
+
+        private static void ExtractEffectsFromPiece(EffectList el)
+        {
+            if (el.m_effectPrefabs != null && el.m_effectPrefabs.Length > 0)
+            {
+                foreach (var effect in el.m_effectPrefabs)
+                {
+                    if (effect.m_prefab != null
+                        && !MyReferences.listOfEffects.ContainsKey(effect.m_prefab.name.GetStableHashCode()))
+                    {
+                        MyReferences.listOfEffects.Add(effect.m_prefab.name.GetStableHashCode(), effect.m_prefab);
+                    }
+                }
+            }
+
+        }
+
+        //Debug version
+        private static void ExtractEffectsFromPiece(EffectList el, string listName)
+        {
+            try
+            {
+                if (el.m_effectPrefabs != null && el.m_effectPrefabs.Length > 0)
+                {
+                    foreach (var effect in el.m_effectPrefabs)
+                    {
+                        if (effect.m_prefab != null
+                            && !MyReferences.listOfEffects.ContainsKey(effect.m_prefab.name.GetStableHashCode()))
+                        {
+                            MyReferences.listOfEffects.Add(effect.m_prefab.name.GetStableHashCode(), effect.m_prefab);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Plugin.Log.LogError($"Error trying to access piece data in list {listName}");
+                Plugin.Log.LogError(e.Message);
+                Plugin.Log.LogError(e.StackTrace);
+            }
+        }
+
+        private static void SyncNewPieces()
+        {
+
+            if (customPieces.Count > 0)
+            {
+                foreach (var piece in customPieces)
+                {
+                    piece.UpdateRequirements();
+                    piece.AddPiece();
+                }
+                //customPieces = null;
+            }
+        }
+
+        private static void FixAndAddNewPieces()
+        {            
+
+            if (customPieces.Count > 0)
+            {
+                foreach (var piece in customPieces)
+                {
+                    piece.CompileAndAddPiece();
+                }
+                //customPieces = null;
+            }
+        }
+
+        private static void AddNewCookingRecipes()
+        {
+            if (myCookingRecipes.Count > 0)
+            {
+                foreach (var cr in myCookingRecipes)
+                {
+                    var cookingStation = MyReferences.listOfCookingStations[cr.cookingStationName.GetStableHashCode()];
+                    if (cookingStation != null)
+                    {
+                        CookingStation.ItemConversion recipe = new CookingStation.ItemConversion();
+                        recipe.m_cookTime = cr.cookingTime;
+
+
+                        recipe.m_from = cr.GetFromItemDrop();
+
+                        recipe.m_to = cr.GetToItemDrop();
+                        //if (!cookingStation.m_conversion.Contains(recipe))
+                        cookingStation.m_conversion.RemoveAll(c => c.m_from.gameObject.name == recipe.m_from.gameObject.name);
+                        cookingStation.m_conversion.Add(recipe);
                     }
                 }
             }
@@ -272,25 +416,21 @@ namespace ValheimHTDArmory
 
             Dictionary<int, GameObject> m_itemsByHash = (Dictionary<int, GameObject>)typeof(ObjectDB).GetField("m_itemByHash", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(ObjectDB.instance);
 
-            if (MyReferences.myItemList.Count > 0)
+            if (myItemList.Count > 0)
             {
-                foreach (var item in MyReferences.myItemList)
+                foreach (var item in myItemList)
                 {
                     AddItemToObjectDB(item, ref m_itemsByHash);
                 }
             }
 
-            if (MyReferences.customItems.Count > 0)
+            if (customItems.Count > 0)
             {
-                foreach (var customItem in MyReferences.customItems)
+                foreach (var customItem in customItems)
                 {
-                    customItem.FixReferences();
                     var itemGameObject = customItem.gameObject;
-                    if (!MyReferences.myItemList.Contains(itemGameObject)) MyReferences.myItemList.Add(itemGameObject);
                     AddItemToObjectDB(itemGameObject, ref m_itemsByHash);
                 }
-                customItemsAssembled = true;
-                WipeCustomItemList();
             }
         }
 
@@ -301,6 +441,7 @@ namespace ValheimHTDArmory
             {
                 if (ObjectDB.instance.GetItemPrefab(item.name.GetStableHashCode()) == null)
                 {
+                    ObjectDB.instance.m_items.RemoveAll(i => i.name == item.name);
                     ObjectDB.instance.m_items.Add(item);
                     objectDBItemHash[item.name.GetStableHashCode()] = item;
                 }
@@ -315,34 +456,29 @@ namespace ValheimHTDArmory
         private static void AddNewRecipes()
         {
 
-            if (MyReferences.myRecipeList.Count > 0)
+            if (myRecipeList.Count > 0)
             {
-                foreach (var recipe in MyReferences.myRecipeList)
+                foreach (var recipe in myRecipeList)
                 {
                     AddRecipeToObjectDB(recipe);
                 }
             }
 
-            if (MyReferences.myRecipeHelperList.Count > 0)
+            if (myRecipeHelperList.Count > 0)
             {
-                foreach (var recipeHelper in MyReferences.myRecipeHelperList)
+                foreach (var recipeHelper in myRecipeHelperList)
                 {
                     if (recipeHelper.recipeEnabled)
                     {
                         var recipe = recipeHelper.GetRecipe();
-                        if (!MyReferences.myRecipeList.Contains(recipe)) MyReferences.myRecipeList.Add(recipe);
                         AddRecipeToObjectDB(recipe);
                     }
                 }
-                customRecipesAssembled = true;
-                WipeCustomItemList();
             }
         }
 
         private static void AddRecipeToObjectDB(Recipe recipe)
         {
-            //Sadly I'm not sure why this is here, but RandyKnapp had it
-            // It removes the old recipe and adds the new one. Randy has this to make sure that reloading the configuration while the game is running works.
             ObjectDB.instance.m_recipes.RemoveAll(x => x.name == recipe.name);
             ObjectDB.instance.m_recipes.Add(recipe);
         }
@@ -352,28 +488,35 @@ namespace ValheimHTDArmory
 
             if (MyReferences.myStatusEffects.Count > 0)
             {
-                foreach (var effect in MyReferences.myStatusEffects)
+                foreach (KeyValuePair<int, StatusEffect> effect in MyReferences.myStatusEffects)
                 {
-                    AddStatusEffectToObjectDB(effect);
+                    AddStatusEffectToObjectDB(effect.Value);
                 }
             }
         }
 
         private static void AddStatusEffectToObjectDB(StatusEffect effect)
         {
-            //Sadly I'm not sure why this is here, but RandyKnapp had it
-            // It removes the old recipe and adds the new one. Randy has this to make sure that reloading the configuration while the game is running works.
             ObjectDB.instance.m_StatusEffects.RemoveAll(x => x.name == effect.name);
             ObjectDB.instance.m_StatusEffects.Add(effect);
         }
 
-        private static void WipeCustomItemList()
+        private static void FixReferences()
         {
-            if (customItemsAssembled && customRecipesAssembled)
+            foreach (var item in customItems)
             {
-                MyReferences.customItems = new List<CustomItem>();
-                MyReferences.myRecipeHelperList = new List<RecipeHelper>();
+                item.FixReferences();
+                myItemList.Add(item.gameObject);
             }
+
+            foreach (var recipe in myRecipeHelperList)
+            {
+                recipe.FixResources();
+                myRecipeList.Add(recipe.GetRecipe());
+            }
+
+            customItems = new List<CustomItem>();
+            myRecipeHelperList = new List<RecipeHelper>();
         }
     }
 }

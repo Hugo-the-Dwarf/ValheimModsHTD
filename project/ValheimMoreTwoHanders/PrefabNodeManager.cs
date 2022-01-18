@@ -14,8 +14,12 @@ namespace ValheimHTDArmory
             public bool copyMesh;
             public bool copyMaterial;
             public bool copyParticles;
+            public bool replaceMeshScale;
             public string targetPrefab;
             public string targetNode;
+            public float scaleMeshX;
+            public float scaleMeshY;
+            public float scaleMeshZ;
 
             public MaterialTask currentMaterialTask = new MaterialTask();
             public List<MaterialTask> materialTasks = new List<MaterialTask>();
@@ -97,6 +101,24 @@ namespace ValheimHTDArmory
         public PrefabNodeManager SetMyMateiralIndex(int index)
         {
             currentNode.currentMaterialTask.myMaterialIndex = index;
+            return this;
+        }
+
+        public PrefabNodeManager ChangeMeshScale(float scale)
+        {
+            currentNode.replaceMeshScale = true;
+            currentNode.scaleMeshX = scale;
+            currentNode.scaleMeshY = scale;
+            currentNode.scaleMeshZ = scale;
+            return this;
+        }
+
+        public PrefabNodeManager ChangeMeshScale(float x, float y, float z)
+        {
+            currentNode.replaceMeshScale = true;
+            currentNode.scaleMeshX = x;
+            currentNode.scaleMeshY = y;
+            currentNode.scaleMeshZ = z;
             return this;
         }
 
@@ -244,26 +266,26 @@ namespace ValheimHTDArmory
 
                 myPSR = RecursiveChildNodeFinder(gameObject.transform, node.myNode).gameObject.GetComponent<ParticleSystemRenderer>();
 
-                if (MyReferences.targetParticleSystemRenderers.ContainsKey(savedTargetPrefabNode))
+                if (MyReferences.targetParticleSystemRenderers.ContainsKey(savedTargetPrefabNode.GetStableHashCode()))
                 {
-                    targetPSR = MyReferences.targetParticleSystemRenderers[savedTargetPrefabNode];
+                    targetPSR = MyReferences.targetParticleSystemRenderers[savedTargetPrefabNode.GetStableHashCode()];
                 }
                 else
                 {
                     GameObject targetedNode;
-                    if (MyReferences.targetPrefabNodes.ContainsKey(node.targetPrefab + node.targetNode))
+                    if (MyReferences.targetPrefabNodes.ContainsKey((node.targetPrefab + node.targetNode).GetStableHashCode()))
                     {
-                        targetedNode = MyReferences.targetPrefabNodes[node.targetPrefab + node.targetNode];
+                        targetedNode = MyReferences.targetPrefabNodes[(node.targetPrefab + node.targetNode).GetStableHashCode()];
                         targetPSR = targetedNode.GetComponent<ParticleSystemRenderer>();
-                        if (targetPSR != null) MyReferences.targetParticleSystemRenderers.Add(savedTargetPrefabNode, targetPSR);
+                        if (targetPSR != null) MyReferences.targetParticleSystemRenderers.Add(savedTargetPrefabNode.GetStableHashCode(), targetPSR);
                     }
                     else
                     {
-                        var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab];
+                        var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab.GetStableHashCode()];
                         targetedNode = RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
                         if (targetedNode != null)
                         {
-                            MyReferences.targetPrefabNodes.Add(savedTargetPrefabNode, targetedNode);
+                            MyReferences.targetPrefabNodes.Add(savedTargetPrefabNode.GetStableHashCode(), targetedNode);
                             targetPSR = targetedNode.GetComponent<ParticleSystemRenderer>();
                         }
                     }
@@ -290,35 +312,39 @@ namespace ValheimHTDArmory
                 List<MeshFilter> mfs = new List<MeshFilter>();
                 foreach (var foundNode in foundNodes)
                 {
+                    if (node.replaceMeshScale)
+                    {
+                        foundNode.localScale = new Vector3(node.scaleMeshX, node.scaleMeshY, node.scaleMeshZ);
+                    }
                     MeshFilter mf = foundNode.GetComponent<MeshFilter>();
                     if (mf != null) mfs.Add(mf);
                 }
                 if (mfs.Count == 0) return; //No Mesh filters, just exit
 
                 //Has the Target prefab's Mesh Filter been looked up before?
-                if (MyReferences.targetMeshFilters.ContainsKey(savedTargetPrefabNode))
+                if (MyReferences.targetMeshFilters.ContainsKey(savedTargetPrefabNode.GetStableHashCode()))
                 {
-                    targetFilter = MyReferences.targetMeshFilters[savedTargetPrefabNode];
+                    targetFilter = MyReferences.targetMeshFilters[savedTargetPrefabNode.GetStableHashCode()];
                 }
                 else
                 {
                     GameObject targetedNode;
                     //If this Target Prefab and it's Node been looked up, use that to get the Mesh Filter
-                    if (MyReferences.targetPrefabNodes.ContainsKey(savedTargetPrefabNode))
+                    if (MyReferences.targetPrefabNodes.ContainsKey(savedTargetPrefabNode.GetStableHashCode()))
                     {
-                        targetedNode = MyReferences.targetPrefabNodes[savedTargetPrefabNode];
+                        targetedNode = MyReferences.targetPrefabNodes[savedTargetPrefabNode.GetStableHashCode()];
                         targetFilter = targetedNode.GetComponent<MeshFilter>();
                         //If this reference isn't saved, save it for later
-                        if (targetFilter != null) MyReferences.targetMeshFilters.Add(savedTargetPrefabNode, targetFilter);
+                        if (targetFilter != null) MyReferences.targetMeshFilters.Add(savedTargetPrefabNode.GetStableHashCode(), targetFilter);
                     }
                     else
                     {
                         //Look up Target Prefab and extract the Node
-                        var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab];
+                        var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab.GetStableHashCode()];
                         targetedNode = RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
                         if (targetedNode != null)
                         {
-                            MyReferences.targetPrefabNodes.Add(savedTargetPrefabNode, targetedNode);
+                            MyReferences.targetPrefabNodes.Add(savedTargetPrefabNode.GetStableHashCode(), targetedNode);
                             targetFilter = targetedNode.GetComponent<MeshFilter>();
                         }
                     }
@@ -370,9 +396,9 @@ namespace ValheimHTDArmory
                     {
                         string mySavedNewMatName = gameObject.name + node.targetPrefab + "_newMat_" + mt.myMaterialIndex;
                         //If Material Exists Extract it
-                        if (MyReferences.newMaterials.ContainsKey(mySavedNewMatName))
+                        if (MyReferences.newMaterials.ContainsKey(mySavedNewMatName.GetStableHashCode()))
                         {
-                            newMatArray.Add(mt.myMaterialIndex, MyReferences.newMaterials[mySavedNewMatName]);
+                            newMatArray.Add(mt.myMaterialIndex, MyReferences.newMaterials[mySavedNewMatName.GetStableHashCode()]);
                         }
                     }
 
@@ -396,10 +422,10 @@ namespace ValheimHTDArmory
                     //Start looking for the TargetMaterial
                     string targetNodeName = node.targetPrefab + node.targetNode;
                     GameObject targetedNode;
-                    if (MyReferences.targetPrefabNodes.ContainsKey(targetNodeName))
+                    if (MyReferences.targetPrefabNodes.ContainsKey(targetNodeName.GetStableHashCode()))
                     {
                         //Plugin.Log.LogMessage($"Found saved target node: {targetNodeName}");
-                        targetedNode = MyReferences.targetPrefabNodes[targetNodeName];
+                        targetedNode = MyReferences.targetPrefabNodes[targetNodeName.GetStableHashCode()];
                         if (targetedNode.GetComponent<MeshRenderer>() != null)
                         {
                             //Plugin.Log.LogMessage($"Found Skinned Mesh Renderer");
@@ -414,7 +440,7 @@ namespace ValheimHTDArmory
                     else
                     {
                         //Plugin.Log.LogMessage($"Searching for target node: {targetNodeName}");
-                        var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab];
+                        var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab.GetStableHashCode()];
                         targetedNode = RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
                         if (targetedNode != null)
                         {
@@ -488,7 +514,7 @@ namespace ValheimHTDArmory
                                         newMat.mainTextureOffset = new Vector2(mt.TextureOffsetX, mt.TextureOffsetY);
                                     }
 
-                                    if (!MyReferences.newMaterials.ContainsKey(mySavedNewMatName)) MyReferences.newMaterials.Add(mySavedNewMatName, newMat);
+                                    if (!MyReferences.newMaterials.ContainsKey(mySavedNewMatName.GetStableHashCode())) MyReferences.newMaterials.Add(mySavedNewMatName.GetStableHashCode(), newMat);
 
                                     //Plugin.Log.LogMessage($"Building newMat array");
                                     //RendererTest

@@ -27,6 +27,8 @@ namespace ValheimHTDArmory
         private string recipeConfigSuffix = "_recipeData";
         //string modConfigSuffix = "_main"; // not used for now, I'll just use BepinEx's Configmanager for the simple values
 
+        private static HitData.DamageTypes disabledDamages = new HitData.DamageTypes();
+
         public CustomConfig()
         {
             syncedItemConfigsToApply.ValueChanged += ItemConfigsChanged;
@@ -43,7 +45,8 @@ namespace ValheimHTDArmory
                 if (!itemConfigsToApply.ContainsKey(itemData.ItemPrefab))
                     itemConfigsToApply.Add(itemData.ItemPrefab, itemData);
             }
-            ItemManager.ApplySyncedItemConfigData();
+            Plugin.RebuildItems();
+            //ItemManager.ApplySyncedItemConfigData();
             //Plugin.RebuildCustomAssetLists();
         }
 
@@ -285,6 +288,7 @@ namespace ValheimHTDArmory
         public class ConfigItemData
         {
             public string ItemPrefab;
+            public bool Enabled = true;
             public int MaxQuality = -1;
             public bool UseDurability = true;
             public float MaxDurability = -1f;
@@ -334,8 +338,8 @@ namespace ValheimHTDArmory
                 id.m_timedBlockBonus = ParryBonus == -1 ? id.m_timedBlockBonus : ParryBonus;
                 id.m_attackForce = Knockback_Power == -1 ? id.m_attackForce : Knockback_Power;
                 id.m_backstabBonus = Backstab_Bonus == -1 ? id.m_backstabBonus : Backstab_Bonus;
-                id.m_damages = SetDamageValues();
-                id.m_damagesPerLevel = SetDamagePerLevelValues();
+                id.m_damages = Enabled ? SetDamageValues() : disabledDamages;
+                id.m_damagesPerLevel = Enabled ? SetDamagePerLevelValues() : disabledDamages;
             }
 
             public void ReadConfigDataFromItem(GameObject go)

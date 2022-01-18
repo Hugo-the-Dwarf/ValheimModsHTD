@@ -5,7 +5,7 @@ using static EffectList;
 
 namespace ValheimHTDArmory
 {
-    public class WeaponEffectsManager
+    public class EffectsManager
     {
         public enum EffectList
         {
@@ -82,14 +82,14 @@ namespace ValheimHTDArmory
             ParticleSystemRenderer ps = gameObject.GetComponent<ParticleSystemRenderer>();
             if (ps != null)
             {
-                ps.material = MyReferences.listOfMaterials["item_particle"];
+                ps.material = MyReferences.listOfMaterials["item_particle".GetStableHashCode()];
             }
 
             Transform trail = PrefabNodeManager.RecursiveChildNodeFinder(gameObject.transform, "trail");
             if (trail != null)
             {
                 MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
-                mwt._material = MyReferences.listOfMaterials["club_trail"];
+                mwt._material = MyReferences.listOfMaterials["club_trail".GetStableHashCode()];
             }
 
             var gameObjectShared = gameObject.GetComponent<ItemDrop>().m_itemData.m_shared;
@@ -104,7 +104,7 @@ namespace ValheimHTDArmory
                         GameObject targetPrefab = null;
                         if (pendingStatusEffect.targetFrom != StatusEffectTarget.ODB)
                         {
-                            targetPrefab = MyReferences.listOfAllGameObjects[pendingStatusEffect.prefabTarget];
+                            targetPrefab = MyReferences.listOfAllGameObjects[pendingStatusEffect.prefabTarget.GetStableHashCode()];
                             if (targetPrefab == null)targetPrefab = ObjectDB.instance.GetItemPrefab(pendingStatusEffect.prefabTarget);                            
                             if (targetPrefab == null) continue;
                         }
@@ -167,7 +167,7 @@ namespace ValheimHTDArmory
                     effectData.m_enabled = true;
                     try
                     {
-                        effectData.m_prefab = MyReferences.listOfEffects[pendingEffect.effectName];
+                        effectData.m_prefab = MyReferences.listOfEffects[pendingEffect.effectName.GetStableHashCode()];
                     }
                     catch (Exception e)
                     {
@@ -212,20 +212,20 @@ namespace ValheimHTDArmory
             WipeLists();
         }
 
-        public WeaponEffectsManager AddEffect(string effectName)
+        public EffectsManager AddEffect(string effectName)
         {
             pendingEffects.Add(new PendingEffect(effectName, lastUsedEffectList));
             return this;
         }
 
-        public WeaponEffectsManager AddEffect(string effectName, EffectList effectList)
+        public EffectsManager AddEffect(string effectName, EffectList effectList)
         {
             lastUsedEffectList = effectList;
             pendingEffects.Add(new PendingEffect(effectName, effectList));
             return this;
         }
 
-        public WeaponEffectsManager AddStatusEffect(string targetPrefabName, StatusEffectTarget targetFrom, StatusEffectTarget targetTo)
+        public EffectsManager AddStatusEffect(string targetPrefabName, StatusEffectTarget targetFrom, StatusEffectTarget targetTo)
         {
             pendingStatusEffects.Add(new PendingStatusEffect(targetPrefabName, targetFrom, targetTo));
             return this;
