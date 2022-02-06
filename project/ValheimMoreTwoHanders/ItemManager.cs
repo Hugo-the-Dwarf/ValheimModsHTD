@@ -339,6 +339,11 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 120f;
 
+            if (!Plugin.holdSilverGreatswordByBlade)
+            {
+                id.m_itemData.m_shared.m_animationState = ItemDrop.ItemData.AnimationState.TwoHandedClub;
+            }
+
             MyReferences.TryAddToAttackList(currentItem, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
@@ -428,6 +433,11 @@ namespace ValheimHTDArmory
             Attack3.m_attackRange = 3f;
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 120f;
+
+            if (!Plugin.holdIronGreatswordByBlade)
+            {
+                id.m_itemData.m_shared.m_animationState = ItemDrop.ItemData.AnimationState.TwoHandedClub;
+            }
 
             MyReferences.TryAddToAttackList(currentItem, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
@@ -531,16 +541,16 @@ namespace ValheimHTDArmory
             currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
             currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
-            if(Plugin.disableSilverBattleaxeLights)
+            if (Plugin.disableSilverBattleaxeLights)
             {
                 List<Transform> particleTransforms = new List<Transform>();
-                PrefabNodeManager.RecursiveChildNodesFinder(id.transform, "vfx_sparks",9,ref particleTransforms);
-                if(particleTransforms.Count > 0)
+                PrefabNodeManager.RecursiveChildNodesFinder(id.transform, "vfx_sparks", 9, ref particleTransforms);
+                if (particleTransforms.Count > 0)
                 {
-                    foreach(var pt in particleTransforms)
+                    foreach (var pt in particleTransforms)
                     {
                         ParticleSystem ptps = pt.GetComponent<ParticleSystem>();
-                        if(ptps != null)
+                        if (ptps != null)
                         {
                             var light = ptps.lights;
                             light.enabled = false;
@@ -650,6 +660,114 @@ namespace ValheimHTDArmory
             currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
 
             Plugin.customItems.Add(currentCustom);
+            //MaceCore
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreMaceHTD");
+
+            var rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+
+            Rotator rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
+            rotatorGOComponent.rotateX = 0f;
+            rotatorGOComponent.rotateY = 45f;
+            rotatorGOComponent.rotateZ = 0f;
+
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 15, 5).AddResource("Iron", 10, 5).AddResource("LeatherScraps", 6, 4);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core").CopyTargetMesh().ChangeMeshScale(0.0018f).StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_club_swing", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+
+            //MaceCoreGreen
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreMaceGreenHTD");
+
+            rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+
+            rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
+            rotatorGOComponent.rotateX = 0f;
+            rotatorGOComponent.rotateY = 45f;
+            rotatorGOComponent.rotateZ = 0f;
+
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 15, 5).AddResource("Iron", 10, 5).AddResource("LeatherScraps", 6, 4);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core").CopyTargetMesh().ChangeMeshScale(0.0018f).StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_club_swing", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+
+            //MaceCoreBlue
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreMaceBlueHTD");
+
+            rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+
+            rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
+            rotatorGOComponent.rotateX = 0f;
+            rotatorGOComponent.rotateY = 45f;
+            rotatorGOComponent.rotateZ = 0f;
+
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 15, 5).AddResource("Iron", 10, 5).AddResource("LeatherScraps", 6, 4);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core").CopyTargetMesh().ChangeMeshScale(0.0018f).StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_club_swing", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+
             //MaceCoreGreat
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceHTD");//MaceCoreGreat
 
@@ -773,6 +891,297 @@ namespace ValheimHTDArmory
 
             //Blue
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceBlueHTD");
+
+            rotators = new List<Transform>();
+            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            foreach (Transform rotator in rotators)
+            {
+                Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
+                rotatorComponent.rotateX = 0f;
+                rotatorComponent.rotateY = 45f;
+                rotatorComponent.rotateZ = 0f;
+            }
+
+            id = currentItem.GetComponent<ItemDrop>();
+            //id.m_itemData.m_shared.m_name += " Green";
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 40, 15).AddResource("Iron", 35, 10).AddResource("LeatherScraps", 12, 8);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_sledge";
+            Attack3.m_attackStamina = 35f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.4f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 60f;
+            Attack3.m_damageMultiplier = 1.5f;
+            Attack3.m_forceMultiplier = 1f;
+            Attack3.m_staggerMultiplier = 2f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 0f;
+            Attack3.m_attackAngle = 90f;
+            Attack3.m_attackRayWidth = 4f;
+            Attack3.m_maxYAngle = 0f;
+            Attack3.m_hitThroughWalls = true;
+            Attack3.m_hitTerrain = true;
+
+            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core", 3).CopyTargetMesh().ChangeMeshScale(0.0034f).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+
+            //MaceCore
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreAxeHTD");
+
+            rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+
+            rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
+            rotatorGOComponent.rotateX = 0f;
+            rotatorGOComponent.rotateY = 45f;
+            rotatorGOComponent.rotateZ = 0f;
+
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 15, 5).AddResource("Iron", 10, 5).AddResource("LeatherScraps", 6, 4);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core").CopyTargetMesh().ChangeMeshScale(0.0018f).StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_club_swing", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+
+            //MaceCoreGreen
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreAxeGreenHTD");
+
+            rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+
+            rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
+            rotatorGOComponent.rotateX = 0f;
+            rotatorGOComponent.rotateY = 45f;
+            rotatorGOComponent.rotateZ = 0f;
+
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 15, 5).AddResource("Iron", 10, 5).AddResource("LeatherScraps", 6, 4);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core").CopyTargetMesh().ChangeMeshScale(0.0018f).StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_club_swing", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+
+            //MaceCoreBlue
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreAxeBlueHTD");
+
+            rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+
+            rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
+            rotatorGOComponent.rotateX = 0f;
+            rotatorGOComponent.rotateY = 45f;
+            rotatorGOComponent.rotateZ = 0f;
+
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 15, 5).AddResource("Iron", 10, 5).AddResource("LeatherScraps", 6, 4);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core").CopyTargetMesh().ChangeMeshScale(0.0018f).StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_club_swing", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+
+            //MaceCoreGreat
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatAxeHTD");//MaceCoreGreat
+
+            rotators = new List<Transform>();
+            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            foreach (Transform rotator in rotators)
+            {
+                Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
+                rotatorComponent.rotateX = 0f;
+                rotatorComponent.rotateY = 45f;
+                rotatorComponent.rotateZ = 0f;
+            }
+
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 40, 15).AddResource("Iron", 35, 10).AddResource("LeatherScraps", 12, 8);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_sledge";
+            Attack3.m_attackStamina = 35f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.4f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 60f;
+            Attack3.m_damageMultiplier = 1.5f;
+            Attack3.m_forceMultiplier = 1f;
+            Attack3.m_staggerMultiplier = 2f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 0f;
+            Attack3.m_attackAngle = 90f;
+            Attack3.m_attackRayWidth = 4f;
+            Attack3.m_maxYAngle = 0f;
+            Attack3.m_hitThroughWalls = true;
+            Attack3.m_hitTerrain = true;
+
+            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core", 3).CopyTargetMesh().ChangeMeshScale(0.0034f).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+            //Green
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatAxeGreenHTD");//MaceCoreGreatGreen
+
+            rotators = new List<Transform>();
+            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            foreach (Transform rotator in rotators)
+            {
+                Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
+                rotatorComponent.rotateX = 0f;
+                rotatorComponent.rotateY = 45f;
+                rotatorComponent.rotateZ = 0f;
+            }
+
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("TrophySurtling", 1, 0).AddResource("SurtlingCore", 40, 15).AddResource("Iron", 35, 10).AddResource("LeatherScraps", 12, 8);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Vertical;
+            Attack3.m_attackAnimation = "swing_sledge";
+            Attack3.m_attackStamina = 35f;
+            Attack3.m_speedFactor = 0.1f;
+            Attack3.m_speedFactorRotation = 0.4f;
+            Attack3.m_attackStartNoise = 10f;
+            Attack3.m_attackHitNoise = 60f;
+            Attack3.m_damageMultiplier = 1.5f;
+            Attack3.m_forceMultiplier = 1f;
+            Attack3.m_staggerMultiplier = 2f;
+            Attack3.m_attackRange = 3f;
+            Attack3.m_attackHeight = 0f;
+            Attack3.m_attackAngle = 90f;
+            Attack3.m_attackRayWidth = 4f;
+            Attack3.m_maxYAngle = 0f;
+            Attack3.m_hitThroughWalls = true;
+            Attack3.m_hitTerrain = true;
+
+            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("core", "SurtlingCore", "core", 3).CopyTargetMesh().ChangeMeshScale(0.0034f).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_clubhit", EffectsManager.EffectList.HIT).AddEffect("sfx_club_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_sledge_hit", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sledge_iron_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_battleaxe_swing_wosh", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+
+            //Blue
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatAxeBlueHTD");
 
             rotators = new List<Transform>();
             PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
@@ -967,12 +1376,17 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 120f;
 
+            if (!Plugin.holdBlackMetalAltGreatswordByBlade)
+            {
+                id.m_itemData.m_shared.m_animationState = ItemDrop.ItemData.AnimationState.TwoHandedClub;
+            }
+
             MyReferences.TryAddToAttackList(currentItem, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default", 3).CopyTargetMaterial(true).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default", 4).CopyTargetMaterial(true).StartNewNode();
 
             currentCustom.prefabNodeManager.SetNode("standmesh", "wood_wall_roof_top", "top", 4).CopyTargetMesh().CopyTargetMaterial().StartNewNode();
 
@@ -1360,7 +1774,7 @@ namespace ValheimHTDArmory
             Plugin.customItems.Add(currentCustom);
 
             assetBundle.Unload(false);
-        }                
+        }
 
         public static RecipeHelper ApplyConfigChanges(ref GameObject item)
         {

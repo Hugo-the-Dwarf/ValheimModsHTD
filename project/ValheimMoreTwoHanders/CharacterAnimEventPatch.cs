@@ -7,21 +7,20 @@ namespace ValheimHTDArmory
 {
     class CharacterAnimEventPatch
     {
-        public static Dictionary<string, Dictionary<float, float>> baseSpeeds = new Dictionary<string, Dictionary<float, float>>();
+        public static Dictionary<int, Dictionary<float, float>> baseSpeeds = new Dictionary<int, Dictionary<float, float>>();
+        public static Dictionary<int, List<float>> newSpeeds = new Dictionary<int, List<float>>();
 
         [HarmonyPatch(typeof(CharacterAnimEvent), "FixedUpdate")]
         static class CharacterAnimEvent_Awake_Patch
         {
             static void Prefix(ref Animator ___m_animator, Character ___m_character)
             {
-                //if (1 == 1) return; //Idk how to do this yet, so disabled.
+                if (Plugin.disableAttackSpeedModule) return;
 
                 if (___m_character is Player)
                 {
                     if (___m_animator?.GetCurrentAnimatorClipInfo(0)?.Any() == true && ___m_character.InAttack())
                     {
-
-                        //Plugin.Log.LogMessage($"Animation Clip: {___m_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
                         Player player = (Player)___m_character;
                         var item = player.GetCurrentWeapon();
 
@@ -32,54 +31,83 @@ namespace ValheimHTDArmory
                                 || item.m_shared.m_skillType == Skills.SkillType.Axes)
                             {
                                 string clipName = ___m_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
-                                if (clipName.ToLower().Contains("idle")) return;
-                                string keyName = (item.m_shared.m_name.Replace(' ','-')) + clipName;
+                                int keyName = ((item.m_shared.m_name.Replace(' ', '-')) + clipName).GetStableHashCode();
                                 float speedBonus = 1f;
+                                var attackForce = item.m_shared.m_attackForce;
                                 switch (item.m_shared.m_skillType)
                                 {
                                     case Skills.SkillType.Swords:
-                                        speedBonus = 1.5f;
+                                        if (attackForce >= 90) speedBonus = 0.95f;
+                                        else speedBonus = 1.15f;
                                         break;
                                     case Skills.SkillType.Clubs:
-                                        var attackForce = item.m_shared.m_attackForce;
-                                        if (attackForce > 100) speedBonus = 0.8f;
-                                        else speedBonus = 0.90f;
+                                        if (attackForce >= 100) speedBonus = 0.85f;
                                         break;
                                 }
 
                                 float newSpeed = ___m_animator.speed;
-                                Plugin.Log.LogMessage($"Animation: {keyName}'s speed is: {newSpeed}");
+                                //Plugin.Log.LogMessage($"Animation: {keyName}'s speed is: {newSpeed.ToString()}");
                                 if (!baseSpeeds.ContainsKey(keyName))
                                 {
-                                    Dictionary<float, float> newOldSpeed = new Dictionary<float, float>();
+                                    Dictionary<float, float> oldNewSpeed = new Dictionary<float, float>();
+                                    List<float> newSpeedList = new List<float>();
                                     newSpeed = ___m_animator.speed * speedBonus;
-                                    newOldSpeed.Add(newSpeed, ___m_animator.speed);
-                                    baseSpeeds.Add(keyName, newOldSpeed);
-                                    Plugin.Log.LogMessage($"Animation: {keyName}'s speed is changed to: {newSpeed}");
+                                    oldNewSpeed.Add(___m_animator.speed, newSpeed);
+                                    baseSpeeds.Add(keyName, oldNewSpeed);
+                                    newSpeedList.Add(newSpeed);
+                                    newSpeeds.Add(keyName, newSpeedList);
+                                    //Plugin.Log.LogMessage($"Animation: {keyName}'s speed is changed to: {newSpeed.ToString()}");
                                 }
                                 else
                                 {
-                                    if (!baseSpeeds[keyName].ContainsKey(___m_animator.speed) 
-                                        && baseSpeeds[keyName].ContainsKey(___m_animator.speed * speedBonus))
+                                    if (!newSpeeds[keyName].Contains(newSpeed))
                                     {
-                                        newSpeed = ___m_animator.speed * speedBonus;
-                                        baseSpeeds[keyName].Add(newSpeed, ___m_animator.speed);
-                                        Plugin.Log.LogMessage($"Animation: {keyName}'s speed is changed to: {newSpeed}");
+                                        if (!baseSpeeds[keyName].ContainsKey(newSpeed))
+                                        {
+                                            newSpeed = ___m_animator.speed * speedBonus;
+                                            baseSpeeds[keyName].Add(___m_animator.speed, newSpeed);
+                                            newSpeeds[keyName].Add(newSpeed);
+                                            //Plugin.Log.LogMessage($"Animation: {keyName}'s speed is changed to: {newSpeed.ToString()}");
+                                        }
+                                        else
+                                        {
+                                            newSpeed = baseSpeeds[keyName][newSpeed];
+                                            //Plugin.Log.LogMessage($"Animation: {keyName}'s speed is extracted to: {newSpeed.ToString()}");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //nothing? since the current speed is already saved
                                     }
 
                                 }
-
-                                //___m_animator.speed = ___m_animator.speed * speedBonus;
                                 ___m_animator.speed = newSpeed;
                             }
                         }
                     }
-                    else
-                    {
+                    //else
+                    //{
 
-                    }
+                    //}
                 }
             }
+
+            //private static bool BaseSpeedSavedForClip(string keyName, ref float speed, float speedBonus)
+            //{
+            //    if (baseSpeeds[keyName].Count > 0)
+            //    {
+            //        foreach (KeyValuePair<float, float> oldNew in baseSpeeds[keyName])
+            //        {
+            //            if (oldNew.Value == speed * speedBonus)
+            //            {
+            //                speed = oldNew.Value;
+            //                Plugin.Log.LogMessage($"Animation: {keyName}'s speed is extracted to: {speed} From Lookup");
+            //                return true;
+            //            }
+            //        }
+            //    }
+            //    return false;
+            //}
 
             //static void Postfix(ref Animator ___m_animator, Character ___m_character, ref float __state)
             //{

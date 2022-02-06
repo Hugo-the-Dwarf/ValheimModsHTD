@@ -13,7 +13,7 @@ namespace ValheimHTDArmory
     [BepInPlugin(Plugin.GUID, Plugin.ModName, Plugin.Version)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string Version = "6.2.0";
+        public const string Version = "7.0.0";
         public const string ModName = "Hugo's Armory";
         public const string GUID = "htd.armory";
         public static ServerSync.ConfigSync configSync = new ServerSync.ConfigSync(GUID) { DisplayName = ModName, CurrentVersion = Version };
@@ -30,12 +30,16 @@ namespace ValheimHTDArmory
         public static List<Recipe> myRecipeList = new List<Recipe>(); // Fixed Referenced Compiled Recipes
         public static List<RecipeHelper> myRecipeHelperList = new List<RecipeHelper>(); // uncompiled recipes
         public static List<CustomPiece> customPieces = new List<CustomPiece>();
-        //public static List<Piece> myPieces = new List<Piece>();
         public static List<CookingRecipe> myCookingRecipes = new List<CookingRecipe>();
 
-
+        //BepinEx Config Values
+        public static bool disableAttackSpeedModule = false;
         public static bool disableFlametalFlames = false;
         public static bool disableSilverBattleaxeLights = false;
+
+        public static bool holdIronGreatswordByBlade = true;
+        public static bool holdSilverGreatswordByBlade = true;
+        public static bool holdBlackMetalAltGreatswordByBlade = true;
 
         private static bool fixedReferences = false;
 
@@ -47,9 +51,17 @@ namespace ValheimHTDArmory
 #else
             Log = new ManualLogSource(null);
 #endif
+            disableAttackSpeedModule = Config.Bind<bool>("0Modules", "disable_AttackSpeedModule", false, "Disable the attack speed module, you may want to do this if you find conflicts with other mods that change attack speeds.").Value;
+
+            PlayerAttackInputPatch.attack3Hotkey = Config.Bind<string>("1Hotkeys", "hotkey_ThirdAttack", "mouse 3", "Customizable hotkey so you can use the third attack of the weapon. If you want to use a mouse key, include a space: mouse 3, for example. Valid inputs: https://docs.unity3d.com/ScriptReference/KeyCode.html");
+
             disableFlametalFlames = Config.Bind<bool>("2Options", "disable_FlametalSwordFlames", false, "Disable the fire and smoke effect from the Flametal Great Sword.").Value;
             disableSilverBattleaxeLights = Config.Bind<bool>("2Options", "disable_SilverBattleaxeLights", false, "Disable the flickering lights from the Silver Battleaxe.").Value;
-            PlayerAttackInputPatch.attack3Hotkey = Config.Bind<string>("1Hotkeys", "hotkey_ThirdAttack", "mouse 3", "Customizable hotkey so you can use the third attack of the weapon. If you want to use a mouse key, include a space: mouse 3, for example. Valid inputs: https://docs.unity3d.com/ScriptReference/KeyCode.html");
+
+
+            holdIronGreatswordByBlade = Config.Bind<bool>("2Options", "hold_IronGreatswordByBlade", true, "If this is true, holds the sword like one would a battleaxe. If this is false hold the sword resting on the shoulder.").Value;
+            holdSilverGreatswordByBlade = Config.Bind<bool>("2Options", "hold_SilverGreatswordByBlade", true, "If this is true, holds the sword like one would a battleaxe. If this is false hold the sword resting on the shoulder.").Value;
+            holdBlackMetalAltGreatswordByBlade = Config.Bind<bool>("2Options", "hold_BlackMetalAltGreatswordByBlade", true, "If this is true, holds the sword like one would a battleaxe. If this is false hold the sword resting on the shoulder.").Value;
 
             string path = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), GUID);
             cc.LoadInitialConfigs(path);
@@ -98,7 +110,7 @@ namespace ValheimHTDArmory
             if (fixedReferences) return;
             if (!IsObjectDBValid()) return;
             GenerateReferenceLists();
-            FixReferences();
+            FixRecipeReferences();
             AddNewItems();
             AddNewRecipes();
             AddNewStatusEffects();
@@ -144,9 +156,11 @@ namespace ValheimHTDArmory
             public static void Postfix()
             {
                 if (!IsObjectDBValid()) return;
-
-                //GenerateReferenceLists();
-                //FixReferences();
+                if (!fixedReferences)
+                {
+                    GenerateReferenceLists();
+                    FixItemReferences();
+                }
                 AddNewItems();
                 AddNewRecipes();
                 AddNewStatusEffects();
@@ -159,9 +173,11 @@ namespace ValheimHTDArmory
             public static void Postfix()
             {
                 if (!IsObjectDBValid()) return;
-
-                //GenerateReferenceLists();
-                //FixReferences();
+                if (!fixedReferences)
+                {
+                    GenerateReferenceLists();
+                    FixItemReferences();
+                }
                 AddNewItems();
                 AddNewRecipes();
                 AddNewStatusEffects();
@@ -375,7 +391,7 @@ namespace ValheimHTDArmory
         }
 
         private static void FixAndAddNewPieces()
-        {            
+        {
 
             if (customPieces.Count > 0)
             {
@@ -501,7 +517,7 @@ namespace ValheimHTDArmory
             ObjectDB.instance.m_StatusEffects.Add(effect);
         }
 
-        private static void FixReferences()
+        private static void FixItemReferences()
         {
             foreach (var item in customItems)
             {
@@ -509,13 +525,18 @@ namespace ValheimHTDArmory
                 myItemList.Add(item.gameObject);
             }
 
+            customItems = new List<CustomItem>();
+        }
+
+        private static void FixRecipeReferences()
+        {
+
             foreach (var recipe in myRecipeHelperList)
             {
                 recipe.FixResources();
                 myRecipeList.Add(recipe.GetRecipe());
             }
 
-            customItems = new List<CustomItem>();
             myRecipeHelperList = new List<RecipeHelper>();
         }
     }

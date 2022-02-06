@@ -37,6 +37,7 @@ namespace ValheimHTDArmory
                 public bool UpdateTextureScaleOffset = false;
                 public bool useMyTextures = false;
                 public bool copyShaderOnly = false;
+                public bool copyTexturesOnly = false;
                 public float textureScaleX = 1f;
                 public float textureScaleY = 1f;
                 public float TextureOffsetX = 0f;
@@ -145,6 +146,12 @@ namespace ValheimHTDArmory
         public PrefabNodeManager CopyTargetShader()
         {
             currentNode.currentMaterialTask.copyShaderOnly = true;
+            return this;
+        }
+
+        public PrefabNodeManager CopyTextures()
+        {
+            currentNode.currentMaterialTask.copyTexturesOnly = true;
             return this;
         }
 
@@ -468,6 +475,18 @@ namespace ValheimHTDArmory
                                 if (mt.copyShaderOnly)
                                 {
                                     mats[mt.myMaterialIndex].shader = targetRenderer.materials[mt.targetMaterialIndex].shader;
+                                    continue;
+                                }
+
+                                if(mt.copyTexturesOnly)
+                                {
+                                    mats[mt.myMaterialIndex].SetTexture("_MainTex", targetRenderer.materials[mt.targetMaterialIndex].GetTexture("_MainTex"));
+                                    mats[mt.myMaterialIndex].SetTexture("_BumpMap", targetRenderer.materials[mt.targetMaterialIndex].GetTexture("_BumpMap"));
+                                    mats[mt.myMaterialIndex].SetTexture("_MetallicGlossMap", targetRenderer.materials[mt.targetMaterialIndex].GetTexture("_MetallicGlossMap"));
+                                    mats[mt.myMaterialIndex].SetTexture("_EmissionMap", targetRenderer.materials[mt.targetMaterialIndex].GetTexture("_EmissionMap"));
+
+                                    mats[mt.myMaterialIndex].SetColor("_Color", targetRenderer.materials[mt.targetMaterialIndex].GetColor("_Color"));
+                                    mats[mt.myMaterialIndex].SetColor("_EmissionColor", targetRenderer.materials[mt.targetMaterialIndex].GetColor("_EmissionColor"));
                                     continue;
                                 }
 
