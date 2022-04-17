@@ -57,7 +57,8 @@ namespace ValheimHTDArmory
                 return true;
             }
 
-            string weaponName = __instance.m_visEquipment.m_rightItem;
+            if (__instance.m_rightItem == null) return true;
+            string weaponName = __instance.m_rightItem.m_dropPrefab?.name;
             if (weaponName != null & weaponName.Trim() != "")
             {
                 if (MyReferences.myListOfExtraAttacks.ContainsKey(weaponName.GetStableHashCode()))

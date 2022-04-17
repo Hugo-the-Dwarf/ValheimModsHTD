@@ -34,7 +34,7 @@ namespace ValheimHTDArmory
                  */
                 if (targets.Count > 0)
                 {
-                    Transform myTransform = PrefabNodeManager.RecursiveChildNodeFinder(go.transform, myNode);
+                    Transform myTransform = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(go.transform, myNode);
                     List<AudioClip> acList = new List<AudioClip>();
                     if (myTransform != null)
                     {

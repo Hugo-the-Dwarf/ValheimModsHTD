@@ -32,9 +32,96 @@ namespace ValheimHTDArmory
             StatusEffect se = assetBundle.LoadAsset<StatusEffect>("SEUnholyRegenHTD");
             MyReferences.TryAddToStatusEffectList(se);
 
-            Color bronze = new Color(0.783f, 0.4329f, 0.1588f);
-            Color iron = new Color(0.4f, 0.4f, 0.4f);
+            se = assetBundle.LoadAsset<StatusEffect>("SEBoarBerserkerSetHTD");
+            Plugin.cl.TryLocalizeStatusEffect(se.name,ref se);
+            MyReferences.TryAddToStatusEffectList(se);
 
+            Color bronzeColor = new Color(0.783f, 0.4329f, 0.1588f);
+            Color ironColor = new Color(0.4f, 0.4f, 0.4f);
+
+            //ArmorBoar
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "ArmorHelmetBoarHTD");
+            var id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "piece_workbench", 1, 1);
+                currentRecipeHelper.AddResource("TrophyBoar", 1, 0).AddResource("LeatherScraps", 6, 3).AddResource("BoneFragments", 12, 6);
+            }
+            Plugin.cc.AddArmorDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            currentCustom = new CustomItem(currentItem);
+
+            currentCustom.prefabNodeManager.SetNode("model", "TrophyBoar", "model").CopyTargetMaterial().CopyTextures().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("model", "TrophyBoar", "Fangs 006").SetMyMateiralIndex(1).CopyTargetMaterial().StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("modelcloth", "TrophyBoar", "model").CopyTargetMaterial().CopyTextures();
+            Plugin.customItems.Add(currentCustom);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            //
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "ArmorChestBoarHTD");
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "piece_workbench", 1, 1);
+                currentRecipeHelper.AddResource("TrophyBoar", 1, 0).AddResource("LeatherScraps", 10, 4).AddResource("BoneFragments", 12, 6);
+            }
+            Plugin.cc.AddArmorDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+
+            currentCustom = new CustomItem(currentItem);
+            currentCustom.prefabNodeManager.SetNode("BoarChestMesh", "TrophyBoar", "Fangs 006").SetMyMateiralIndex(1).CopyTargetMaterial().StartNewNode();
+            Plugin.customItems.Add(currentCustom);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            //
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "ArmorLegsBoarHTD");
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "piece_workbench", 1, 1);
+                currentRecipeHelper.AddResource("TrophyBoar", 1, 0).AddResource("LeatherScraps", 10, 4);
+            }
+            Plugin.cc.AddArmorDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+
+            currentCustom = new CustomItem(currentItem);
+            Plugin.customItems.Add(currentCustom);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            //
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "ArmorShoulderBoarHTD");
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "piece_workbench", 1, 1);
+                currentRecipeHelper.AddResource("TrophyBoar", 1, 0).AddResource("LeatherScraps", 8, 3).AddResource("BoneFragments", 6, 3);
+            }
+            Plugin.cc.AddArmorDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            currentCustom = new CustomItem(currentItem);
+            currentCustom.prefabNodeManager.SetNode("model", "TrophyBoar", "Fangs 006").SetMyMateiralIndex(1).CopyTargetMaterial().StartNewNode();
+            Plugin.customItems.Add(currentCustom);
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
 
 
@@ -68,15 +155,11 @@ namespace ValheimHTDArmory
 
 
 
-
-
-
-
             //FistBronze
             currentItem = ExtractGameObjectFromBundle(assetBundle, "BronzeFistsHTD");//FistBronze
-            var id = currentItem.GetComponent<ItemDrop>();
+            id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -108,8 +191,8 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("FistMetalKnucklesMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(bronze).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(bronze).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("FistMetalKnucklesMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(bronzeColor).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(bronzeColor).StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
@@ -124,7 +207,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "IronFistsHTD");//FistIron
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -156,8 +239,8 @@ namespace ValheimHTDArmory
 
             currentCustom = new CustomItem(currentItem);
 
-            currentCustom.prefabNodeManager.SetNode("FistMetalKnucklesMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(iron).StartNewNode();
-            currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(iron).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("FistMetalKnucklesMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(ironColor).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("model", "SwordBlackmetal", "default").CopyTargetMaterial(true).ReplaceMetalColor(ironColor).StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
@@ -173,7 +256,7 @@ namespace ValheimHTDArmory
             id = currentItem.GetComponent<ItemDrop>();
             //MyReferences.prefabsThatUpgradeAtLevelOneAlways.Add(id.name.GetStableHashCode());
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -221,7 +304,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SilverFistsHTD");//SilverFistsHTD
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -269,7 +352,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "BronzeCrowbillHTD");
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -313,7 +396,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "SilverGreatSwordHTD");//SwordSilverGreat
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -362,7 +445,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "BronzeGreatSwordHTD");//SwordSilverGreat
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -408,7 +491,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "IronGreatSwordHTD");//SwordIronGreat
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -458,7 +541,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -504,7 +587,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -544,7 +627,7 @@ namespace ValheimHTDArmory
             if (Plugin.disableSilverBattleaxeLights)
             {
                 List<Transform> particleTransforms = new List<Transform>();
-                PrefabNodeManager.RecursiveChildNodesFinder(id.transform, "vfx_sparks", 9, ref particleTransforms);
+                RecursiveSearchFunctions.ChildNodesFinderDepthFirst(id.transform, "vfx_sparks", 9, ref particleTransforms);
                 if (particleTransforms.Count > 0)
                 {
                     foreach (var pt in particleTransforms)
@@ -569,7 +652,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -616,7 +699,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -663,7 +746,7 @@ namespace ValheimHTDArmory
             //MaceCore
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreMaceHTD");
 
-            var rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+            var rotatorTransform = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(currentItem.transform, "rotator");
 
             Rotator rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
             rotatorGOComponent.rotateX = 0f;
@@ -672,7 +755,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -699,7 +782,7 @@ namespace ValheimHTDArmory
             //MaceCoreGreen
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreMaceGreenHTD");
 
-            rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+            rotatorTransform = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(currentItem.transform, "rotator");
 
             rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
             rotatorGOComponent.rotateX = 0f;
@@ -708,7 +791,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -735,7 +818,7 @@ namespace ValheimHTDArmory
             //MaceCoreBlue
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreMaceBlueHTD");
 
-            rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+            rotatorTransform = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(currentItem.transform, "rotator");
 
             rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
             rotatorGOComponent.rotateX = 0f;
@@ -744,7 +827,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -772,7 +855,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceHTD");//MaceCoreGreat
 
             List<Transform> rotators = new List<Transform>();
-            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            RecursiveSearchFunctions.ChildNodesFinderDepthFirst(currentItem.transform, "rotator", 3, ref rotators);
             foreach (Transform rotator in rotators)
             {
                 Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
@@ -783,7 +866,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -832,7 +915,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceGreenHTD");//MaceCoreGreatGreen
 
             rotators = new List<Transform>();
-            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            RecursiveSearchFunctions.ChildNodesFinderDepthFirst(currentItem.transform, "rotator", 3, ref rotators);
             foreach (Transform rotator in rotators)
             {
                 Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
@@ -843,7 +926,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -893,7 +976,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceBlueHTD");
 
             rotators = new List<Transform>();
-            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            RecursiveSearchFunctions.ChildNodesFinderDepthFirst(currentItem.transform, "rotator", 3, ref rotators);
             foreach (Transform rotator in rotators)
             {
                 Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
@@ -905,7 +988,7 @@ namespace ValheimHTDArmory
             id = currentItem.GetComponent<ItemDrop>();
             //id.m_itemData.m_shared.m_name += " Green";
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -954,7 +1037,7 @@ namespace ValheimHTDArmory
             //MaceCore
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreAxeHTD");
 
-            rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+            rotatorTransform = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(currentItem.transform, "rotator");
 
             rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
             rotatorGOComponent.rotateX = 0f;
@@ -963,7 +1046,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -990,7 +1073,7 @@ namespace ValheimHTDArmory
             //MaceCoreGreen
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreAxeGreenHTD");
 
-            rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+            rotatorTransform = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(currentItem.transform, "rotator");
 
             rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
             rotatorGOComponent.rotateX = 0f;
@@ -999,7 +1082,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1026,7 +1109,7 @@ namespace ValheimHTDArmory
             //MaceCoreBlue
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreAxeBlueHTD");
 
-            rotatorTransform = PrefabNodeManager.RecursiveChildNodeFinder(currentItem.transform, "rotator");
+            rotatorTransform = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(currentItem.transform, "rotator");
 
             rotatorGOComponent = rotatorTransform.gameObject.AddComponent<Rotator>();
             rotatorGOComponent.rotateX = 0f;
@@ -1035,7 +1118,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1063,7 +1146,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatAxeHTD");//MaceCoreGreat
 
             rotators = new List<Transform>();
-            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            RecursiveSearchFunctions.ChildNodesFinderDepthFirst(currentItem.transform, "rotator", 3, ref rotators);
             foreach (Transform rotator in rotators)
             {
                 Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
@@ -1074,7 +1157,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1123,7 +1206,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatAxeGreenHTD");//MaceCoreGreatGreen
 
             rotators = new List<Transform>();
-            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            RecursiveSearchFunctions.ChildNodesFinderDepthFirst(currentItem.transform, "rotator", 3, ref rotators);
             foreach (Transform rotator in rotators)
             {
                 Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
@@ -1134,7 +1217,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1184,7 +1267,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatAxeBlueHTD");
 
             rotators = new List<Transform>();
-            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            RecursiveSearchFunctions.ChildNodesFinderDepthFirst(currentItem.transform, "rotator", 3, ref rotators);
             foreach (Transform rotator in rotators)
             {
                 Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
@@ -1196,7 +1279,7 @@ namespace ValheimHTDArmory
             id = currentItem.GetComponent<ItemDrop>();
             //id.m_itemData.m_shared.m_name += " Green";
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1250,7 +1333,7 @@ namespace ValheimHTDArmory
             //var shared = id.m_itemData.m_shared;
             ////shared.m_attackStatusEffect = 
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1301,7 +1384,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1349,7 +1432,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "BlackMetalGreatSwordAltHTD");//SwordIronGreatBlack
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1402,7 +1485,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "ObsidianGreatSwordHTD");//SwordObsidianGreat
 
             rotators = new List<Transform>();
-            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            RecursiveSearchFunctions.ChildNodesFinderDepthFirst(currentItem.transform, "rotator", 3, ref rotators);
             foreach (Transform rotator in rotators)
             {
                 Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
@@ -1413,7 +1496,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1460,7 +1543,7 @@ namespace ValheimHTDArmory
             currentItem = ExtractGameObjectFromBundle(assetBundle, "ObsidianGreatSwordRedHTD");//SwordObsidianGreat
 
             rotators = new List<Transform>();
-            PrefabNodeManager.RecursiveChildNodesFinder(currentItem.transform, "rotator", 3, ref rotators);
+            RecursiveSearchFunctions.ChildNodesFinderDepthFirst(currentItem.transform, "rotator", 3, ref rotators);
             foreach (Transform rotator in rotators)
             {
                 Rotator rotatorComponent = rotator.gameObject.AddComponent<Rotator>();
@@ -1471,7 +1554,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1520,7 +1603,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1584,7 +1667,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1633,7 +1716,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1681,7 +1764,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1727,7 +1810,7 @@ namespace ValheimHTDArmory
 
             id = currentItem.GetComponent<ItemDrop>();
 
-            currentRecipeHelper = ApplyConfigChanges(ref currentItem);
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
 
             if (currentRecipeHelper == null)
             {
@@ -1776,11 +1859,34 @@ namespace ValheimHTDArmory
             assetBundle.Unload(false);
         }
 
-        public static RecipeHelper ApplyConfigChanges(ref GameObject item)
+        public static RecipeHelper ApplyConfigChangesAndRecipes(ref GameObject item)
         {
-            Plugin.cc.ApplyItemDataFromConfigRecord(ref item);
+            //ApplyConfigChanges(ref item);
+
+
             return Plugin.cc.ApplyRecipeHelperFromConfigRecord(item);
         }
+
+        //public static void ApplyConfigChanges(ref GameObject item)
+        //{
+        //    var id = item.GetComponent<ItemDrop>();
+        //    switch (id.m_itemData.m_shared.m_itemType)
+        //    {
+        //        case ItemDrop.ItemData.ItemType.Helmet:
+        //        case ItemDrop.ItemData.ItemType.Chest:
+        //        case ItemDrop.ItemData.ItemType.Legs:
+        //        case ItemDrop.ItemData.ItemType.Shoulder:
+        //            Plugin.cc.ApplyArmorDataFromConfigRecord(ref item);
+        //            break;
+        //        //case ItemDrop.ItemData.ItemType.OneHandedWeapon:
+        //        //case ItemDrop.ItemData.ItemType.Bow:
+        //        //case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
+        //        //case ItemDrop.ItemData.ItemType.Torch:
+        //        default:
+        //            Plugin.cc.ApplyItemDataFromConfigRecord(ref item);
+        //            break;
+        //    }
+        //}
 
         public static void ApplySyncedItemConfigData()
         {
@@ -1789,7 +1895,26 @@ namespace ValheimHTDArmory
                 for (int i = 0; i < Plugin.myItemList.Count; i++)
                 {
                     GameObject itemReference = Plugin.myItemList[i];
-                    Plugin.cc.ApplyItemDataFromConfigRecord(ref itemReference);
+
+                    var id = itemReference.GetComponent<ItemDrop>();
+                    switch (id.m_itemData.m_shared.m_itemType)
+                    {
+                        case ItemDrop.ItemData.ItemType.Helmet:
+                        case ItemDrop.ItemData.ItemType.Chest:
+                        case ItemDrop.ItemData.ItemType.Legs:
+                        case ItemDrop.ItemData.ItemType.Shoulder:
+                            Plugin.cc.ApplyArmorDataFromConfigRecord(ref itemReference);
+                            break;
+                        //case ItemDrop.ItemData.ItemType.OneHandedWeapon:
+                        //case ItemDrop.ItemData.ItemType.Bow:
+                        //case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
+                        //case ItemDrop.ItemData.ItemType.Torch:
+                        default:
+                            Plugin.cc.ApplyItemDataFromConfigRecord(ref itemReference);
+                            break;
+                    }
+
+                    //Plugin.cc.ApplyItemDataFromConfigRecord(ref itemReference);
                     Plugin.myItemList[i] = itemReference;
                 }
             }

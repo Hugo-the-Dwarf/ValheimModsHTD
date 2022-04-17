@@ -13,9 +13,9 @@ namespace ValheimHTDArmory
     {
         string currentLanguage = "English";
         string fileSuffix = "_localization";
-        public Dictionary<string, string> localizationNames = new Dictionary<string, string>();
-        public Dictionary<string, string> localizationDescriptions = new Dictionary<string, string>();
-        List<string> prefabNames = new List<string>();
+        public Dictionary<int, string> localizationNames = new Dictionary<int, string>();
+        public Dictionary<int, string> localizationDescriptions = new Dictionary<int, string>();
+        List<int> prefabHashes = new List<int>();
         List<string> localizationLines = new List<string>();
 
         public CustomLocalization()
@@ -38,23 +38,6 @@ namespace ValheimHTDArmory
                 {
                     ReadLocalization(reader);
                     fileFound = true;
-                }
-            }
-            catch (FileNotFoundException)
-            {
-                try
-                {
-                    using (StreamReader reader = new StreamReader(path.Replace("tsv", "cfg")))
-                    {
-                        ReadLocalization(reader);
-                        fileFound = true;
-                        reader.Close();
-                        File.Delete(path.Replace("tsv", "cfg"));
-                    }
-                }
-                catch (FileNotFoundException)
-                {
-                    Plugin.Log.LogWarning($"Failed to find '{Plugin.GUID + fileSuffix}'/.cfg in path '{bepinexConfigPath}' will create config of same name with default values.");
                 }
             }
             catch (IOException ioEx)
@@ -111,18 +94,16 @@ namespace ValheimHTDArmory
 
         private void FilterData(string[] splitData, int languageIndex)
         {
-            string prefabName = splitData[0].Substring(0, splitData[0].IndexOf('_'));
-            prefabNames.Remove(prefabName);
-            prefabNames.Add(prefabName);
+            int prefabHash = splitData[0].Substring(0, splitData[0].IndexOf('_')).GetStableHashCode();
+            prefabHashes.Remove(prefabHash);
+            prefabHashes.Add(prefabHash);
             if (splitData[0].Contains("_Name"))
             {
-                localizationNames.Remove(prefabName);
-                localizationNames.Add(prefabName, splitData[languageIndex]);
+                localizationNames[prefabHash] = splitData[languageIndex];
             }
             if (splitData[0].Contains("_Desc"))
             {
-                localizationDescriptions.Remove(prefabName);
-                localizationDescriptions.Add(prefabName, splitData[languageIndex]);
+                localizationDescriptions[prefabHash] = splitData[languageIndex];
             }
         }
 
@@ -144,9 +125,7 @@ namespace ValheimHTDArmory
         {
             while (!reader.EndOfStream)
             {
-                //ToDo remove this replace feature in the future.
-                //I have no idea why I just didn't leave it as a .tsv when writing
-                localizationLines.Add(reader.ReadLine().Replace(':', '\t'));
+                localizationLines.Add(reader.ReadLine());
             }
         }
 
@@ -170,14 +149,28 @@ namespace ValheimHTDArmory
 
         public void TryLocaliazeItem(string prefabName, ref ItemDrop id)
         {
+            int prefabHash = prefabName.GetStableHashCode();
             var shared = id.m_itemData.m_shared;
-            if (localizationNames.ContainsKey(prefabName) && localizationNames[prefabName].Trim() != string.Empty)
+            if (localizationNames.ContainsKey(prefabHash) && localizationNames[prefabHash].Trim() != string.Empty)
             {
-                shared.m_name = localizationNames[prefabName];
+                shared.m_name = localizationNames[prefabHash];
             }
-            if (localizationDescriptions.ContainsKey(prefabName) && localizationDescriptions[prefabName].Trim() != string.Empty)
+            if (localizationDescriptions.ContainsKey(prefabHash) && localizationDescriptions[prefabHash].Trim() != string.Empty)
             {
-                shared.m_description = localizationDescriptions[prefabName];
+                shared.m_description = localizationDescriptions[prefabHash];
+            }
+        }
+
+        public void TryLocalizeStatusEffect(string prefabName, ref StatusEffect se)
+        {
+            int prefabHash = prefabName.GetStableHashCode();
+            if (localizationNames.ContainsKey(prefabHash) && localizationNames[prefabHash].Trim() != string.Empty)
+            {
+                se.m_name = localizationNames[prefabHash];
+            }
+            if (localizationDescriptions.ContainsKey(prefabHash) && localizationDescriptions[prefabHash].Trim() != string.Empty)
+            {
+                se.m_tooltip = localizationDescriptions[prefabHash];
             }
         }
 

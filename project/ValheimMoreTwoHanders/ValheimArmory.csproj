@@ -91,12 +91,33 @@
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.TextCoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.TextCoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioManager.cs" />
     <Compile Include="CharacterAnimEventPatch.cs" />
     <Compile Include="CookingRecipe.cs" />
+    <Compile Include="CustomConfigParser.cs" />
     <Compile Include="CustomPiece.cs" />
+    <Compile Include="ICustomSerializable.cs" />
     <Compile Include="MyReferences.cs" />
     <Compile Include="CustomConfig.cs" />
     <Compile Include="CustomItem.cs" />
@@ -105,11 +126,11 @@
     <Compile Include="ItemStandPatch.cs" />
     <Compile Include="PlayerAttackInputPatch.cs" />
     <Compile Include="PrefabNodeManager.cs" />
-    <Compile Include="PrintBoneOrder.cs" />
     <Compile Include="RecipeHelper.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecipePatch.cs" />
+    <Compile Include="RecursiveSearchFunctions.cs" />
     <Compile Include="ResourceElement.cs" />
     <Compile Include="Rotator.cs" />
     <Compile Include="SMRReorder.cs" />

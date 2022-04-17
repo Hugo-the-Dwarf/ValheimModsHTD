@@ -9,6 +9,9 @@ namespace ValheimHTDArmory
     {
         public static Dictionary<int, Dictionary<float, float>> baseSpeeds = new Dictionary<int, Dictionary<float, float>>();
         public static Dictionary<int, List<float>> newSpeeds = new Dictionary<int, List<float>>();
+        private static float maxSpeedBonus = 1.2f;
+        private static float minSpeedBonus = 0.9f;
+        private static float speedIdentifier = 0.0017f;
 
         [HarmonyPatch(typeof(CharacterAnimEvent), "FixedUpdate")]
         static class CharacterAnimEvent_Awake_Patch
@@ -32,17 +35,31 @@ namespace ValheimHTDArmory
                             {
                                 string clipName = ___m_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
                                 int keyName = ((item.m_shared.m_name.Replace(' ', '-')) + clipName).GetStableHashCode();
-                                float speedBonus = 1f;
-                                var attackForce = item.m_shared.m_attackForce;
+
+                                float speedMod = 1f;
+                                //float baseWeight = 1f;
+                                //float baseAttackForce = 1f;
+                                //float speedModRatio = 0.9f;
                                 switch (item.m_shared.m_skillType)
                                 {
+
+                                    //case Skills.SkillType.Axes:
+                                    //    speedModRatio = 1f;
+                                    //    baseWeight = 2.5f;
+                                    //    baseAttackForce = 70f;
+                                    //    break;
                                     case Skills.SkillType.Swords:
-                                        if (attackForce >= 90) speedBonus = 0.95f;
-                                        else speedBonus = 1.15f;
+                                        //baseWeight = 3f;
+                                        //baseAttackForce = 60f;
+                                        speedMod = 1.10f;
                                         break;
+
                                     case Skills.SkillType.Clubs:
-                                        if (attackForce >= 100) speedBonus = 0.85f;
+                                        //baseWeight = 6f;
+                                        //baseAttackForce = 120f;
+                                        speedMod = 0.95f;
                                         break;
+
                                 }
 
                                 float newSpeed = ___m_animator.speed;
@@ -51,7 +68,8 @@ namespace ValheimHTDArmory
                                 {
                                     Dictionary<float, float> oldNewSpeed = new Dictionary<float, float>();
                                     List<float> newSpeedList = new List<float>();
-                                    newSpeed = ___m_animator.speed * speedBonus;
+                                    //newSpeed = (___m_animator.speed * CalculateAverageSpeedRatio(baseWeight,baseAttackForce,speedMod, speedModRatio, ref item.m_shared)) + speedIdentifier;
+                                    newSpeed = (___m_animator.speed * speedMod) + speedIdentifier;
                                     oldNewSpeed.Add(___m_animator.speed, newSpeed);
                                     baseSpeeds.Add(keyName, oldNewSpeed);
                                     newSpeedList.Add(newSpeed);
@@ -64,7 +82,8 @@ namespace ValheimHTDArmory
                                     {
                                         if (!baseSpeeds[keyName].ContainsKey(newSpeed))
                                         {
-                                            newSpeed = ___m_animator.speed * speedBonus;
+                                            //newSpeed = (___m_animator.speed * CalculateAverageSpeedRatio(baseWeight, baseAttackForce, speedMod, speedModRatio, ref item.m_shared)) + speedIdentifier;
+                                            newSpeed = (___m_animator.speed * speedMod) + speedIdentifier;
                                             baseSpeeds[keyName].Add(___m_animator.speed, newSpeed);
                                             newSpeeds[keyName].Add(newSpeed);
                                             //Plugin.Log.LogMessage($"Animation: {keyName}'s speed is changed to: {newSpeed.ToString()}");
@@ -81,44 +100,24 @@ namespace ValheimHTDArmory
                                     }
 
                                 }
+                                //Plugin.Log.LogMessa/*ge(newSpeed);*/
                                 ___m_animator.speed = newSpeed;
                             }
                         }
                     }
-                    //else
-                    //{
-
-                    //}
+                    //If Attacking
                 }
+                //If Player
+            }
+            //prefix end
+
+
+            private static float CalculateAverageSpeedRatio(float baseWeight, float baseAttackForce, float speedMod,float speedModRatio, ref ItemDrop.ItemData.SharedData shared)
+            {
+                return Mathf.Clamp((((speedMod + (baseWeight / baseAttackForce)) + (speedMod + (shared.m_weight / shared.m_attackForce))) / 2) * speedModRatio, minSpeedBonus, maxSpeedBonus);
             }
 
-            //private static bool BaseSpeedSavedForClip(string keyName, ref float speed, float speedBonus)
-            //{
-            //    if (baseSpeeds[keyName].Count > 0)
-            //    {
-            //        foreach (KeyValuePair<float, float> oldNew in baseSpeeds[keyName])
-            //        {
-            //            if (oldNew.Value == speed * speedBonus)
-            //            {
-            //                speed = oldNew.Value;
-            //                Plugin.Log.LogMessage($"Animation: {keyName}'s speed is extracted to: {speed} From Lookup");
-            //                return true;
-            //            }
-            //        }
-            //    }
-            //    return false;
-            //}
 
-            //static void Postfix(ref Animator ___m_animator, Character ___m_character, ref float __state)
-            //{
-            //    if (___m_animator?.GetCurrentAnimatorClipInfo(0)?.Any() == true && ___m_character.InAttack())
-            //    {
-            //        if (__state != -1f)
-            //        {
-            //            ___m_animator.speed = __state;
-            //        }
-            //    }
-            //}
         }
     }
 }

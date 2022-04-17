@@ -196,44 +196,7 @@ namespace ValheimHTDArmory
             currentNode.currentMaterialTask.TextureOffsetY = oY;
             currentNode.currentMaterialTask.UpdateTextureScaleOffset = true;
             return this;
-        }
-
-        public static Transform RecursiveChildNodeFinder(Transform target, string nodeName)
-        {
-            Transform foundNode;
-            if (target.gameObject.name == nodeName)
-            {
-                return target;
-            }
-
-            if (target.childCount > 0)
-            {
-                for (int i = 0; i < target.childCount; i++)
-                {
-                    foundNode = RecursiveChildNodeFinder(target.GetChild(i), nodeName);
-                    if (foundNode != null)
-                    {
-                        return foundNode;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        public static void RecursiveChildNodesFinder(Transform target, string nodeName, int numberOfNodes, ref List<Transform> nestedTargets)
-        {
-            if (target.name == nodeName && nestedTargets.Count < numberOfNodes)
-                nestedTargets.Add(target);
-
-            if (target.childCount > 0 && nestedTargets.Count < numberOfNodes)
-            {
-                for (int i = 0; i < target.childCount; i++)
-                {
-                    RecursiveChildNodesFinder(target.GetChild(i), nodeName, numberOfNodes, ref nestedTargets);
-                }
-            }
-        }
+        }        
 
         private void WipeLists()
         {
@@ -271,7 +234,7 @@ namespace ValheimHTDArmory
                 ParticleSystemRenderer myPSR;
                 ParticleSystemRenderer targetPSR = null;
 
-                myPSR = RecursiveChildNodeFinder(gameObject.transform, node.myNode).gameObject.GetComponent<ParticleSystemRenderer>();
+                myPSR = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(gameObject.transform, node.myNode).gameObject.GetComponent<ParticleSystemRenderer>();
 
                 if (MyReferences.targetParticleSystemRenderers.ContainsKey(savedTargetPrefabNode.GetStableHashCode()))
                 {
@@ -289,7 +252,7 @@ namespace ValheimHTDArmory
                     else
                     {
                         var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab.GetStableHashCode()];
-                        targetedNode = RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
+                        targetedNode = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(referencedGameObject.transform, node.targetNode).gameObject;
                         if (targetedNode != null)
                         {
                             MyReferences.targetPrefabNodes.Add(savedTargetPrefabNode.GetStableHashCode(), targetedNode);
@@ -298,7 +261,7 @@ namespace ValheimHTDArmory
                     }
                 }
 
-                myPSR.material = targetPSR.material;
+                myPSR.sharedMaterial = targetPSR.sharedMaterial;
             }
 
 
@@ -312,7 +275,7 @@ namespace ValheimHTDArmory
 
                 //Gather all child transforms from main prefab
                 List<Transform> foundNodes = new List<Transform>();
-                RecursiveChildNodesFinder(gameObject.transform, node.myNode, node.numberOfNodes, ref foundNodes);
+                RecursiveSearchFunctions.ChildNodesFinderDepthFirst(gameObject.transform, node.myNode, node.numberOfNodes, ref foundNodes);
                 if (foundNodes.Count == 0) return; //If this didn't find anything, either via typo or wrong name, just exit
 
                 //Extract all the mesh filters from the found main prefab node(s)
@@ -348,7 +311,7 @@ namespace ValheimHTDArmory
                     {
                         //Look up Target Prefab and extract the Node
                         var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab.GetStableHashCode()];
-                        targetedNode = RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
+                        targetedNode = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(referencedGameObject.transform, node.targetNode).gameObject;
                         if (targetedNode != null)
                         {
                             MyReferences.targetPrefabNodes.Add(savedTargetPrefabNode.GetStableHashCode(), targetedNode);
@@ -376,7 +339,7 @@ namespace ValheimHTDArmory
                     List<Renderer> myRenderers = new List<Renderer>();
                     Renderer targetRenderer = null;
 
-                    RecursiveChildNodesFinder(gameObject.transform, node.myNode, node.numberOfNodes, ref myNodes);
+                    RecursiveSearchFunctions.ChildNodesFinderDepthFirst(gameObject.transform, node.myNode, node.numberOfNodes, ref myNodes);
 
                     //Plugin.Log.LogMessage($"Number of children found: {myNodes.Count}");
                     if (myNodes.Count == 0) return;
@@ -416,13 +379,13 @@ namespace ValheimHTDArmory
                         {
                             if (materials == null)
                             {
-                                materials = myRenderer.materials;
+                                materials = myRenderer.sharedMaterials;
                                 foreach (var mt in node.materialTasks)
                                 {
                                     materials[mt.myMaterialIndex] = newMatArray[mt.myMaterialIndex];
                                 }
                             }
-                            myRenderer.materials = materials;
+                            myRenderer.sharedMaterials = materials;
                         }
                     }
 
@@ -448,7 +411,7 @@ namespace ValheimHTDArmory
                     {
                         //Plugin.Log.LogMessage($"Searching for target node: {targetNodeName}");
                         var referencedGameObject = MyReferences.listOfAllGameObjects[node.targetPrefab.GetStableHashCode()];
-                        targetedNode = RecursiveChildNodeFinder(referencedGameObject.transform, node.targetNode).gameObject;
+                        targetedNode = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(referencedGameObject.transform, node.targetNode).gameObject;
                         if (targetedNode != null)
                         {
                             if (targetedNode.GetComponent<MeshRenderer>() != null)
@@ -469,55 +432,57 @@ namespace ValheimHTDArmory
                         Material[] mats = null;
                         if (mats == null)
                         {
-                            mats = renderer.materials;
+                            mats = renderer.sharedMaterials;
                             foreach (var mt in node.materialTasks)
                             {
                                 if (mt.copyShaderOnly)
                                 {
-                                    mats[mt.myMaterialIndex].shader = targetRenderer.materials[mt.targetMaterialIndex].shader;
+                                    mats[mt.myMaterialIndex].shader = targetRenderer.sharedMaterials[mt.targetMaterialIndex].shader;
                                     continue;
                                 }
 
-                                if(mt.copyTexturesOnly)
+                                if (mt.copyTexturesOnly)
                                 {
-                                    mats[mt.myMaterialIndex].SetTexture("_MainTex", targetRenderer.materials[mt.targetMaterialIndex].GetTexture("_MainTex"));
-                                    mats[mt.myMaterialIndex].SetTexture("_BumpMap", targetRenderer.materials[mt.targetMaterialIndex].GetTexture("_BumpMap"));
-                                    mats[mt.myMaterialIndex].SetTexture("_MetallicGlossMap", targetRenderer.materials[mt.targetMaterialIndex].GetTexture("_MetallicGlossMap"));
-                                    mats[mt.myMaterialIndex].SetTexture("_EmissionMap", targetRenderer.materials[mt.targetMaterialIndex].GetTexture("_EmissionMap"));
+                                    //need to create an array/list of what textures and colors
+                                    mats[mt.myMaterialIndex].SetTexture("_MainTex", targetRenderer.sharedMaterials[mt.targetMaterialIndex].GetTexture("_MainTex"));
+                                    mats[mt.myMaterialIndex].SetTexture("_BumpMap", targetRenderer.sharedMaterials[mt.targetMaterialIndex].GetTexture("_BumpMap"));
+                                    mats[mt.myMaterialIndex].SetTexture("_MetallicGlossMap", targetRenderer.sharedMaterials[mt.targetMaterialIndex].GetTexture("_MetallicGlossMap"));
+                                    mats[mt.myMaterialIndex].SetTexture("_EmissionMap", targetRenderer.sharedMaterials[mt.targetMaterialIndex].GetTexture("_EmissionMap"));
 
-                                    mats[mt.myMaterialIndex].SetColor("_Color", targetRenderer.materials[mt.targetMaterialIndex].GetColor("_Color"));
-                                    mats[mt.myMaterialIndex].SetColor("_EmissionColor", targetRenderer.materials[mt.targetMaterialIndex].GetColor("_EmissionColor"));
+                                    mats[mt.myMaterialIndex].SetColor("_Color", targetRenderer.sharedMaterials[mt.targetMaterialIndex].GetColor("_Color"));
+                                    mats[mt.myMaterialIndex].SetColor("_EmissionColor", targetRenderer.sharedMaterials[mt.targetMaterialIndex].GetColor("_EmissionColor"));
                                     continue;
                                 }
 
                                 if (mt.useMyTextures || mt.replaceColor || mt.replaceEmissionColor || mt.replaceMetalColor || mt.UpdateTextureScaleOffset)
                                 {
                                     /* Valid Texture Names
-                                     * _BumpMap (normals)
-                                     * _DetailAlbedoMap
-                                     * _DetailMask
-                                     * _DetailNormalMap
-                                     * _EmissionMap
-                                     * _MainTex (diffuse,albedo)
-                                     * _MetallicGlossMap
-                                     * _OcclusionMap
-                                     * _ParallaxMap
-                                     */
+                                        * _BumpMap (normals)
+                                        * _DetailAlbedoMap
+                                        * _DetailMask
+                                        * _DetailNormalMap
+                                        * _EmissionMap
+                                        * _MainTex (diffuse,albedo)
+                                        * _MetallicGlossMap
+                                        * _OcclusionMap
+                                        * _ParallaxMap
+                                        */
 
                                     /* Valid Color Ids
-                                     * _Color
-                                     * _EmissionColor
-                                     * _MetalColor *for 'Custom/Creature'
-                                     */
+                                        * _Color
+                                        * _EmissionColor
+                                        * _MetalColor *for 'Custom/Creature'
+                                        */
+
 
                                     string mySavedNewMatName = gameObject.name + node.targetPrefab + "_newMat_" + mt.myMaterialIndex;
-                                    Material newMat = new Material(targetRenderer.materials[mt.targetMaterialIndex]);
+                                    Material newMat = new Material(targetRenderer.sharedMaterials[mt.targetMaterialIndex]);
                                     newMat.name = mySavedNewMatName;
                                     if (mt.useMyTextures)
                                     {
-                                        newMat.SetTexture("_MainTex", renderer.materials[mt.myMaterialIndex].GetTexture("_MainTex"));
-                                        newMat.SetTexture("_MetallicGlossMap", renderer.materials[mt.myMaterialIndex].GetTexture("_MetallicGlossMap"));
-                                        newMat.SetTexture("_BumpMap", renderer.materials[mt.myMaterialIndex].GetTexture("_BumpMap"));
+                                        newMat.SetTexture("_MainTex", renderer.sharedMaterials[mt.myMaterialIndex].GetTexture("_MainTex"));
+                                        newMat.SetTexture("_MetallicGlossMap", renderer.sharedMaterials[mt.myMaterialIndex].GetTexture("_MetallicGlossMap"));
+                                        newMat.SetTexture("_BumpMap", renderer.sharedMaterials[mt.myMaterialIndex].GetTexture("_BumpMap"));
                                     }
 
                                     if (mt.replaceColor)
@@ -550,13 +515,13 @@ namespace ValheimHTDArmory
                                     //Plugin.Log.LogMessage($"Setting material array with target material array");
                                     if (mats.Length > 1)
                                     {
-                                        mats[mt.myMaterialIndex] = targetRenderer.materials[mt.targetMaterialIndex];
+                                        mats[mt.myMaterialIndex] = targetRenderer.sharedMaterials[mt.targetMaterialIndex];
                                     }
-                                    else mats = targetRenderer.materials;
+                                    else mats = targetRenderer.sharedMaterials;
                                 }
                             }
                         }
-                        renderer.materials = mats;
+                        renderer.sharedMaterials = mats;
 
 
                     }

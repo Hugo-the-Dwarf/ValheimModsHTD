@@ -82,14 +82,22 @@ namespace ValheimHTDArmory
             ParticleSystemRenderer ps = gameObject.GetComponent<ParticleSystemRenderer>();
             if (ps != null)
             {
-                ps.material = MyReferences.listOfMaterials["item_particle".GetStableHashCode()];
+                ps.sharedMaterial = MyReferences.listOfMaterials["item_particle".GetStableHashCode()];
             }
 
-            Transform trail = PrefabNodeManager.RecursiveChildNodeFinder(gameObject.transform, "trail");
-            if (trail != null)
+            Transform thing = RecursiveSearchFunctions.ChildNodeFinderBreadthFirst(gameObject.transform, "attach");
+            if (thing != null)
             {
-                MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
-                mwt._material = MyReferences.listOfMaterials["club_trail".GetStableHashCode()];
+                thing = RecursiveSearchFunctions.ChildNodeFinderBreadthFirst(thing, "equiped");
+                if (thing != null)
+                {
+                    Transform trail = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(thing, "trail");
+                    if (trail != null)
+                    {
+                        MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
+                        mwt._material = MyReferences.listOfMaterials["club_trail".GetStableHashCode()];
+                    }
+                }
             }
 
             var gameObjectShared = gameObject.GetComponent<ItemDrop>().m_itemData.m_shared;

@@ -13,24 +13,29 @@ namespace ValheimHTDArmory
     [BepInPlugin(Plugin.GUID, Plugin.ModName, Plugin.Version)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string Version = "7.0.0";
-        public const string ModName = "Hugo's Armory";
+        public const string Version = "7.1.0";
+        public const string ModName = "Hugos Armory";
         public const string GUID = "htd.armory";
         public static ServerSync.ConfigSync configSync = new ServerSync.ConfigSync(GUID) { DisplayName = ModName, CurrentVersion = Version };
 
         Harmony _Harmony;
         public static ManualLogSource Log;
-
         public readonly Harmony harmony = new Harmony(GUID);
+
 
         public static CustomConfig cc = new CustomConfig();
         public static CustomLocalization cl = new CustomLocalization();
+
         public static List<GameObject> myItemList = new List<GameObject>(); //Fixed Referenced Compiled Items
         public static List<CustomItem> customItems = new List<CustomItem>(); // Uncompiled Items
+        // public static List<CustomItem> customArmor = new List<CustomItem>(); // Uncompiled Items
+
         public static List<Recipe> myRecipeList = new List<Recipe>(); // Fixed Referenced Compiled Recipes
         public static List<RecipeHelper> myRecipeHelperList = new List<RecipeHelper>(); // uncompiled recipes
+
         public static List<CustomPiece> customPieces = new List<CustomPiece>();
         public static List<CookingRecipe> myCookingRecipes = new List<CookingRecipe>();
+
 
         //BepinEx Config Values
         public static bool disableAttackSpeedModule = false;
@@ -40,6 +45,7 @@ namespace ValheimHTDArmory
         public static bool holdIronGreatswordByBlade = true;
         public static bool holdSilverGreatswordByBlade = true;
         public static bool holdBlackMetalAltGreatswordByBlade = true;
+
 
         private static bool fixedReferences = false;
 
@@ -102,9 +108,10 @@ namespace ValheimHTDArmory
 
         private void OnDestroy()
         {
-            if (_Harmony != null) _Harmony.UnpatchAll(GUID);
+            //if (_Harmony != null) _Harmony.UnpatchAll(GUID);
         }
 
+        //TODO make fixing references a repeating invoked method that will stop it's repeating
         private void Update()
         {
             if (fixedReferences) return;
@@ -115,11 +122,11 @@ namespace ValheimHTDArmory
             AddNewRecipes();
             AddNewStatusEffects();
             FixAndAddNewPieces();
-            WipeReferenceLists();
+            //WipeReferenceLists();
             fixedReferences = true;
         }
 
-        [HarmonyPatch(typeof(ZNetScene), "Awake")]
+        [HarmonyPatch(typeof(ZNetScene), nameof(ZNetScene.Awake))]
         private static class ZNetScene_Awake_Patch
         {
             public static void Prefix(ZNetScene __instance)
@@ -150,7 +157,52 @@ namespace ValheimHTDArmory
             }
         }
 
-        [HarmonyPatch(typeof(ObjectDB), "CopyOtherDB")]
+        //[HarmonyPatch(typeof(ZNetScene), nameof(ZNetScene.Awake))]
+        //private static class ZNetScene_Awake_PostPatch
+        //{
+        //    public static void Postfix(ZNetScene __instance)
+        //    {
+        //        if (__instance == null)
+        //        {
+        //            return;
+        //        }
+
+        //        var blastFurnace = __instance.GetPrefab("blastfurnace");
+        //        if (blastFurnace != null)
+        //        {
+        //            var smelterComponent = blastFurnace.GetComponent<Smelter>();
+        //            if (smelterComponent != null)
+        //            {
+        //                List<Smelter.ItemConversion> conversions = new List<Smelter.ItemConversion>();
+        //                conversions.AddRange(smelterComponent.m_conversion);
+
+        //                Smelter.ItemConversion blueItemConversion = new Smelter.ItemConversion();
+        //                blueItemConversion.m_from = OreBlue.GetComponent<ItemDrop>();
+        //                blueItemConversion.m_to = MetalBlue.GetComponent<ItemDrop>();
+        //                conversions.Add(blueItemConversion);
+
+        //                Smelter.ItemConversion greenItemConversion = new Smelter.ItemConversion();
+        //                greenItemConversion.m_from = OreGreen.GetComponent<ItemDrop>();
+        //                greenItemConversion.m_to = MetalGreen.GetComponent<ItemDrop>();
+        //                conversions.Add(greenItemConversion);
+
+        //                Smelter.ItemConversion redItemConversion = new Smelter.ItemConversion();
+        //                redItemConversion.m_from = OreRed.GetComponent<ItemDrop>();
+        //                redItemConversion.m_to = MetalRed.GetComponent<ItemDrop>();
+        //                conversions.Add(redItemConversion);
+
+        //                Smelter.ItemConversion purpleItemConversion = new Smelter.ItemConversion();
+        //                purpleItemConversion.m_from = OrePurple.GetComponent<ItemDrop>();
+        //                purpleItemConversion.m_to = MetalPurple.GetComponent<ItemDrop>();
+        //                conversions.Add(purpleItemConversion);
+
+        //                smelterComponent.m_conversion = conversions;
+
+        //            }
+        //        }
+        //    }
+
+        [HarmonyPatch(typeof(ObjectDB), nameof(ObjectDB.CopyOtherDB))]
         private static class ObjectDB_CopyOtherDB_Patch
         {
             public static void Postfix()
@@ -167,7 +219,7 @@ namespace ValheimHTDArmory
             }
         }
 
-        [HarmonyPatch(typeof(ObjectDB), "Awake")]
+        [HarmonyPatch(typeof(ObjectDB), nameof(ObjectDB.Awake))]
         private static class ObjectDB_Awake_Patch
         {
             public static void Postfix()
@@ -214,7 +266,9 @@ namespace ValheimHTDArmory
                     {
                         GameObject go = myItemList.Where(mil => mil.name == recipeToApply.ItemPrefab).FirstOrDefault();
                         if (go == null) continue;
-                        Recipe updatedRecipe = recipeToApply.LoadConfigedRecipeHelper(go).GetRecipe();
+                        RecipeHelper rh = recipeToApply.LoadConfigedRecipeHelper(go);
+                        rh.FixResources();
+                        Recipe updatedRecipe = rh.GetRecipe();
                         if (updatedRecipe != null)
                         {
                             AddRecipeToObjectDB(updatedRecipe);
@@ -259,12 +313,14 @@ namespace ValheimHTDArmory
                 ItemDrop id = go.GetComponent<ItemDrop>();
                 if (id != null)
                 {
+                    //var s = id.m_itemData.m_shared;
+                    //Log.LogMessage($"{id.name},{s.m_weight},{s.m_attackForce}");
                     ParticleSystemRenderer ps = go.GetComponent<ParticleSystemRenderer>();
                     if (ps != null)
                     {
                         if (!MyReferences.listOfMaterials.ContainsKey("item_particle".GetStableHashCode()))
                         {
-                            MyReferences.TryAddToMaterialList(ps.material, "item_particle");
+                            MyReferences.TryAddToMaterialList(ps.sharedMaterial, "item_particle");
                         }
                     }
 
@@ -276,12 +332,21 @@ namespace ValheimHTDArmory
                     {
                         if (!MyReferences.listOfMaterials.ContainsKey("club_trail".GetStableHashCode()))
                         {
-                            Transform trail = PrefabNodeManager.RecursiveChildNodeFinder(go.transform, "trail");
-                            if (trail != null)
+                            Transform thing = RecursiveSearchFunctions.ChildNodeFinderBreadthFirst(go.transform, "attach");
+                            if (thing != null)
                             {
-                                MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
-                                MyReferences.TryAddToMaterialList(mwt._material, "club_trail");
+                                thing = RecursiveSearchFunctions.ChildNodeFinderBreadthFirst(thing, "equiped");
+                                if (thing != null)
+                                {
+                                    Transform trail = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(thing, "trail");
+                                    if (trail != null)
+                                    {
+                                        MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
+                                        MyReferences.TryAddToMaterialList(mwt._material, "club_trail");
+                                    }
+                                }
                             }
+
                         }
                         MyReferences.TryExtractEffectsFromItemDropShared(shared);
                     }
@@ -489,6 +554,7 @@ namespace ValheimHTDArmory
                         var recipe = recipeHelper.GetRecipe();
                         AddRecipeToObjectDB(recipe);
                     }
+                    else ObjectDB.instance.m_recipes.RemoveAll(x => x.name == recipeHelper.GetRecipe().name);
                 }
             }
         }
@@ -533,8 +599,11 @@ namespace ValheimHTDArmory
 
             foreach (var recipe in myRecipeHelperList)
             {
-                recipe.FixResources();
-                myRecipeList.Add(recipe.GetRecipe());
+                if (recipe.recipeEnabled)
+                {
+                    recipe.FixResources();
+                    myRecipeList.Add(recipe.GetRecipe());
+                }
             }
 
             myRecipeHelperList = new List<RecipeHelper>();

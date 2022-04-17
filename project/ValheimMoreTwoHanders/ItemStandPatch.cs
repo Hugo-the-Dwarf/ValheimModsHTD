@@ -3,41 +3,48 @@ using UnityEngine;
 
 namespace ValheimHTDArmory
 {
+    
     //Thanks to Sarcen, and Mixone for helping assemble this
-    [HarmonyPatch(typeof(ItemStand), "GetAttachPrefab")]
+    //[HarmonyPatch(typeof(ItemStand), "GetAttachPrefab")]
     public class ItemStandPatch
     {
-        //[HarmonyPatch(typeof(ItemStand), "GetAttachPrefab")]
-        //[HarmonyPrefix]
-        private static bool Prefix(ItemStand __instance, GameObject item, ref GameObject __state)
+        /*
+
+
+        private static void Postfix(ItemStand __instance, GameObject item, ref GameObject __result)
         {
-            Transform attach_stand = PrefabNodeManager.RecursiveChildNodeFinder(item.transform, "attach_stand");
+            Transform attach_stand = RecursiveSearchFunctions.ChildNodeFinderBreadthFirst(item.transform, "attach_stand");
             if (attach_stand)
             {
                 Transform newAttach = attach_stand;
                 string standType = __instance.transform.gameObject.GetComponent<Piece>()?.m_description;
                 if (standType != null && standType.Trim().Length > 0)
                 {
-                    if (standType.Contains("vertical"))
+                    if(newAttach.childCount>0)
                     {
-                        newAttach = PrefabNodeManager.RecursiveChildNodeFinder(attach_stand, "v");
-                    }
-                    else if (standType.Contains("horizontal"))
-                    {
-                        newAttach = PrefabNodeManager.RecursiveChildNodeFinder(attach_stand, "h");
+                        for(int i = 0; i < newAttach.childCount;i++)
+                        {
+                            Transform child = newAttach.GetChild(i);
+                            char startingChar = child.gameObject.name[0];
+                            if ((startingChar == 'v' || startingChar == 'V') && standType.Contains("vertical"))
+                            {
+                                newAttach = child;
+                                break;
+                            }
+                            if ((startingChar == 'h' || startingChar == 'H') && standType.Contains("horizontal"))
+                            {
+                                newAttach = child;
+                                break;
+                            }
+                        }
                     }
                 }
-                __state = newAttach.gameObject;
+                __result = newAttach.gameObject;
             }
-            // didn't find my custom one, just perform the normal code
-            return true;
         }
 
-        //[HarmonyPatch(typeof(ItemStand), "GetAttachPrefab")]
-        //[HarmonyPostfix]
-        private static void Postfix(ItemStand __instance, GameObject item, ref GameObject __result, ref GameObject __state)
-        {
-            if (__state != null) __result = __state;
-        }
+
+        */
     }
+
 }

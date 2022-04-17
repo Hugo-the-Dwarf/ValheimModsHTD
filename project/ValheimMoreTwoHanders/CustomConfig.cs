@@ -13,18 +13,23 @@ namespace ValheimHTDArmory
     {
         public List<ConfigItemData> itemConfigs = new List<ConfigItemData>();
         public List<ConfigRecipeData> recipeConfigs = new List<ConfigRecipeData>();
+        public List<ConfigArmorData> armorConfigs = new List<ConfigArmorData>();
 
         private Dictionary<string, ConfigItemData> itemConfigsToApply = new Dictionary<string, ConfigItemData>();
         private Dictionary<string, ConfigRecipeData> recipeConfigsToApply = new Dictionary<string, ConfigRecipeData>();
+        private Dictionary<string, ConfigArmorData> armorConfigsToApply = new Dictionary<string, ConfigArmorData>();
 
         public ServerSync.CustomSyncedValue<string> syncedItemConfigsToApply = new ServerSync.CustomSyncedValue<string>(Plugin.configSync, "itemConfigs");
         public ServerSync.CustomSyncedValue<string> syncedRecipeConfigsToApply = new ServerSync.CustomSyncedValue<string>(Plugin.configSync, "recipeConfigs");
+        public ServerSync.CustomSyncedValue<string> syncedArmorConfigsToApply = new ServerSync.CustomSyncedValue<string>(Plugin.configSync, "armorConfigs");
 
-        private bool itemConfigFound = false;
-        private bool recipeConfigFound = false;
+        bool itemConfigFound = false;
+        bool recipeConfigFound = false;
+        bool armorConfigFound = false;
 
         private string itemConfigSuffix = "_itemdata";
         private string recipeConfigSuffix = "_recipeData";
+        private string armorConfigSuffix = "_armorData";
         //string modConfigSuffix = "_main"; // not used for now, I'll just use BepinEx's Configmanager for the simple values
 
         private static HitData.DamageTypes disabledDamages = new HitData.DamageTypes();
@@ -33,6 +38,7 @@ namespace ValheimHTDArmory
         {
             syncedItemConfigsToApply.ValueChanged += ItemConfigsChanged;
             syncedRecipeConfigsToApply.ValueChanged += RecipeConfigChanged;
+            syncedArmorConfigsToApply.ValueChanged += ArmorConfigChanged;
         }
 
         private void ItemConfigsChanged()
@@ -64,14 +70,17 @@ namespace ValheimHTDArmory
             //Plugin.RebuildCustomAssetLists();
         }
 
-        public bool UsingDefaultItemConfig(GameObject go)
+        private void ArmorConfigChanged()
         {
-            return !itemConfigFound;
-        }
-
-        public bool UsingDefaultRecipeConfig(GameObject go)
-        {
-            return !recipeConfigFound;
+            armorConfigs.Clear();
+            armorConfigsToApply.Clear();
+            foreach (ConfigArmorData armorData in DeserializeArmorDataConfig(syncedArmorConfigsToApply.Value))
+            {
+                armorConfigs.Add(armorData);
+                if (!armorConfigsToApply.ContainsKey(armorData.ItemPrefab))
+                    armorConfigsToApply.Add(armorData.ItemPrefab, armorData);
+            }
+            //rebuild armor
         }
 
         //Do the same for finding and removing from toApplyList, and recipes
@@ -115,6 +124,24 @@ namespace ValheimHTDArmory
                 return outputRH;
             }
             return null;
+        }
+
+        public void AddArmorDataAsConfigRecord(GameObject go)
+        {
+            ConfigArmorData newData = new ConfigArmorData();
+            newData.ReadConfigDataFromArmor(go);
+            armorConfigs.RemoveAll(ic => ic.ItemPrefab == go.name);
+            armorConfigs.Add(newData);
+        }
+
+        public void ApplyArmorDataFromConfigRecord(ref GameObject go)
+        {
+            if (armorConfigsToApply.Count > 0 && armorConfigsToApply.ContainsKey(go.name))
+            {
+                ItemDrop id = go.GetComponent<ItemDrop>();
+                armorConfigsToApply[go.name].WriteConfigDataToArmor(ref id);
+                armorConfigsToApply.Remove(go.name);
+            }
         }
 
         public IEnumerable<ConfigItemData> DeserializeItemDataConfig(string data)
@@ -165,6 +192,22 @@ namespace ValheimHTDArmory
             }
         }
 
+        public IEnumerable<ConfigArmorData> DeserializeArmorDataConfig(string data)
+        {
+            if (data.Trim().Length > 0)
+            {
+                data = data.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
+                string[] splitData = data.Split('@');
+                if (splitData.Length > 0)
+                {
+                    foreach (string itemData in splitData)
+                    {
+                        yield return JsonUtility.FromJson<ConfigArmorData>(itemData);
+                    }
+                }
+            }
+        }
+
         public void LoadInitialConfigs(string bepinexConfigPath)
         {
             bool Load(string fileSuffix, ServerSync.CustomSyncedValue<string> configValue)
@@ -185,6 +228,7 @@ namespace ValheimHTDArmory
 
             itemConfigFound = Load(itemConfigSuffix, syncedItemConfigsToApply);
             recipeConfigFound = Load(recipeConfigSuffix, syncedRecipeConfigsToApply);
+            armorConfigFound = Load(armorConfigSuffix, syncedArmorConfigsToApply);
         }
 
         public bool LoadConfig(string bepinexConfigPath, ServerSync.CustomSyncedValue<string> configValue)
@@ -253,6 +297,18 @@ namespace ValheimHTDArmory
             return sbOutput.ToString();
         }
 
+        public string SerializeArmorDataConfig()
+        {
+            StringBuilder sbOutput = new StringBuilder();
+            foreach (ConfigArmorData cad in armorConfigs)
+            {
+                if (sbOutput.Length > 0) sbOutput.Append("\r\n@\r\n");
+                sbOutput.Append(JsonUtility.ToJson(cad, true));
+            }
+
+            return sbOutput.ToString();
+        }
+
         public void WriteConfigs(string bepinexConfigPath)
         {
             try
@@ -282,6 +338,63 @@ namespace ValheimHTDArmory
                 Plugin.Log.LogError(ioEx.Message);
                 Plugin.Log.LogError(ioEx.StackTrace);
             }
+
+            try
+            {
+                if (armorConfigs.Count > 0)
+                {
+                    using (StreamWriter sw = new StreamWriter(bepinexConfigPath + armorConfigSuffix + ".cfg")) sw.Write(SerializeArmorDataConfig());
+                }
+            }
+            catch (IOException ioEx)
+            {
+                Plugin.Log.LogError($"An IO Exception was thrown. [{armorConfigSuffix}]");
+                Plugin.Log.LogError(ioEx.Message);
+                Plugin.Log.LogError(ioEx.StackTrace);
+            }
+        }
+
+        [Serializable]
+        public class ConfigArmorData
+        {
+            public string ItemPrefab;
+            public bool Enabled = true;
+            public int MaxQuality = -1;
+            public float Weight = -1f;
+            public bool UseDurability = true;
+            public float MaxDurability = -1f;
+            public float DurabilityPerLevel = -1f;
+            public float MovementModifier = -1f;
+            public float Armor = -1f;
+            public float ArmorPerLevel = -1f;
+
+            public void WriteConfigDataToArmor(ref ItemDrop item)
+            {
+                var id = item.m_itemData.m_shared;
+                id.m_maxQuality = MaxQuality == -1 ? id.m_maxQuality : MaxQuality;
+                id.m_weight = Weight == -1f ? id.m_weight : Weight;
+                id.m_useDurability = UseDurability;
+                item.m_itemData.m_durability = MaxDurability == -1 ? id.m_maxDurability : MaxDurability;
+                id.m_maxDurability = MaxDurability == -1 ? id.m_maxDurability : MaxDurability;
+                id.m_durabilityPerLevel = DurabilityPerLevel == -1 ? id.m_durabilityPerLevel : DurabilityPerLevel;
+                id.m_movementModifier = MovementModifier == -1 ? id.m_movementModifier : MovementModifier;
+                id.m_armor = Armor == -1f ? id.m_armor : Armor;
+                id.m_armorPerLevel = ArmorPerLevel == -1f ? id.m_armorPerLevel : ArmorPerLevel;
+            }
+
+            public void ReadConfigDataFromArmor(GameObject go)
+            {
+                var id = go.GetComponent<ItemDrop>().m_itemData.m_shared;
+                ItemPrefab = go.name;
+                UseDurability = id.m_useDurability;
+                MaxQuality = id.m_maxQuality;
+                Weight = id.m_weight;
+                MaxDurability = id.m_maxDurability;
+                DurabilityPerLevel = id.m_durabilityPerLevel;
+                MovementModifier = id.m_movementModifier;
+                Armor = id.m_armor;
+                ArmorPerLevel = id.m_armorPerLevel;
+            }
         }
 
         [Serializable]
@@ -290,6 +403,7 @@ namespace ValheimHTDArmory
             public string ItemPrefab;
             public bool Enabled = true;
             public int MaxQuality = -1;
+            public float Weight = -1f;
             public bool UseDurability = true;
             public float MaxDurability = -1f;
             public float DurabilityPerLevel = -1f;
@@ -326,11 +440,12 @@ namespace ValheimHTDArmory
             {
                 var id = item.m_itemData.m_shared;
                 id.m_maxQuality = MaxQuality == -1 ? id.m_maxQuality : MaxQuality;
+                id.m_weight = Weight == -1f ? id.m_weight : Weight;
                 id.m_useDurability = UseDurability;
                 item.m_itemData.m_durability = MaxDurability == -1 ? id.m_maxDurability : MaxDurability;
                 id.m_maxDurability = MaxDurability == -1 ? id.m_maxDurability : MaxDurability;
                 id.m_durabilityPerLevel = DurabilityPerLevel == -1 ? id.m_durabilityPerLevel : DurabilityPerLevel;
-                id.m_movementModifier = MovementModifier == -1 ? id.m_movementModifier : MovementModifier;
+                id.m_movementModifier = !Enabled ? 0 : MovementModifier == -1 ? id.m_movementModifier : MovementModifier;
                 id.m_blockPower = BlockAmount == -1 ? id.m_blockPower : BlockAmount;
                 id.m_blockPowerPerLevel = BlockAmountPerLevel == -1 ? id.m_blockPowerPerLevel : BlockAmountPerLevel;
                 id.m_deflectionForce = DeflectionForce == -1 ? id.m_deflectionForce : DeflectionForce;
@@ -348,6 +463,7 @@ namespace ValheimHTDArmory
                 ItemPrefab = go.name;
                 UseDurability = id.m_useDurability;
                 MaxQuality = id.m_maxQuality;
+                Weight = id.m_weight;
                 MaxDurability = id.m_maxDurability;
                 DurabilityPerLevel = id.m_durabilityPerLevel;
                 MovementModifier = id.m_movementModifier;
@@ -431,12 +547,6 @@ namespace ValheimHTDArmory
             public string ItemPrefab;
             public int CraftingCost = 0;
             public int UpgradePerLevelCost = 0;
-        }
-
-        [Serializable]
-        public class ConfigResourceWrapper
-        {
-            public ConfigResource[] resources;
         }
 
         [Serializable]

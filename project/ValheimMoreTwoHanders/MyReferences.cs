@@ -18,6 +18,8 @@ namespace ValheimHTDArmory
         public static Dictionary<int, GameObject> listOfEffects = new Dictionary<int, GameObject>(); //For weapons/Attacks extracted from valid items
         public static Dictionary<int, Material> listOfMaterials = new Dictionary<int, Material>();
 
+        //Saved used References
+
         //my custom lists 
         //public static List<int> listHashOfSMRWeapons = new List<int>(); //Fixed Referenced Compiled Items
         
