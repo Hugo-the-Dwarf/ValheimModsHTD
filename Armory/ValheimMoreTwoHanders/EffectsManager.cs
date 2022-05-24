@@ -54,16 +54,16 @@ namespace ValheimHTDArmory
 
         EffectList lastUsedEffectList = EffectList.HIT;
 
-        List<PendingEffect> pendingEffects = new List<PendingEffect>();
-        List<PendingStatusEffect> pendingStatusEffects = new List<PendingStatusEffect>();
+        List<PendingEffect> pendingEffects = new();
+        List<PendingStatusEffect> pendingStatusEffects = new();
 
-        List<EffectData> hitEffectsData = new List<EffectData>();
-        List<EffectData> hitterrainEffectsData = new List<EffectData>();
-        List<EffectData> blockEffectsData = new List<EffectData>();
-        List<EffectData> startEffectsData = new List<EffectData>();
-        List<EffectData> holdEffectsData = new List<EffectData>();
-        List<EffectData> triggerEffectsData = new List<EffectData>();
-        List<EffectData> trailEffectsData = new List<EffectData>();
+        List<EffectData> hitEffectsData = new();
+        List<EffectData> hitterrainEffectsData = new();
+        List<EffectData> blockEffectsData = new();
+        List<EffectData> startEffectsData = new();
+        List<EffectData> holdEffectsData = new();
+        List<EffectData> triggerEffectsData = new();
+        List<EffectData> trailEffectsData = new();
         public void ApplyEffects(GameObject gameObject)
         {
             //Set item particle material
@@ -171,7 +171,7 @@ namespace ValheimHTDArmory
                 //}
                 foreach (PendingEffect pendingEffect in pendingEffects)
                 {
-                    EffectData effectData = new EffectData();
+                    EffectData effectData = new();
                     effectData.m_enabled = true;
                     try
                     {

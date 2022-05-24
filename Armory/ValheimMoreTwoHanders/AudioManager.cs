@@ -16,7 +16,7 @@ namespace ValheimHTDArmory
         private class PendingAudioTask
         {
             public GameObject myPrefab;
-            List<AudioTask> targets = new List<AudioTask>();
+            List<AudioTask> targets = new();
         }
 
 
@@ -25,7 +25,7 @@ namespace ValheimHTDArmory
             string myNode;
             bool copyTargetToMe = false;
             AudioType type;
-            List<AudioTarget> targets = new List<AudioTarget>();
+            List<AudioTarget> targets = new();
 
             public void ApplyTask(GameObject go)
             {
@@ -35,7 +35,7 @@ namespace ValheimHTDArmory
                 if (targets.Count > 0)
                 {
                     Transform myTransform = RecursiveSearchFunctions.ChildNodeFinderDepthFirst(go.transform, myNode);
-                    List<AudioClip> acList = new List<AudioClip>();
+                    List<AudioClip> acList = new();
                     if (myTransform != null)
                     {
                         foreach (var target in targets)
@@ -89,6 +89,6 @@ namespace ValheimHTDArmory
         }
 
 
-        private List<PendingAudioTask> pendingAudioTasks = new List<PendingAudioTask>();
+        private List<PendingAudioTask> pendingAudioTasks = new();
     }
 }

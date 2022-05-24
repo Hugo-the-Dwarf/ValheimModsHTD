@@ -13,10 +13,10 @@ namespace ValheimHTDArmory
     {
         string currentLanguage = "English";
         string fileSuffix = "_localization";
-        public Dictionary<int, string> localizationNames = new Dictionary<int, string>();
-        public Dictionary<int, string> localizationDescriptions = new Dictionary<int, string>();
-        List<int> prefabHashes = new List<int>();
-        List<string> localizationLines = new List<string>();
+        public Dictionary<int, string> localizationNames = new();
+        public Dictionary<int, string> localizationDescriptions = new();
+        List<int> prefabHashes = new();
+        List<string> localizationLines = new();
 
         public CustomLocalization()
         {
@@ -34,7 +34,7 @@ namespace ValheimHTDArmory
 
             try
             {
-                using (StreamReader reader = new StreamReader(path))
+                using (StreamReader reader = new(path))
                 {
                     ReadLocalization(reader);
                     fileFound = true;
@@ -109,13 +109,13 @@ namespace ValheimHTDArmory
 
         private void WriteLocalization(string path)
         {
-            StringBuilder csvBuilder = new StringBuilder();
+            StringBuilder csvBuilder = new();
             foreach (string line in localizationLines)
             {
                 csvBuilder.AppendLine(line);
             }
 
-            using (StreamWriter writer = new StreamWriter(path))
+            using (StreamWriter writer = new(path))
             {
                 writer.Write(csvBuilder.ToString());
             }
@@ -135,7 +135,7 @@ namespace ValheimHTDArmory
             string manifestName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("localization.tsv"));
             using (Stream stream = assembly.GetManifestResourceStream(manifestName))
             {
-                using (StreamReader reader = new StreamReader(stream))
+                using (StreamReader reader = new(stream))
                 {
                     while (!reader.EndOfStream)
                     {

@@ -5,8 +5,8 @@ namespace ValheimHTDArmory
     public class CustomItem
     { 
         public GameObject gameObject;
-        public EffectsManager effectHandler = new EffectsManager();
-        public PrefabNodeManager prefabNodeManager = new PrefabNodeManager();
+        public EffectsManager effectHandler = new();
+        public PrefabNodeManager prefabNodeManager = new();
 
         public CustomItem(GameObject gameObject)
         {

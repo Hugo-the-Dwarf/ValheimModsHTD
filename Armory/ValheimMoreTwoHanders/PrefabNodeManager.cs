@@ -21,8 +21,8 @@ namespace ValheimHTDArmory
             public float scaleMeshY;
             public float scaleMeshZ;
 
-            public MaterialTask currentMaterialTask = new MaterialTask();
-            public List<MaterialTask> materialTasks = new List<MaterialTask>();
+            public MaterialTask currentMaterialTask = new();
+            public List<MaterialTask> materialTasks = new();
 
             public class MaterialTask
             {
@@ -68,8 +68,8 @@ namespace ValheimHTDArmory
             }
         }
 
-        GameObjectNode currentNode = new GameObjectNode();
-        List<GameObjectNode> pendingNodes = new List<GameObjectNode>();
+        GameObjectNode currentNode = new();
+        List<GameObjectNode> pendingNodes = new();
         string savedTargetPrefabNode = "";
 
 
@@ -274,12 +274,12 @@ namespace ValheimHTDArmory
                 MeshFilter targetFilter = null;
 
                 //Gather all child transforms from main prefab
-                List<Transform> foundNodes = new List<Transform>();
+                List<Transform> foundNodes = new();
                 RecursiveSearchFunctions.ChildNodesFinderDepthFirst(gameObject.transform, node.myNode, node.numberOfNodes, ref foundNodes);
                 if (foundNodes.Count == 0) return; //If this didn't find anything, either via typo or wrong name, just exit
 
                 //Extract all the mesh filters from the found main prefab node(s)
-                List<MeshFilter> mfs = new List<MeshFilter>();
+                List<MeshFilter> mfs = new();
                 foreach (var foundNode in foundNodes)
                 {
                     if (node.replaceMeshScale)
@@ -334,9 +334,9 @@ namespace ValheimHTDArmory
                 {
                     //Plugin.Log.LogMessage($"Material to Fix for Prefab: {gameObject.name} for child: {node.myNode}");
 
-                    Dictionary<int, Material> newMatArray = new Dictionary<int, Material>();
-                    List<Transform> myNodes = new List<Transform>();
-                    List<Renderer> myRenderers = new List<Renderer>();
+                    Dictionary<int, Material> newMatArray = new();
+                    List<Transform> myNodes = new();
+                    List<Renderer> myRenderers = new();
                     Renderer targetRenderer = null;
 
                     RecursiveSearchFunctions.ChildNodesFinderDepthFirst(gameObject.transform, node.myNode, node.numberOfNodes, ref myNodes);
@@ -476,7 +476,7 @@ namespace ValheimHTDArmory
 
 
                                     string mySavedNewMatName = gameObject.name + node.targetPrefab + "_newMat_" + mt.myMaterialIndex;
-                                    Material newMat = new Material(targetRenderer.sharedMaterials[mt.targetMaterialIndex]);
+                                    Material newMat = new(targetRenderer.sharedMaterials[mt.targetMaterialIndex]);
                                     newMat.name = mySavedNewMatName;
                                     if (mt.useMyTextures)
                                     {

@@ -5,7 +5,7 @@ namespace ValheimHTDArmory
 {
     public class RecipeHelper
     {
-        private List<ResourceElement> resources = new List<ResourceElement>();
+        private List<ResourceElement> resources = new();
         private Recipe myRecipe = ScriptableObject.CreateInstance<Recipe>(); //Unitiy will bitch if you don't init recipes this way
         private string myCraftingStation; //string name of the prefab, gets used to do a real lookup later
         private int myCraftingStationHash; 

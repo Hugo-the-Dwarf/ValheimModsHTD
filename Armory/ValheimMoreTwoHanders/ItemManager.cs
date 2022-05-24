@@ -36,8 +36,8 @@ namespace ValheimHTDArmory
             Plugin.cl.TryLocalizeStatusEffect(se.name,ref se);
             MyReferences.TryAddToStatusEffectList(se);
 
-            Color bronzeColor = new Color(0.783f, 0.4329f, 0.1588f);
-            Color ironColor = new Color(0.4f, 0.4f, 0.4f);
+            Color bronzeColor = new(0.783f, 0.4329f, 0.1588f);
+            Color ironColor = new(0.4f, 0.4f, 0.4f);
 
             //ArmorBoar
             currentItem = ExtractGameObjectFromBundle(assetBundle, "ArmorHelmetBoarHTD");
@@ -626,7 +626,7 @@ namespace ValheimHTDArmory
 
             if (Plugin.disableSilverBattleaxeLights)
             {
-                List<Transform> particleTransforms = new List<Transform>();
+                List<Transform> particleTransforms = new();
                 RecursiveSearchFunctions.ChildNodesFinderDepthFirst(id.transform, "vfx_sparks", 9, ref particleTransforms);
                 if (particleTransforms.Count > 0)
                 {
@@ -854,7 +854,7 @@ namespace ValheimHTDArmory
             //MaceCoreGreat
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceHTD");//MaceCoreGreat
 
-            List<Transform> rotators = new List<Transform>();
+            List<Transform> rotators = new();
             RecursiveSearchFunctions.ChildNodesFinderDepthFirst(currentItem.transform, "rotator", 3, ref rotators);
             foreach (Transform rotator in rotators)
             {

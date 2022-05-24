@@ -11,17 +11,17 @@ namespace ValheimHTDArmory
 {
     public class CustomConfig
     {
-        public List<ConfigItemData> itemConfigs = new List<ConfigItemData>();
-        public List<ConfigRecipeData> recipeConfigs = new List<ConfigRecipeData>();
-        public List<ConfigArmorData> armorConfigs = new List<ConfigArmorData>();
+        public List<ConfigItemData> itemConfigs = new();
+        public List<ConfigRecipeData> recipeConfigs = new();
+        public List<ConfigArmorData> armorConfigs = new();
 
-        private Dictionary<string, ConfigItemData> itemConfigsToApply = new Dictionary<string, ConfigItemData>();
-        private Dictionary<string, ConfigRecipeData> recipeConfigsToApply = new Dictionary<string, ConfigRecipeData>();
-        private Dictionary<string, ConfigArmorData> armorConfigsToApply = new Dictionary<string, ConfigArmorData>();
+        private Dictionary<string, ConfigItemData> itemConfigsToApply = new();
+        private Dictionary<string, ConfigRecipeData> recipeConfigsToApply = new();
+        private Dictionary<string, ConfigArmorData> armorConfigsToApply = new();
 
-        public ServerSync.CustomSyncedValue<string> syncedItemConfigsToApply = new ServerSync.CustomSyncedValue<string>(Plugin.configSync, "itemConfigs");
-        public ServerSync.CustomSyncedValue<string> syncedRecipeConfigsToApply = new ServerSync.CustomSyncedValue<string>(Plugin.configSync, "recipeConfigs");
-        public ServerSync.CustomSyncedValue<string> syncedArmorConfigsToApply = new ServerSync.CustomSyncedValue<string>(Plugin.configSync, "armorConfigs");
+        public ServerSync.CustomSyncedValue<string> syncedItemConfigsToApply = new(Plugin.configSync, "itemConfigs");
+        public ServerSync.CustomSyncedValue<string> syncedRecipeConfigsToApply = new(Plugin.configSync, "recipeConfigs");
+        public ServerSync.CustomSyncedValue<string> syncedArmorConfigsToApply = new(Plugin.configSync, "armorConfigs");
 
         bool itemConfigFound = false;
         bool recipeConfigFound = false;
@@ -32,7 +32,7 @@ namespace ValheimHTDArmory
         private string armorConfigSuffix = "_armorData";
         //string modConfigSuffix = "_main"; // not used for now, I'll just use BepinEx's Configmanager for the simple values
 
-        private static HitData.DamageTypes disabledDamages = new HitData.DamageTypes();
+        private static HitData.DamageTypes disabledDamages = new();
 
         public CustomConfig()
         {
@@ -86,7 +86,7 @@ namespace ValheimHTDArmory
         //Do the same for finding and removing from toApplyList, and recipes
         public void AddItemDataAsConfigRecord(GameObject go)
         {
-            ConfigItemData newData = new ConfigItemData();
+            ConfigItemData newData = new();
             newData.ReadConfigDataFromItem(go);
             itemConfigs.RemoveAll(ic => ic.ItemPrefab == go.name);
             itemConfigs.Add(newData);
@@ -104,7 +104,7 @@ namespace ValheimHTDArmory
 
         public void AddRecipeAsConfigRecord(RecipeHelper rh)
         {
-            ConfigRecipeData newData = new ConfigRecipeData();
+            ConfigRecipeData newData = new();
             var existingRecord = recipeConfigs.Where(rc => rc.ItemPrefab == rh.GetPrefabName()).FirstOrDefault();
             if (existingRecord != null)
             {
@@ -128,7 +128,7 @@ namespace ValheimHTDArmory
 
         public void AddArmorDataAsConfigRecord(GameObject go)
         {
-            ConfigArmorData newData = new ConfigArmorData();
+            ConfigArmorData newData = new();
             newData.ReadConfigDataFromArmor(go);
             armorConfigs.RemoveAll(ic => ic.ItemPrefab == go.name);
             armorConfigs.Add(newData);
@@ -179,7 +179,7 @@ namespace ValheimHTDArmory
                         string[] splitResourceData = backHalf.Split('#');
                         if (splitResourceData.Length > 0)
                         {
-                            List<ConfigResource> res = new List<ConfigResource>();
+                            List<ConfigResource> res = new();
                             for (int j = 0; j < splitResourceData.Length; j++)
                             {
                                 res.Add(JsonUtility.FromJson<ConfigResource>(splitResourceData[j]));
@@ -215,7 +215,7 @@ namespace ValheimHTDArmory
                 string path = bepinexConfigPath + fileSuffix + ".cfg";
                 void consumeConfigFileEvent(object sender, FileSystemEventArgs args) => LoadConfig(path, configValue);
 
-                FileSystemWatcher watcher = new FileSystemWatcher(Path.GetDirectoryName(path), Path.GetFileName(path));
+                FileSystemWatcher watcher = new(Path.GetDirectoryName(path), Path.GetFileName(path));
                 watcher.Changed += consumeConfigFileEvent;
                 watcher.Created += consumeConfigFileEvent;
                 watcher.Renamed += consumeConfigFileEvent;
@@ -235,7 +235,7 @@ namespace ValheimHTDArmory
         {
             try
             {
-                using (StreamReader sr = new StreamReader(bepinexConfigPath))
+                using (StreamReader sr = new(bepinexConfigPath))
                 {
                     configValue.AssignLocalValue(sr.ReadToEnd());
                     return true;
@@ -257,7 +257,7 @@ namespace ValheimHTDArmory
 
         public string SerializeItemDataConfig()
         {
-            StringBuilder sbOutput = new StringBuilder();
+            StringBuilder sbOutput = new();
             foreach (ConfigItemData cid in itemConfigs)
             {
                 if (sbOutput.Length > 0) sbOutput.Append("\r\n@\r\n");
@@ -269,7 +269,7 @@ namespace ValheimHTDArmory
 
         public string SerializeRecipeDataConfig()
         {
-            StringBuilder sbOutput = new StringBuilder();
+            StringBuilder sbOutput = new();
             foreach (ConfigRecipeData crd in recipeConfigs)
             {
                 if (sbOutput.Length > 0) sbOutput.Append("\r\n@\r\n");
@@ -299,7 +299,7 @@ namespace ValheimHTDArmory
 
         public string SerializeArmorDataConfig()
         {
-            StringBuilder sbOutput = new StringBuilder();
+            StringBuilder sbOutput = new();
             foreach (ConfigArmorData cad in armorConfigs)
             {
                 if (sbOutput.Length > 0) sbOutput.Append("\r\n@\r\n");
@@ -315,7 +315,7 @@ namespace ValheimHTDArmory
             {
                 if (itemConfigs.Count > 0)
                 {
-                    using (StreamWriter sw = new StreamWriter(bepinexConfigPath + itemConfigSuffix + ".cfg")) sw.Write(SerializeItemDataConfig());
+                    using (StreamWriter sw = new(bepinexConfigPath + itemConfigSuffix + ".cfg")) sw.Write(SerializeItemDataConfig());
                 }
             }
             catch (IOException ioEx)
@@ -329,7 +329,7 @@ namespace ValheimHTDArmory
             {
                 if (recipeConfigs.Count > 0)
                 {
-                    using (StreamWriter sw = new StreamWriter(bepinexConfigPath + recipeConfigSuffix + ".cfg")) sw.Write(SerializeRecipeDataConfig());
+                    using (StreamWriter sw = new(bepinexConfigPath + recipeConfigSuffix + ".cfg")) sw.Write(SerializeRecipeDataConfig());
                 }
             }
             catch (IOException ioEx)
@@ -343,7 +343,7 @@ namespace ValheimHTDArmory
             {
                 if (armorConfigs.Count > 0)
                 {
-                    using (StreamWriter sw = new StreamWriter(bepinexConfigPath + armorConfigSuffix + ".cfg")) sw.Write(SerializeArmorDataConfig());
+                    using (StreamWriter sw = new(bepinexConfigPath + armorConfigSuffix + ".cfg")) sw.Write(SerializeArmorDataConfig());
                 }
             }
             catch (IOException ioEx)
@@ -480,7 +480,7 @@ namespace ValheimHTDArmory
 
             private HitData.DamageTypes SetDamageValues()
             {
-                HitData.DamageTypes newDamage = new HitData.DamageTypes();
+                HitData.DamageTypes newDamage = new();
                 newDamage.m_blunt = DamageBlunt;
                 newDamage.m_slash = DamageSlash;
                 newDamage.m_pierce = DamagePierce;
@@ -497,7 +497,7 @@ namespace ValheimHTDArmory
 
             private HitData.DamageTypes SetDamagePerLevelValues()
             {
-                HitData.DamageTypes newDamage = new HitData.DamageTypes();
+                HitData.DamageTypes newDamage = new();
                 newDamage.m_blunt = DamageBluntPerLevel;
                 newDamage.m_slash = DamageSlashPerLevel;
                 newDamage.m_pierce = DamagePiercePerLevel;
@@ -561,7 +561,7 @@ namespace ValheimHTDArmory
 
             public RecipeHelper LoadConfigedRecipeHelper(GameObject itemToCraft)
             {
-                RecipeHelper outputRH = new RecipeHelper(itemToCraft, CraftingStation, MinimumStationLevel, 1);
+                RecipeHelper outputRH = new(itemToCraft, CraftingStation, MinimumStationLevel, 1);
                 outputRH.recipeEnabled = Enabled;
                 foreach (ConfigResource cr in CraftingRequirementsArray)
                 {
@@ -577,10 +577,10 @@ namespace ValheimHTDArmory
                 //Recipe rec = rh.GetRecipeInstance();
                 MinimumStationLevel = rh.GetRecipeInstance().m_minStationLevel;
                 ResourceElement[] resources = rh.GetResourceElements();
-                List<ConfigResource> lcr = new List<ConfigResource>();
+                List<ConfigResource> lcr = new();
                 foreach (var re in resources)
                 {
-                    ConfigResource tempCR = new ConfigResource();
+                    ConfigResource tempCR = new();
                     tempCR.ItemPrefab = re.prefabItemName;
                     tempCR.CraftingCost = re.amount;
                     tempCR.UpgradePerLevelCost = re.amountPerLevel;
