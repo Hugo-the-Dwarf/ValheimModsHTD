@@ -9,14 +9,14 @@ namespace ValheimHTDArmory
     public static class MyReferences
     {
         //saved refrences to base game assets 
-        public static Dictionary<int, GameObject> listOfAllGameObjects = new Dictionary<int, GameObject>(); // all base game items and pieces
+        public static Dictionary<int, GameObject> listOfAllGameObjects = new(); // all base game items and pieces
 
-        public static Dictionary<int, GameObject> listOfItemPrefabs = new Dictionary<int, GameObject>(); //Sub-list of 'listOfAllGameObjects' for just base game items
-        public static Dictionary<int, GameObject> listOfPieces = new Dictionary<int, GameObject>(); //Sub-list of 'listOfAllGameObjects' for just Pieces
-        public static Dictionary<int, CraftingStation> listOfCraftingStations = new Dictionary<int, CraftingStation>(); //For Recipes/Pieces extracted from valid Pieces
-        public static Dictionary<int, CookingStation> listOfCookingStations = new Dictionary<int, CookingStation>(); //For Recipes/Pieces extracted from valid Pieces
-        public static Dictionary<int, GameObject> listOfEffects = new Dictionary<int, GameObject>(); //For weapons/Attacks extracted from valid items
-        public static Dictionary<int, Material> listOfMaterials = new Dictionary<int, Material>();
+        public static Dictionary<int, GameObject> listOfItemPrefabs = new(); //Sub-list of 'listOfAllGameObjects' for just base game items
+        public static Dictionary<int, GameObject> listOfPieces = new(); //Sub-list of 'listOfAllGameObjects' for just Pieces
+        public static Dictionary<int, CraftingStation> listOfCraftingStations = new(); //For Recipes/Pieces extracted from valid Pieces
+        public static Dictionary<int, CookingStation> listOfCookingStations = new(); //For Recipes/Pieces extracted from valid Pieces
+        public static Dictionary<int, GameObject> listOfEffects = new(); //For weapons/Attacks extracted from valid items
+        public static Dictionary<int, Material> listOfMaterials = new();
 
         //Saved used References
 
@@ -25,17 +25,17 @@ namespace ValheimHTDArmory
         
                
         
-        public static Dictionary<int, StatusEffect> myStatusEffects = new Dictionary<int, StatusEffect>();
-        public static List<int> prefabsThatUpgradeAtLevelOneAlways = new List<int>();
+        public static Dictionary<int, StatusEffect> myStatusEffects = new();
+        public static List<int> prefabsThatUpgradeAtLevelOneAlways = new();
 
         //Node data
-        public static Dictionary<int, GameObject> targetPrefabNodes = new Dictionary<int, GameObject>(); //Names are PrefabNameNodeName "GameObject.name + node.name"
-        public static Dictionary<int, MeshFilter> targetMeshFilters = new Dictionary<int, MeshFilter>();
-        public static Dictionary<int, Material> newMaterials = new Dictionary<int, Material>();
-        public static Dictionary<int, ParticleSystemRenderer> targetParticleSystemRenderers = new Dictionary<int, ParticleSystemRenderer>();
+        public static Dictionary<int, GameObject> targetPrefabNodes = new(); //Names are PrefabNameNodeName "GameObject.name + node.name"
+        public static Dictionary<int, MeshFilter> targetMeshFilters = new();
+        public static Dictionary<int, Material> newMaterials = new();
+        public static Dictionary<int, ParticleSystemRenderer> targetParticleSystemRenderers = new();
 
         //NewAttacks
-        public static Dictionary<int, Attack> myListOfExtraAttacks = new Dictionary<int, Attack>();
+        public static Dictionary<int, Attack> myListOfExtraAttacks = new();
 
         //List related methods
         //

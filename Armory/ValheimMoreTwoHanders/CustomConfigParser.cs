@@ -11,7 +11,7 @@ namespace ValheimHTDArmory
     {
         public static string SerializeObject<T>(T obj)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine($"Object:{obj.GetType().Name}");
             FieldInfo[] objFields = obj.GetType().GetFields();
             foreach(var field in objFields)

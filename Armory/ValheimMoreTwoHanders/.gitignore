@@ -1,0 +1,9 @@
+﻿bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+ValheimArmory.sln.DotSettings.user
+.idea
+.vs
+twohandedweapons

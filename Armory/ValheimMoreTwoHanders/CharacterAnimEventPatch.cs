@@ -7,8 +7,8 @@ namespace ValheimHTDArmory
 {
     class CharacterAnimEventPatch
     {
-        public static Dictionary<int, Dictionary<float, float>> baseSpeeds = new Dictionary<int, Dictionary<float, float>>();
-        public static Dictionary<int, List<float>> newSpeeds = new Dictionary<int, List<float>>();
+        public static Dictionary<int, Dictionary<float, float>> baseSpeeds = new();
+        public static Dictionary<int, List<float>> newSpeeds = new();
         private static float maxSpeedBonus = 1.2f;
         private static float minSpeedBonus = 0.9f;
         private static float speedIdentifier = 0.0017f;
@@ -66,8 +66,8 @@ namespace ValheimHTDArmory
                                 //Plugin.Log.LogMessage($"Animation: {keyName}'s speed is: {newSpeed.ToString()}");
                                 if (!baseSpeeds.ContainsKey(keyName))
                                 {
-                                    Dictionary<float, float> oldNewSpeed = new Dictionary<float, float>();
-                                    List<float> newSpeedList = new List<float>();
+                                    Dictionary<float, float> oldNewSpeed = new();
+                                    List<float> newSpeedList = new();
                                     //newSpeed = (___m_animator.speed * CalculateAverageSpeedRatio(baseWeight,baseAttackForce,speedMod, speedModRatio, ref item.m_shared)) + speedIdentifier;
                                     newSpeed = (___m_animator.speed * speedMod) + speedIdentifier;
                                     oldNewSpeed.Add(___m_animator.speed, newSpeed);

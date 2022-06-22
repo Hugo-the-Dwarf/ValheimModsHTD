@@ -36,7 +36,7 @@ namespace ValheimHTDArmory
         public static Transform ChildNodeFinderBreadthFirst(Transform[] targets, ref string nodeName)
         {
             Transform foundNode;
-            List<Transform[]> branches = new List<Transform[]>();
+            List<Transform[]> branches = new();
             foreach (var target in targets)
             {
                 if (target.gameObject.name == nodeName)
@@ -93,7 +93,7 @@ namespace ValheimHTDArmory
 
         public static void ChildNodesFinderBreadthFirst(Transform[] targets, ref string nodeName, ref int numberOfNodes, ref List<Transform> nestedTargets)
         {
-            List<Transform[]> branches = new List<Transform[]>();
+            List<Transform[]> branches = new();
             foreach (var target in targets)
             {
                 if (target.name == nodeName && nestedTargets.Count < numberOfNodes)

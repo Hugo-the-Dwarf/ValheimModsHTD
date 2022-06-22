@@ -16,25 +16,25 @@ namespace ValheimHTDArmory
         public const string Version = "7.1.0";
         public const string ModName = "Hugos Armory";
         public const string GUID = "htd.armory";
-        public static ServerSync.ConfigSync configSync = new ServerSync.ConfigSync(GUID) { DisplayName = ModName, CurrentVersion = Version };
+        public static ServerSync.ConfigSync configSync = new(GUID) { DisplayName = ModName, CurrentVersion = Version };
 
         Harmony _Harmony;
         public static ManualLogSource Log;
-        public readonly Harmony harmony = new Harmony(GUID);
+        public readonly Harmony harmony = new(GUID);
 
 
-        public static CustomConfig cc = new CustomConfig();
-        public static CustomLocalization cl = new CustomLocalization();
+        public static CustomConfig cc = new();
+        public static CustomLocalization cl = new();
 
-        public static List<GameObject> myItemList = new List<GameObject>(); //Fixed Referenced Compiled Items
-        public static List<CustomItem> customItems = new List<CustomItem>(); // Uncompiled Items
+        public static List<GameObject> myItemList = new(); //Fixed Referenced Compiled Items
+        public static List<CustomItem> customItems = new(); // Uncompiled Items
         // public static List<CustomItem> customArmor = new List<CustomItem>(); // Uncompiled Items
 
-        public static List<Recipe> myRecipeList = new List<Recipe>(); // Fixed Referenced Compiled Recipes
-        public static List<RecipeHelper> myRecipeHelperList = new List<RecipeHelper>(); // uncompiled recipes
+        public static List<Recipe> myRecipeList = new(); // Fixed Referenced Compiled Recipes
+        public static List<RecipeHelper> myRecipeHelperList = new(); // uncompiled recipes
 
-        public static List<CustomPiece> customPieces = new List<CustomPiece>();
-        public static List<CookingRecipe> myCookingRecipes = new List<CookingRecipe>();
+        public static List<CustomPiece> customPieces = new();
+        public static List<CookingRecipe> myCookingRecipes = new();
 
 
         //BepinEx Config Values
@@ -477,7 +477,7 @@ namespace ValheimHTDArmory
                     var cookingStation = MyReferences.listOfCookingStations[cr.cookingStationName.GetStableHashCode()];
                     if (cookingStation != null)
                     {
-                        CookingStation.ItemConversion recipe = new CookingStation.ItemConversion();
+                        CookingStation.ItemConversion recipe = new();
                         recipe.m_cookTime = cr.cookingTime;
 
 

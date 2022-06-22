@@ -17,13 +17,13 @@ namespace ValheimHTDArmory
         Crafting Station piece_artisanstation --- piece_artisanstation (CraftingStation)
         */
         public string craftingStationName; //piece_workbench or a Workbench is needed to be nearby to build it
-        public List<string> placeEffectNames = new List<string>();
+        public List<string> placeEffectNames = new();
         //Probably can have a better data storage option but just making this real quick
-        public List<string> destoryedEffectNames = new List<string>();
-        public List<string> hitEffectNames = new List<string>();
-        public List<string> switchEffectNames = new List<string>();
+        public List<string> destoryedEffectNames = new();
+        public List<string> hitEffectNames = new();
+        public List<string> switchEffectNames = new();
         //Since the Behemoth Rug can already access the Behemoth Hide I can ignore this for now
-        private List<ResourceElement> craftingResources = new List<ResourceElement>();
+        private List<ResourceElement> craftingResources = new();
         //public RequireComponent[] craftingResources;
 
         public enum EffectListEnum
@@ -169,11 +169,11 @@ namespace ValheimHTDArmory
                 //Compile Place Effects
                 if (placeEffectNames != null && placeEffectNames.Count > 0)
                 {
-                    EffectList newList = new EffectList();
-                    List<EffectList.EffectData> newEffectData = new List<EffectList.EffectData>();
+                    EffectList newList = new();
+                    List<EffectList.EffectData> newEffectData = new();
                     foreach (string effectName in placeEffectNames)
                     {
-                        EffectList.EffectData compiledEffectData = new EffectList.EffectData();
+                        EffectList.EffectData compiledEffectData = new();
                         compiledEffectData.m_prefab = MyReferences.listOfEffects[effectName.GetStableHashCode()];
                         newEffectData.Add(compiledEffectData);
                     }
@@ -188,11 +188,11 @@ namespace ValheimHTDArmory
                 //Compile Destroyed, Hit, and Switch Effects
                 if (destoryedEffectNames != null && destoryedEffectNames.Count > 0)
                 {
-                    EffectList newList = new EffectList();
-                    List<EffectList.EffectData> newEffectData = new List<EffectList.EffectData>();
+                    EffectList newList = new();
+                    List<EffectList.EffectData> newEffectData = new();
                     foreach (string effectName in destoryedEffectNames)
                     {
-                        EffectList.EffectData compiledEffectData = new EffectList.EffectData();
+                        EffectList.EffectData compiledEffectData = new();
                         compiledEffectData.m_prefab = MyReferences.listOfEffects[effectName.GetStableHashCode()];
                         newEffectData.Add(compiledEffectData);
                     }
@@ -202,11 +202,11 @@ namespace ValheimHTDArmory
 
                 if (hitEffectNames != null && hitEffectNames.Count > 0)
                 {
-                    EffectList newList = new EffectList();
-                    List<EffectList.EffectData> newEffectData = new List<EffectList.EffectData>();
+                    EffectList newList = new();
+                    List<EffectList.EffectData> newEffectData = new();
                     foreach (string effectName in hitEffectNames)
                     {
-                        EffectList.EffectData compiledEffectData = new EffectList.EffectData();
+                        EffectList.EffectData compiledEffectData = new();
                         compiledEffectData.m_prefab = MyReferences.listOfEffects[effectName.GetStableHashCode()];
                         newEffectData.Add(compiledEffectData);
                     }
@@ -216,11 +216,11 @@ namespace ValheimHTDArmory
 
                 if (switchEffectNames != null && switchEffectNames.Count > 0)
                 {
-                    EffectList newList = new EffectList();
-                    List<EffectList.EffectData> newEffectData = new List<EffectList.EffectData>();
+                    EffectList newList = new();
+                    List<EffectList.EffectData> newEffectData = new();
                     foreach (string effectName in switchEffectNames)
                     {
-                        EffectList.EffectData compiledEffectData = new EffectList.EffectData();
+                        EffectList.EffectData compiledEffectData = new();
                         compiledEffectData.m_prefab = MyReferences.listOfEffects[effectName.GetStableHashCode()];
                         newEffectData.Add(compiledEffectData);
                     }
