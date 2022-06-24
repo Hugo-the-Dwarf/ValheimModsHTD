@@ -8,7 +8,7 @@ namespace ValheimHTDArmory
     [HarmonyPatch(typeof(Player), "PlayerAttackInput")]
     public static class PlayerAttackInputPatch
     {
-        //Loaded config values 
+        //Loaded config values
         public static ConfigEntry<string> attack3Hotkey;
         public static bool invalidKeyAttack3 = false;
 
@@ -49,16 +49,29 @@ namespace ValheimHTDArmory
             }
         }
 
+        private static readonly Func<Player, ItemDrop.ItemData> rightItemGet = ReflectionUtil.CreateGetterForField<Player, ItemDrop.ItemData>("m_rightItem");
+        private static readonly Func<Player, bool> haveQueuedChain = ReflectionUtil.MethodPointer<Player, bool>("HaveQueuedChain");
+        private static readonly Func<Player, Attack> currentAttackGet = ReflectionUtil.CreateGetterForField<Player, Attack>("m_currentAttack");
+        private static readonly Action<Player, Attack> currentAttackSet = ReflectionUtil.CreateSetterForField<Player, Attack>("m_currentAttack");
+        private static readonly Action<Player, Attack> previousAttackSet = ReflectionUtil.CreateSetterForField<Player, Attack>("m_previousAttack");
+
+
+        private static readonly Func<Player, Rigidbody> bodyGet = ReflectionUtil.CreateGetterForField<Player, Rigidbody>("m_body");
+        private static readonly Func<Player, ZSyncAnimation> zanimGet = ReflectionUtil.CreateGetterForField<Player, ZSyncAnimation>("m_zanim");
+        private static readonly Func<Player, CharacterAnimEvent> animEventGet = ReflectionUtil.CreateGetterForField<Player, CharacterAnimEvent>("m_animEvent");
+        private static readonly Func<Player, VisEquipment> visEquipmentGet = ReflectionUtil.CreateGetterForField<Player, VisEquipment>("m_visEquipment");
+        private static readonly Func<Player, Attack> previousAttackGet = ReflectionUtil.CreateGetterForField<Player, Attack>("m_previousAttack");
+        private static readonly Func<Humanoid, float> timeSinceLastAttackGet = ReflectionUtil.CreateGetterForField<Humanoid, float>("m_timeSinceLastAttack");
+
         public static bool Prefix(Player __instance, float dt, ref DamageContainer __state)
         {
-
             if (__instance.InPlaceMode())
             {
                 return true;
             }
 
-            if (__instance.m_rightItem == null) return true;
-            string weaponName = __instance.m_rightItem.m_dropPrefab?.name;
+            if (rightItemGet(__instance) == null) return true;
+            string weaponName = rightItemGet(__instance).m_dropPrefab?.name;
             if (weaponName != null & weaponName.Trim() != "")
             {
                 if (MyReferences.myListOfExtraAttacks.ContainsKey(weaponName.GetStableHashCode()))
@@ -84,7 +97,7 @@ namespace ValheimHTDArmory
                     if (attack3Input)//__instance.IsBlocking() && __instance.m_secondaryAttack
                     {
                         __instance.AbortEquipQueue();
-                        if ((__instance.InAttack() && !__instance.HaveQueuedChain())
+                        if ((__instance.InAttack() && !haveQueuedChain(__instance))
                             || __instance.InDodge() || !__instance.CanMove()
                             || __instance.IsKnockedBack() || __instance.IsStaggering()
                             || __instance.InMinorAction())
@@ -92,11 +105,12 @@ namespace ValheimHTDArmory
                             return true;
                         }
 
-                        if (__instance.m_currentAttack != null)
+                        Attack currentAttack = currentAttackGet(__instance);
+                        if (currentAttack != null)
                         {
-                            __instance.m_currentAttack.Stop();
-                            __instance.m_previousAttack = __instance.m_currentAttack;
-                            __instance.m_currentAttack = null;
+                            currentAttack.Stop();
+                            previousAttackSet(__instance, currentAttack);
+                            currentAttackSet(__instance, null);
                         }
 
                         //ItemDrop.ItemData currentWeapon = __instance.m_unarmedWeapon.m_itemData;
@@ -109,11 +123,11 @@ namespace ValheimHTDArmory
                             //currentWeapon.m_shared.m_damagesPerLevel = new HitData.DamageTypes { m_frost = 30f };
                         //}
 
-
-                        if (attack.Start(__instance, __instance.m_body, __instance.m_zanim, __instance.m_animEvent, __instance.m_visEquipment, currentWeapon, __instance.m_previousAttack, __instance.m_timeSinceLastAttack, 0F))
+                        if (attack.Start(__instance, bodyGet(__instance), zanimGet(__instance), animEventGet(__instance), visEquipmentGet(__instance), currentWeapon, previousAttackGet(__instance), timeSinceLastAttackGet((Humanoid)__instance), 0F))
                         {
-                            __instance.m_currentAttack = attack;
-                            __instance.m_lastCombatTimer = 0f;
+                            currentAttackSet(__instance, attack);
+                            var lastCombatTimeSet = ReflectionUtil.CreateSetterForField<Player, float>("m_lastCombatTimer");
+                            lastCombatTimeSet(__instance, 0f);
                             return false;
                         }
                     }

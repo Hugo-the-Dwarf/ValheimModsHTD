@@ -52,6 +52,8 @@ namespace ValheimHTDArmory
             }
         }
 
+        private static Action<MeleeWeaponTrail, Material> s_mwtSetter = ReflectionUtil.CreateSetterForField<MeleeWeaponTrail, Material>("_material");
+
         EffectList lastUsedEffectList = EffectList.HIT;
 
         List<PendingEffect> pendingEffects = new();
@@ -95,7 +97,7 @@ namespace ValheimHTDArmory
                     if (trail != null)
                     {
                         MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
-                        mwt._material = MyReferences.listOfMaterials["club_trail".GetStableHashCode()];
+                        s_mwtSetter(mwt, MyReferences.listOfMaterials["club_trail".GetStableHashCode()]);
                     }
                 }
             }

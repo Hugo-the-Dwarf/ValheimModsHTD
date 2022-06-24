@@ -126,7 +126,7 @@ namespace ValheimHTDArmory
             fixedReferences = true;
         }
 
-        [HarmonyPatch(typeof(ZNetScene), nameof(ZNetScene.Awake))]
+        [HarmonyPatch(typeof(ZNetScene), "Awake")] // private can't nameof()
         private static class ZNetScene_Awake_Patch
         {
             public static void Prefix(ZNetScene __instance)
@@ -219,7 +219,7 @@ namespace ValheimHTDArmory
             }
         }
 
-        [HarmonyPatch(typeof(ObjectDB), nameof(ObjectDB.Awake))]
+        [HarmonyPatch(typeof(ObjectDB), "Awake")] // private can't nameof()
         private static class ObjectDB_Awake_Patch
         {
             public static void Postfix()
@@ -302,6 +302,8 @@ namespace ValheimHTDArmory
             return ObjectDB.instance != null && ObjectDB.instance.m_items.Count != 0 && ObjectDB.instance.GetItemPrefab("Wood") != null;
         }
 
+        private static readonly Func<MeleeWeaponTrail, Material> materialGet = ReflectionUtil.CreateGetterForField<MeleeWeaponTrail, Material>("_material");
+
         private static void GenerateReferenceLists()
         {
             //Start surfing through all items
@@ -342,7 +344,7 @@ namespace ValheimHTDArmory
                                     if (trail != null)
                                     {
                                         MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
-                                        MyReferences.TryAddToMaterialList(mwt._material, "club_trail");
+                                        MyReferences.TryAddToMaterialList(materialGet(mwt), "club_trail");
                                     }
                                 }
                             }
