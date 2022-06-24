@@ -63,6 +63,8 @@ namespace ValheimHTDArmory
         private static readonly Func<Player, Attack> previousAttackGet = ReflectionUtil.CreateGetterForField<Player, Attack>("m_previousAttack");
         private static readonly Func<Humanoid, float> timeSinceLastAttackGet = ReflectionUtil.CreateGetterForField<Humanoid, float>("m_timeSinceLastAttack");
 
+        private static readonly Action<Player, float> lastCombatTimeSet = ReflectionUtil.CreateSetterForField<Player, float>("m_lastCombatTimer");
+
         public static bool Prefix(Player __instance, float dt, ref DamageContainer __state)
         {
             if (__instance.InPlaceMode())
@@ -126,7 +128,6 @@ namespace ValheimHTDArmory
                         if (attack.Start(__instance, bodyGet(__instance), zanimGet(__instance), animEventGet(__instance), visEquipmentGet(__instance), currentWeapon, previousAttackGet(__instance), timeSinceLastAttackGet((Humanoid)__instance), 0F))
                         {
                             currentAttackSet(__instance, attack);
-                            var lastCombatTimeSet = ReflectionUtil.CreateSetterForField<Player, float>("m_lastCombatTimer");
                             lastCombatTimeSet(__instance, 0f);
                             return false;
                         }
