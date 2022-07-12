@@ -36,8 +36,8 @@ namespace ValheimHTDArmory
             Plugin.cl.TryLocalizeStatusEffect(se.name,ref se);
             MyReferences.TryAddToStatusEffectList(se);
 
-            Color bronzeColor = new(0.783f, 0.4329f, 0.1588f);
-            Color ironColor = new(0.4f, 0.4f, 0.4f);
+            Color bronzeColor = new Color(0.783f, 0.4329f, 0.1588f);
+            Color ironColor = new Color(0.4f, 0.4f, 0.4f);
 
             //ArmorBoar
             currentItem = ExtractGameObjectFromBundle(assetBundle, "ArmorHelmetBoarHTD");
@@ -185,7 +185,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 30f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             //MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
@@ -233,7 +233,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 30f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             //MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
@@ -282,7 +282,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 30f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             //MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
@@ -330,7 +330,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 30f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             //MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
@@ -338,6 +338,56 @@ namespace ValheimHTDArmory
 
             currentCustom.prefabNodeManager.SetNode("SilverGlovesSMR", "ArmorWolfChest", "SilverWolfArmor").CopyTargetMaterial().SetMyMateiralIndex(3).StartNewNode();
             currentCustom.prefabNodeManager.SetNode("model", "ArmorWolfChest", "SilverWolfArmor").CopyTargetMaterial().SetMyMateiralIndex(3).StartNewNode();
+
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_metal_blocked", EffectsManager.EffectList.BLOCK).AddEffect("vfx_blocked").AddEffect("fx_block_camshake");
+            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", EffectsManager.EffectList.START);
+            currentCustom.effectHandler.AddEffect("fx_swing_camshake", EffectsManager.EffectList.TRIGGER);
+            currentCustom.effectHandler.AddEffect("sfx_unarmed_swing", EffectsManager.EffectList.TRAIL);
+
+            Plugin.customItems.Add(currentCustom);
+
+            //Black Metal Claws
+            currentItem = ExtractGameObjectFromBundle(assetBundle, "BlackMetalFistsHTD");//BlackMetalFistsHTD
+            id = currentItem.GetComponent<ItemDrop>();
+
+            currentRecipeHelper = ApplyConfigChangesAndRecipes(ref currentItem);
+
+            if (currentRecipeHelper == null)
+            {
+                currentRecipeHelper = new RecipeHelper(currentItem, "forge", 1, 1);
+                currentRecipeHelper.AddResource("LoxPelt", 2, 2).AddResource("BlackMetal", 25, 10);
+            }
+            Plugin.cc.AddItemDataAsConfigRecord(currentItem);
+            Plugin.cc.AddRecipeAsConfigRecord(currentRecipeHelper);
+            Plugin.cl.TryLocaliazeItem(currentItem.name, ref id);
+
+            Attack3 = id.m_itemData.m_shared.m_secondaryAttack.Clone();
+            Attack3.m_attackType = Attack.AttackType.Horizontal;
+            Attack3.m_attackAnimation = "knife_secondary";
+            Attack3.m_attackStamina = 40f;
+            Attack3.m_speedFactor = 0f;
+            Attack3.m_speedFactorRotation = 0f;
+            Attack3.m_attackStartNoise = 2f;
+            Attack3.m_attackHitNoise = 5f;
+            Attack3.m_damageMultiplier = 1.5f;
+            Attack3.m_forceMultiplier = 1f;
+            Attack3.m_staggerMultiplier = 2f;
+            Attack3.m_attackRange = 1.5f;
+            Attack3.m_attackHeight = 1f;
+            Attack3.m_attackAngle = 30f;
+
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
+            //MyReferences.listHashOfSMRWeapons.Add(currentItem.name.GetStableHashCode());
+            Plugin.myRecipeHelperList.Add(currentRecipeHelper);
+
+            currentCustom = new CustomItem(currentItem);
+
+            //currentCustom.prefabNodeManager.SetNode("SilverGlovesSMR", "ArmorWolfChest", "SilverWolfArmor").CopyTargetMaterial().SetMyMateiralIndex(3).StartNewNode();
+            //currentCustom.prefabNodeManager.SetNode("model", "ArmorWolfChest", "SilverWolfArmor").CopyTargetMaterial().SetMyMateiralIndex(3).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("BlackMetalClawsSMR", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
+            currentCustom.prefabNodeManager.SetNode("BlackMetalClawsMesh", "SwordBlackmetal", "default").CopyTargetMaterial(true).StartNewNode();
 
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
             currentCustom.effectHandler.AddEffect("vfx_HitSparks", EffectsManager.EffectList.HIT_TERRAIN).AddEffect("sfx_sword_hit").AddEffect("fx_hit_camshake");
@@ -378,7 +428,7 @@ namespace ValheimHTDArmory
             //Attack3.m_attackHeight = 1f;
             //Attack3.m_attackAngle = 30f;
 
-            //MyReferences.TryAddToAttackList(currentItem, Attack3);
+            //MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -427,7 +477,7 @@ namespace ValheimHTDArmory
                 id.m_itemData.m_shared.m_animationState = ItemDrop.ItemData.AnimationState.TwoHandedClub;
             }
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -473,7 +523,7 @@ namespace ValheimHTDArmory
 
             //id.m_itemData.m_shared.m_animationState = ItemDrop.ItemData.AnimationState.TwoHandedAxe;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -522,7 +572,7 @@ namespace ValheimHTDArmory
                 id.m_itemData.m_shared.m_animationState = ItemDrop.ItemData.AnimationState.TwoHandedClub;
             }
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -567,7 +617,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 120f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -613,7 +663,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 120f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -626,7 +676,7 @@ namespace ValheimHTDArmory
 
             if (Plugin.disableSilverBattleaxeLights)
             {
-                List<Transform> particleTransforms = new();
+                List<Transform> particleTransforms = new List<Transform>();
                 RecursiveSearchFunctions.ChildNodesFinderDepthFirst(id.transform, "vfx_sparks", 9, ref particleTransforms);
                 if (particleTransforms.Count > 0)
                 {
@@ -679,7 +729,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 30f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -729,7 +779,7 @@ namespace ValheimHTDArmory
             Attack3.m_hitThroughWalls = true;
             Attack3.m_hitTerrain = true;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -854,7 +904,7 @@ namespace ValheimHTDArmory
             //MaceCoreGreat
             currentItem = ExtractGameObjectFromBundle(assetBundle, "CoreGreatMaceHTD");//MaceCoreGreat
 
-            List<Transform> rotators = new();
+            List<Transform> rotators = new List<Transform>();
             RecursiveSearchFunctions.ChildNodesFinderDepthFirst(currentItem.transform, "rotator", 3, ref rotators);
             foreach (Transform rotator in rotators)
             {
@@ -896,7 +946,7 @@ namespace ValheimHTDArmory
             Attack3.m_hitThroughWalls = true;
             Attack3.m_hitTerrain = true;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -956,7 +1006,7 @@ namespace ValheimHTDArmory
             Attack3.m_hitThroughWalls = true;
             Attack3.m_hitTerrain = true;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1018,7 +1068,7 @@ namespace ValheimHTDArmory
             Attack3.m_hitThroughWalls = true;
             Attack3.m_hitTerrain = true;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1187,7 +1237,7 @@ namespace ValheimHTDArmory
             Attack3.m_hitThroughWalls = true;
             Attack3.m_hitTerrain = true;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1247,7 +1297,7 @@ namespace ValheimHTDArmory
             Attack3.m_hitThroughWalls = true;
             Attack3.m_hitTerrain = true;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1309,7 +1359,7 @@ namespace ValheimHTDArmory
             Attack3.m_hitThroughWalls = true;
             Attack3.m_hitTerrain = true;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1363,7 +1413,7 @@ namespace ValheimHTDArmory
             Attack3.m_hitThroughWalls = true;
             Attack3.m_hitTerrain = true;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1410,7 +1460,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 30f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1464,7 +1514,7 @@ namespace ValheimHTDArmory
                 id.m_itemData.m_shared.m_animationState = ItemDrop.ItemData.AnimationState.TwoHandedClub;
             }
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1522,7 +1572,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 45f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1580,7 +1630,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 45f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1629,7 +1679,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 45f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1693,7 +1743,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 45f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1742,7 +1792,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 120f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1790,7 +1840,7 @@ namespace ValheimHTDArmory
             Attack3.m_attackHeight = 1f;
             Attack3.m_attackAngle = 45f;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1839,7 +1889,7 @@ namespace ValheimHTDArmory
             Attack3.m_maxYAngle = 0f;
             Attack3.m_hitThroughWalls = true;
 
-            MyReferences.TryAddToAttackList(currentItem, Attack3);
+            MyReferences.SetStoredAttack(currentItem.name, Attack3);
             Plugin.myRecipeHelperList.Add(currentRecipeHelper);
 
             currentCustom = new CustomItem(currentItem);
@@ -1861,32 +1911,32 @@ namespace ValheimHTDArmory
 
         public static RecipeHelper ApplyConfigChangesAndRecipes(ref GameObject item)
         {
-            //ApplyConfigChanges(ref item);
+            ApplyConfigChanges(ref item);
 
 
             return Plugin.cc.ApplyRecipeHelperFromConfigRecord(item);
         }
 
-        //public static void ApplyConfigChanges(ref GameObject item)
-        //{
-        //    var id = item.GetComponent<ItemDrop>();
-        //    switch (id.m_itemData.m_shared.m_itemType)
-        //    {
-        //        case ItemDrop.ItemData.ItemType.Helmet:
-        //        case ItemDrop.ItemData.ItemType.Chest:
-        //        case ItemDrop.ItemData.ItemType.Legs:
-        //        case ItemDrop.ItemData.ItemType.Shoulder:
-        //            Plugin.cc.ApplyArmorDataFromConfigRecord(ref item);
-        //            break;
-        //        //case ItemDrop.ItemData.ItemType.OneHandedWeapon:
-        //        //case ItemDrop.ItemData.ItemType.Bow:
-        //        //case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
-        //        //case ItemDrop.ItemData.ItemType.Torch:
-        //        default:
-        //            Plugin.cc.ApplyItemDataFromConfigRecord(ref item);
-        //            break;
-        //    }
-        //}
+        public static void ApplyConfigChanges(ref GameObject item)
+        {
+            var id = item.GetComponent<ItemDrop>();
+            switch (id.m_itemData.m_shared.m_itemType)
+            {
+                case ItemDrop.ItemData.ItemType.Helmet:
+                case ItemDrop.ItemData.ItemType.Chest:
+                case ItemDrop.ItemData.ItemType.Legs:
+                case ItemDrop.ItemData.ItemType.Shoulder:
+                    Plugin.cc.ApplyArmorDataFromConfigRecord(ref item);
+                    break;
+                //case ItemDrop.ItemData.ItemType.OneHandedWeapon:
+                //case ItemDrop.ItemData.ItemType.Bow:
+                //case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
+                //case ItemDrop.ItemData.ItemType.Torch:
+                default:
+                    Plugin.cc.ApplyItemDataFromConfigRecord(ref item);
+                    break;
+            }
+        }
 
         public static void ApplySyncedItemConfigData()
         {
@@ -1896,23 +1946,7 @@ namespace ValheimHTDArmory
                 {
                     GameObject itemReference = Plugin.myItemList[i];
 
-                    var id = itemReference.GetComponent<ItemDrop>();
-                    switch (id.m_itemData.m_shared.m_itemType)
-                    {
-                        case ItemDrop.ItemData.ItemType.Helmet:
-                        case ItemDrop.ItemData.ItemType.Chest:
-                        case ItemDrop.ItemData.ItemType.Legs:
-                        case ItemDrop.ItemData.ItemType.Shoulder:
-                            Plugin.cc.ApplyArmorDataFromConfigRecord(ref itemReference);
-                            break;
-                        //case ItemDrop.ItemData.ItemType.OneHandedWeapon:
-                        //case ItemDrop.ItemData.ItemType.Bow:
-                        //case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
-                        //case ItemDrop.ItemData.ItemType.Torch:
-                        default:
-                            Plugin.cc.ApplyItemDataFromConfigRecord(ref itemReference);
-                            break;
-                    }
+                    ApplyConfigChanges(ref itemReference);
 
                     //Plugin.cc.ApplyItemDataFromConfigRecord(ref itemReference);
                     Plugin.myItemList[i] = itemReference;
@@ -1920,7 +1954,7 @@ namespace ValheimHTDArmory
             }
         }
 
-        private static AssetBundle GetAssetBundleFromResources(string fileName)
+        public static AssetBundle GetAssetBundleFromResources(string fileName)
         {
             var execAssembly = Assembly.GetExecutingAssembly();
 

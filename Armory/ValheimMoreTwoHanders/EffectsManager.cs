@@ -54,16 +54,16 @@ namespace ValheimHTDArmory
 
         EffectList lastUsedEffectList = EffectList.HIT;
 
-        List<PendingEffect> pendingEffects = new();
-        List<PendingStatusEffect> pendingStatusEffects = new();
+        List<PendingEffect> pendingEffects = new List<PendingEffect>();
+        List<PendingStatusEffect> pendingStatusEffects = new List<PendingStatusEffect>();
 
-        List<EffectData> hitEffectsData = new();
-        List<EffectData> hitterrainEffectsData = new();
-        List<EffectData> blockEffectsData = new();
-        List<EffectData> startEffectsData = new();
-        List<EffectData> holdEffectsData = new();
-        List<EffectData> triggerEffectsData = new();
-        List<EffectData> trailEffectsData = new();
+        List<EffectData> hitEffectsData = new List<EffectData>();
+        List<EffectData> hitterrainEffectsData = new List<EffectData>();
+        List<EffectData> blockEffectsData = new List<EffectData>();
+        List<EffectData> startEffectsData = new List<EffectData>();
+        List<EffectData> holdEffectsData = new List<EffectData>();
+        List<EffectData> triggerEffectsData = new List<EffectData>();
+        List<EffectData> trailEffectsData = new List<EffectData>();
         public void ApplyEffects(GameObject gameObject)
         {
             //Set item particle material
@@ -82,7 +82,8 @@ namespace ValheimHTDArmory
             ParticleSystemRenderer ps = gameObject.GetComponent<ParticleSystemRenderer>();
             if (ps != null)
             {
-                ps.sharedMaterial = MyReferences.listOfMaterials["item_particle".GetStableHashCode()];
+                //ps.sharedMaterial = MyReferences.listOfMaterials["item_particle".GetStableHashCode()];
+                ps.sharedMaterial = MyReferences.GetStoredMaterial("item_particle");
             }
 
             Transform thing = RecursiveSearchFunctions.ChildNodeFinderBreadthFirst(gameObject.transform, "attach");
@@ -95,7 +96,10 @@ namespace ValheimHTDArmory
                     if (trail != null)
                     {
                         MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
-                        mwt._material = MyReferences.listOfMaterials["club_trail".GetStableHashCode()];
+                        //Normally when dealing with materials you'll want to use "sharedMaterial" Unity likes that more
+                        //But this custom class by IronGate MeleeWeaponTrail, it just has a field for _material
+                        //notice the leading '_', so in this case there is no sharedMaterial, and this is ok.
+                        mwt._material = MyReferences.GetStoredMaterial("club_trail");
                     }
                 }
             }
@@ -158,24 +162,13 @@ namespace ValheimHTDArmory
 
             if (pendingEffects.Count > 0)
             {
-
-                //Set item attack trail material
-                //try
-                //{
-                //    PrefabNodeManager.RecursiveChildNodeFinder(gameObject.transform, "trail").gameObject.GetComponent<MeleeWeaponTrail>()._material = AssetReferences.listOfMaterials["club_trail"];
-                //}
-                //catch (Exception e)
-                //{
-                //    Plugin.Log.LogError($"Error getting weapon trail effect material from material list");
-                //    Plugin.Log.LogError($"Catch Exception details: {e.Message} --- {e.StackTrace}");
-                //}
                 foreach (PendingEffect pendingEffect in pendingEffects)
                 {
-                    EffectData effectData = new();
+                    EffectData effectData = new EffectData();
                     effectData.m_enabled = true;
                     try
                     {
-                        effectData.m_prefab = MyReferences.listOfEffects[pendingEffect.effectName.GetStableHashCode()];
+                        effectData.m_prefab = MyReferences.GetStoredEffectPrefab(pendingEffect.effectName);
                     }
                     catch (Exception e)
                     {

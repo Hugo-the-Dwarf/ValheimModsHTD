@@ -13,28 +13,28 @@ namespace ValheimHTDArmory
     [BepInPlugin(Plugin.GUID, Plugin.ModName, Plugin.Version)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string Version = "7.1.0";
+        public const string Version = "7.1.1";
         public const string ModName = "Hugos Armory";
         public const string GUID = "htd.armory";
-        public static ServerSync.ConfigSync configSync = new(GUID) { DisplayName = ModName, CurrentVersion = Version };
+        public static ServerSync.ConfigSync configSync = new ServerSync.ConfigSync(GUID) { DisplayName = ModName, CurrentVersion = Version };
 
         Harmony _Harmony;
         public static ManualLogSource Log;
-        public readonly Harmony harmony = new(GUID);
+        public readonly Harmony harmony = new Harmony(GUID);
 
 
-        public static CustomConfig cc = new();
-        public static CustomLocalization cl = new();
+        public static CustomConfig cc = new CustomConfig();
+        public static CustomLocalization cl = new CustomLocalization();
 
-        public static List<GameObject> myItemList = new(); //Fixed Referenced Compiled Items
-        public static List<CustomItem> customItems = new(); // Uncompiled Items
+        public static List<GameObject> myItemList = new List<GameObject>(); //Fixed Referenced Compiled Items
+        public static List<CustomItem> customItems = new List<CustomItem>(); // Uncompiled Items
         // public static List<CustomItem> customArmor = new List<CustomItem>(); // Uncompiled Items
 
-        public static List<Recipe> myRecipeList = new(); // Fixed Referenced Compiled Recipes
-        public static List<RecipeHelper> myRecipeHelperList = new(); // uncompiled recipes
+        public static List<Recipe> myRecipeList = new List<Recipe>(); // Fixed Referenced Compiled Recipes
+        public static List<RecipeHelper> myRecipeHelperList = new List<RecipeHelper>(); // uncompiled recipes
 
-        public static List<CustomPiece> customPieces = new();
-        public static List<CookingRecipe> myCookingRecipes = new();
+        public static List<CustomPiece> customPieces = new List<CustomPiece>();
+        public static List<CookingRecipe> myCookingRecipes = new List<CookingRecipe>();
 
 
         //BepinEx Config Values
@@ -49,8 +49,37 @@ namespace ValheimHTDArmory
 
         private static bool fixedReferences = false;
 
+        //private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        //{
+
+        //}
+
         private void Awake()
         {
+
+
+            //SpawnersManager.AddMasterString(1, "prefab:Abomination;weight:1;maxspawns:1;persist:true;hunt:true;day:false");
+            SpawnersManager.AddMasterString(1, "prefab:Greydwarf_Elite;weight:2;maxspawns:3;");
+            SpawnersManager.AddMasterString(1, "prefab:Greyling;weight:6;maxspawns:12;clustermax:3;");
+            SpawnersManager.AddMasterString(1, "prefab:Greydwarf;weight:3;maxspawns:4");
+
+            SpawnersManager.AddMasterString(2, "prefab:Deer;weight:3;maxspawns:4;day:false");
+            //SpawnersManager.AddMasterString(1, "prefab:Boar;night:false");
+
+            //comp.masterStrings = new string[] {
+            //    "prefab:Abomination;weight:1;maxspawns:1;persist:true",
+            //    "prefab:Greydwarf_Elite;weight:2;maxspawns:3",
+            //    "prefab:Greyling;weight:6;maxspawns:12",
+            //    "prefab:Greydwarf;weight:3;maxspawns:4",
+            //    "prefab:Boar"
+            //};
+
+
+
+
+
+            //AppDomain appDomain = AppDomain.CurrentDomain;
+            //appDomain.UnhandledException += UnhandledExceptionHandler;
             _Harmony = new Harmony(GUID);
 #if DEBUG
             Log = Logger;
@@ -102,6 +131,8 @@ namespace ValheimHTDArmory
                 harmony.Patch(original, postfix: new HarmonyMethod(postfix));
                 harmony.Patch(original, prefix: new HarmonyMethod(prefix), transpiler: new HarmonyMethod(transpiler));
             */
+
+            
 
             _Harmony.PatchAll();
         }
@@ -157,6 +188,33 @@ namespace ValheimHTDArmory
             }
         }
 
+        [HarmonyPatch(typeof(ZNetScene), nameof(ZNetScene.Awake))]
+        private static class ZNetScene_Awake_PostPatch
+        {
+            public static void Postfix(ZNetScene __instance)
+            {
+                if (__instance == null)
+                {
+                    return;
+                }
+
+                SpawnersManager.Init();
+
+                var prefab = __instance.m_prefabs.Where(p => p.name == "piece_groundtorch_wood").FirstOrDefault();
+                if (prefab != null)
+                {
+                    var comp = prefab.AddComponent<Spawners>();
+                    comp.spawnerListId = 1;
+                    comp.delayTime = 2;
+                    comp.radiusCheckOffset = 150f;
+                    comp.minLevel = 2;
+                    comp.maxLevel = 5;
+                }
+
+            }
+        }
+
+
         //[HarmonyPatch(typeof(ZNetScene), nameof(ZNetScene.Awake))]
         //private static class ZNetScene_Awake_PostPatch
         //{
@@ -167,40 +225,82 @@ namespace ValheimHTDArmory
         //            return;
         //        }
 
-        //        var blastFurnace = __instance.GetPrefab("blastfurnace");
-        //        if (blastFurnace != null)
+        //        //Don't re-run code if already fixed references when ZNS awakes again (from scene changes like main menu, loading a game, etc)
+        //        if (fixedReferences) return;
+
+        //        //Attempt thje find the base games player prefab from the list of prefabs
+        //        var playerPrefab = __instance.m_prefabs.Where(p => p.name == "Player").FirstOrDefault();
+        //        if(playerPrefab != null)
         //        {
-        //            var smelterComponent = blastFurnace.GetComponent<Smelter>();
-        //            if (smelterComponent != null)
+        //            //Extract the 1st material which is the player's skin material from the player prefab
+        //            var playerMaterial = playerPrefab.GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterials[0];
+
+        //            //Loop through all of your custom Mobs if you have them in an Array/List/Collection
+        //            foreach (var mob in customItems)//CustomItems because I don't have a Mob list example
         //            {
-        //                List<Smelter.ItemConversion> conversions = new List<Smelter.ItemConversion>();
-        //                conversions.AddRange(smelterComponent.m_conversion);
+        //                //Try to find a common identifier in the Prefabname (with-out case-sentive lookup)
+        //                if(mob.gameObject.name.IndexOf("Human", System.StringComparison.OrdinalIgnoreCase) > 0)
+        //                {
+        //                    //Get the SMR reference of your mob
+        //                    var mobSMR = mob.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
 
-        //                Smelter.ItemConversion blueItemConversion = new Smelter.ItemConversion();
-        //                blueItemConversion.m_from = OreBlue.GetComponent<ItemDrop>();
-        //                blueItemConversion.m_to = MetalBlue.GetComponent<ItemDrop>();
-        //                conversions.Add(blueItemConversion);
+        //                    //using the Getter/Setter extract a "copy" of the sharedMaterials from the SMR
+        //                    Material[] mobMats = mobSMR.sharedMaterials;
 
-        //                Smelter.ItemConversion greenItemConversion = new Smelter.ItemConversion();
-        //                greenItemConversion.m_from = OreGreen.GetComponent<ItemDrop>();
-        //                greenItemConversion.m_to = MetalGreen.GetComponent<ItemDrop>();
-        //                conversions.Add(greenItemConversion);
+        //                    //Set the Shader of the 1st material(copy) to the shader of the player's material (Custom/Player shader)
+        //                    mobMats[0].shader = playerMaterial.shader;
 
-        //                Smelter.ItemConversion redItemConversion = new Smelter.ItemConversion();
-        //                redItemConversion.m_from = OreRed.GetComponent<ItemDrop>();
-        //                redItemConversion.m_to = MetalRed.GetComponent<ItemDrop>();
-        //                conversions.Add(redItemConversion);
-
-        //                Smelter.ItemConversion purpleItemConversion = new Smelter.ItemConversion();
-        //                purpleItemConversion.m_from = OrePurple.GetComponent<ItemDrop>();
-        //                purpleItemConversion.m_to = MetalPurple.GetComponent<ItemDrop>();
-        //                conversions.Add(purpleItemConversion);
-
-        //                smelterComponent.m_conversion = conversions;
-
+        //                    //Set the SMR's Shared Materials using the Getter/Setter with the modified copy
+        //                    mobSMR.sharedMaterials = mobMats;
+        //                }
         //            }
         //        }
+
+        //        fixedReferences = true;
+
+        //        //AssetBundle assetBundle = ItemManager.GetAssetBundleFromResources("twohandedweapons");
+        //        //var biome = assetBundle.LoadAsset<GameObject>("NewBiome");
+
+        //        //if (!__instance.m_prefabs.Contains(biome))
+        //        //{
+        //        //    __instance.m_prefabs.Add(biome);
+        //        //}
+
+        //        //var blastFurnace = __instance.GetPrefab("blastfurnace");
+        //        //if (blastFurnace != null)
+        //        //{
+        //        //    var smelterComponent = blastFurnace.GetComponent<Smelter>();
+        //        //    if (smelterComponent != null)
+        //        //    {
+        //        //        List<Smelter.ItemConversion> conversions = new List<Smelter.ItemConversion>();
+        //        //        conversions.AddRange(smelterComponent.m_conversion);
+
+        //        //        Smelter.ItemConversion blueItemConversion = new Smelter.ItemConversion();
+        //        //        blueItemConversion.m_from = OreBlue.GetComponent<ItemDrop>();
+        //        //        blueItemConversion.m_to = MetalBlue.GetComponent<ItemDrop>();
+        //        //        conversions.Add(blueItemConversion);
+
+        //        //        Smelter.ItemConversion greenItemConversion = new Smelter.ItemConversion();
+        //        //        greenItemConversion.m_from = OreGreen.GetComponent<ItemDrop>();
+        //        //        greenItemConversion.m_to = MetalGreen.GetComponent<ItemDrop>();
+        //        //        conversions.Add(greenItemConversion);
+
+        //        //        Smelter.ItemConversion redItemConversion = new Smelter.ItemConversion();
+        //        //        redItemConversion.m_from = OreRed.GetComponent<ItemDrop>();
+        //        //        redItemConversion.m_to = MetalRed.GetComponent<ItemDrop>();
+        //        //        conversions.Add(redItemConversion);
+
+        //        //        Smelter.ItemConversion purpleItemConversion = new Smelter.ItemConversion();
+        //        //        purpleItemConversion.m_from = OrePurple.GetComponent<ItemDrop>();
+        //        //        purpleItemConversion.m_to = MetalPurple.GetComponent<ItemDrop>();
+        //        //        conversions.Add(purpleItemConversion);
+
+        //        //        smelterComponent.m_conversion = conversions;
+
+        //        //    }
+        //        //}
         //    }
+        //}
 
         [HarmonyPatch(typeof(ObjectDB), nameof(ObjectDB.CopyOtherDB))]
         private static class ObjectDB_CopyOtherDB_Patch
@@ -308,7 +408,8 @@ namespace ValheimHTDArmory
             foreach (GameObject go in ObjectDB.instance.m_items)
             {
                 //Add to reference lists if not in their already
-                MyReferences.TryAddToItemList(go);
+                //MyReferences.TryAddToItemList(go);
+                MyReferences.SetStoredItemPrefab(go.name, go);
 
                 ItemDrop id = go.GetComponent<ItemDrop>();
                 if (id != null)
@@ -318,10 +419,11 @@ namespace ValheimHTDArmory
                     ParticleSystemRenderer ps = go.GetComponent<ParticleSystemRenderer>();
                     if (ps != null)
                     {
-                        if (!MyReferences.listOfMaterials.ContainsKey("item_particle".GetStableHashCode()))
-                        {
-                            MyReferences.TryAddToMaterialList(ps.sharedMaterial, "item_particle");
-                        }
+                        //if (!MyReferences.listOfMaterials.ContainsKey("item_particle".GetStableHashCode()))
+                        //{
+                        //    MyReferences.TryAddToMaterialList(ps.sharedMaterial, "item_particle");
+                        //}
+                        MyReferences.SetStoredMaterial("item_particle", ps.sharedMaterial);
                     }
 
                     var shared = id.m_itemData.m_shared;
@@ -342,7 +444,11 @@ namespace ValheimHTDArmory
                                     if (trail != null)
                                     {
                                         MeleeWeaponTrail mwt = trail.gameObject.GetComponent<MeleeWeaponTrail>();
-                                        MyReferences.TryAddToMaterialList(mwt._material, "club_trail");
+                                        // MyReferences.TryAddToMaterialList(mwt._material, "club_trail");
+                                        if (mwt != null)
+                                        {
+                                            MyReferences.SetStoredMaterial("club_trail", mwt._material);
+                                        }
                                     }
                                 }
                             }
@@ -359,12 +465,13 @@ namespace ValheimHTDArmory
                         {
                             foreach (var pieceTableItem in pieceTable)
                             {
-                                MyReferences.TryAddToPieceList(pieceTableItem);
+                                //MyReferences.TryAddToPieceList(pieceTableItem);
+                                MyReferences.SetStoredPiecePrefab(pieceTableItem.name, pieceTableItem);
 
                                 //One off capture of a station extension's line effect
                                 StationExtension stationExtension = pieceTableItem.GetComponent<StationExtension>();
-                                if (stationExtension != null && !MyReferences.listOfEffects.ContainsKey(stationExtension.m_connectionPrefab.name.GetStableHashCode()))
-                                    MyReferences.listOfEffects.Add(stationExtension.m_connectionPrefab.name.GetStableHashCode(), stationExtension.m_connectionPrefab);
+                                if (stationExtension != null)
+                                    MyReferences.SetStoredEffectPrefab(stationExtension.m_connectionPrefab.name, stationExtension.m_connectionPrefab);
 
                                 //Collect this for items and pieces, for proper referencing
                                 CraftingStation craftingStation = pieceTableItem.GetComponent<CraftingStation>();
@@ -406,11 +513,8 @@ namespace ValheimHTDArmory
             {
                 foreach (var effect in el.m_effectPrefabs)
                 {
-                    if (effect.m_prefab != null
-                        && !MyReferences.listOfEffects.ContainsKey(effect.m_prefab.name.GetStableHashCode()))
-                    {
-                        MyReferences.listOfEffects.Add(effect.m_prefab.name.GetStableHashCode(), effect.m_prefab);
-                    }
+                    if (effect.m_prefab != null)
+                        MyReferences.SetStoredEffectPrefab(effect.m_prefab.name, effect.m_prefab);
                 }
             }
 
@@ -425,11 +529,8 @@ namespace ValheimHTDArmory
                 {
                     foreach (var effect in el.m_effectPrefabs)
                     {
-                        if (effect.m_prefab != null
-                            && !MyReferences.listOfEffects.ContainsKey(effect.m_prefab.name.GetStableHashCode()))
-                        {
-                            MyReferences.listOfEffects.Add(effect.m_prefab.name.GetStableHashCode(), effect.m_prefab);
-                        }
+                        if (effect.m_prefab != null)
+                            MyReferences.SetStoredEffectPrefab(effect.m_prefab.name, effect.m_prefab);
                     }
                 }
             }
@@ -477,7 +578,7 @@ namespace ValheimHTDArmory
                     var cookingStation = MyReferences.listOfCookingStations[cr.cookingStationName.GetStableHashCode()];
                     if (cookingStation != null)
                     {
-                        CookingStation.ItemConversion recipe = new();
+                        CookingStation.ItemConversion recipe = new CookingStation.ItemConversion();
                         recipe.m_cookTime = cr.cookingTime;
 
 
